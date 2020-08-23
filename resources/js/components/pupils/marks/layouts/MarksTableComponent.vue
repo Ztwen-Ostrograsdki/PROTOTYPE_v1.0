@@ -58,7 +58,7 @@
                     			</a>
                     			<span class="fa fa-edit mr-3 text-white-50 mt-2" style="font-size: 9px" :title="'Editer les notes en ' + subject.name + ' de ' + editedPupil.name " data-toggle="modal" data-target="#editPupilMarks" @click="editedPupilClasseAndSubjectMarks(subject, editedPupil)"></span>
                     		</td>
-                    		<td class="text-center">2</td>
+                    		<td class="text-center">{{ editedPupilCoefTables[subject.id] }}</td>
                     		<td class="text-center">
                     			<table class="text-center w-100 text-white-50">
 	                    			<tbody class="w-100">
@@ -99,7 +99,7 @@
                     			<table class="text-center w-100">
 	                    			<tbody class="w-100">
 	                    				<tr class="w-100"  v-if="targetPupilMarks !== null">
-	                    					<td class="text-center text-warning">4500</td>
+	                    					<td class="text-center text-warning">{{getAverage(subject) !== '-' ? parseFloat(getAverage(subject) * editedPupilCoefTables[subject.id]).toFixed(2) : '-'}}</td>
 	                    					<td class="text-success text-center">{{getAverage(subject)}}</td>
 	                    				</tr>
 	                    				<tr class="w-100"  v-if="targetPupilMarks == null">
@@ -149,7 +149,12 @@
 		methods: {
 			getSujectMarks(subject, type, id, marks = this.targetPupilMarks){
 				if(marks[subject.id] !== undefined){
-					return marks[subject.id][type][id] !== undefined ? marks[subject.id][type][id].value : '-'
+					if(marks[subject.id][type][id] !== undefined){
+						return marks[subject.id][type][id].value > 10 ? marks[subject.id][type][id].value : '0' + marks[subject.id][type][id].value
+						
+					}
+					
+					return '-'
 				}
 				else{
 					return "-"
@@ -191,14 +196,14 @@
 						som += all[i]
 					}
 					if(som !== 0){
-						return avg = som / all.length
+						avg = parseFloat(som / all.length).toFixed(2)
+						return avg
 					}
 					else{
 						return "-"
 					}
-					
-					avg = som / all.length
-					
+					avg = parseFloat(som / all.length).toFixed(2)
+					return avg
 				}
 				else{
 					return "-"
@@ -212,7 +217,7 @@
 		},
 
 		computed: mapState([
-          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks'
+          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables'
         ])
 
 	}

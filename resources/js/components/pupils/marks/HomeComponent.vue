@@ -33,16 +33,19 @@
             </div>
         </div>
 		<div class="d-flex w-100 my-1 py-1 justify-content-between">
-            <div class="mx-1 my-0">
-                <span class="btn btn-primary text-white-50 py-1" @click="setTrimestre(1)">
+            <div class="mx-1 my-0 trimestrielle">
+                <span class="btn btn-secondary text-white-50 py-1 light-parent" @click="setTrimestre(1)">
+                	<hr :class="'light m-0 p-0'">
 	                <router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/1'"  class="text-white">Trimestre 1
 	            	</router-link>
             	</span>
-                <span class="btn btn-primary text-white-50 py-1" @click="setTrimestre(2)">
+                <span class="btn btn-secondary text-white-50 py-1" @click="setTrimestre(2)">
+                	<hr :class="'light m-0 p-0'">
                 	<router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/2'" class="text-white">Trimestre 2
 	            	</router-link>
 	            </span>
-                <span class="btn btn-primary text-white-50 py-1" @click="setTrimestre(3)">
+                <span class="btn btn-secondary text-white-50 py-1" @click="setTrimestre(3)">
+                	<hr :class="'light m-0 p-0'">
                 	<router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/3'" class="text-white">Trimestre 3
 	            	</router-link>
 	            </span>
@@ -111,6 +114,11 @@
 
 			setTrimestre(trimestre){
 				this.$store.dispatch('getAPupilDataAndMarks', {route: this.$route.params.id, trimestre:trimestre})
+			},
+
+			getTrimestre(trimestre){
+				console.log(trimestre)
+				
 			}
 
 		},
@@ -119,8 +127,31 @@
         ])
 
 	}
+
+$(function(){
+	$('.trimestrielle > span').click(function(){
+		$('.trimestrielle').removeClass('.increase-opacity')
+		$(this).addClass('.increase-opacity')
+	})
+})
 </script>
 
 <style>
+.light{
+	position: relative;
+	background-color: #8fde62;
+	box-shadow: 0px 7px 7px #8fde62;
+	top: 0;
+	width: 100%;
+	border-bottom-right-radius: 100%;
+	border-bottom-left-radius: 100%;
+	border: thin solid #8fde62;
+	opacity: 0;
+}
+
+.increase-opacity hr.light{
+	opacity: 1 !important;
+}
+
 
 </style>

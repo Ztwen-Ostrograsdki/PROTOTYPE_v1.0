@@ -6,7 +6,7 @@
 			</h3>
 		</div>
 		<div class="justify-content-center w-100 m-0 p-0">
-			<transition name="fade" appear>
+			<transition appear>
 				<pupil-profil-main></pupil-profil-main>
 			</transition>
 		</div>

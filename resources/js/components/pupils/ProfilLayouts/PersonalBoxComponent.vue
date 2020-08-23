@@ -13,7 +13,7 @@
 				</tr>
 				<tr>
 					<td>Age:</td>
-					<td>12</td>
+					<td>{{ targetPupilAge + 'ans'}}</td>
 				</tr>
 				<tr>
 					<td>Date de Naissance:</td>
@@ -81,7 +81,7 @@
             },
 		},
 		computed: mapState([
-           'editedPupil', 'errors', 'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT'
+           'editedPupil', 'errors', 'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'targetPupilAge'
         ])
 
 	}

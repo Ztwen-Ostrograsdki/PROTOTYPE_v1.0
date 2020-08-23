@@ -7,8 +7,8 @@ const pupils_states = {
     targetPupilFirstName: '',
     targetPupilClasseFMT: {},
     targetPupilBirthFMT: '',
+    targetPupilAge: '',
     trimestre: 0,
-    age: '',
 
     newPupil: {
         name: '',
@@ -43,37 +43,9 @@ const pupils_states = {
     targetPupilWeakMark : undefined,
     targetPupilWeakMarkSuject : '',
     targetPupilPercentageSuccedMarks : undefined,
-
-    targetPupilMarksObject: {
-        first :{
-            epe1: {},
-            epe2: {},
-            epe3: {},
-            epe4: {},
-            epe5: {},
-            dev1: {},
-            dev2: {},
-        },
-        second: {
-            epe1: {},
-            epe2: {},
-            epe3: {},
-            epe4: {},
-            epe5: {},
-            dev1: {},
-            dev2: {},
-        },
-        third: {
-            epe1: {},
-            epe2: {},
-            epe3: {},
-            epe4: {},
-            epe5: {},
-            dev1: {},
-            dev2: {},
-        },
+    editedPupilCoefTables: [],
+    
         
-    }
 }
 
 export default pupils_states

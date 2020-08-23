@@ -100,4 +100,46 @@ class ClasseAndSubjectJoiner extends Model
     		}
     	}
     }
+
+
+    public function getCoefiscientOfSubject($subject)
+    {
+        $name = $this->classe->name;
+
+        if (preg_match_all('/Sixième|Cinquième/', $name) || $subject->name == 'Sport'|| $this->classe->level == 'primary') {
+            return 1;
+        }
+        else{
+
+            if (preg_match_all('/Quatri|Troisi/', $name)) {
+                if ($subject->name == "Sport") {
+                    return 1;
+                }
+                else{
+                    return 2;
+                }
+            }
+            if (preg_match_all('/Seconde/', $name)) {
+                if ($this->serie == "serie-A") {
+                    if (preg_match_all('/Math|Physi|Biologie/', $subject->name)) {
+                        return 1;
+                    }
+                    else{
+                        return 3;
+                    }
+                }
+                if ($this->serie == "serie-D") {
+                    if (preg_match_all('/Math|Physi|Biologie/', $subject->name)) {
+                        return 3;
+                    }
+                    else{
+                        return 2;
+                    }
+                }
+                return 2;
+                
+            }
+            return rand(1, 5);
+        }
+    }
 }

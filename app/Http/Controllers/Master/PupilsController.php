@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\ClasseAndSubjectJoiner;
 use App\Helpers\Tools\Tools;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Master\MarksController;
@@ -133,6 +134,13 @@ class PupilsController extends Controller
            $subjects = Subject::whereLevel('primary')->get();
         }
 
+        $coefTables = [];
+        $joiner = new ClasseAndSubjectJoiner($pupil->classe);
+        foreach ($subjects as $subject) {
+            $coef = $joiner->getCoefiscientOfSubject($subject);
+            $coefTables[$subject->id] = $coef;
+        }
+
         $classeFMT = $pupil->classe->getFormattedClasseName();
         $birthday = ModelHelper::birthFormattor($pupil, 0);
 
@@ -144,7 +152,7 @@ class PupilsController extends Controller
 
         $classeName = $pupil->classe->name;
 
-        return response()->json(['p' => $pupil, 'subjects' => $subjects, 'token' => $token, 'classeFMT' => $classeFMT, 'birthFMT' => $birthday, 'classeName' => $classeName, 'firstName' => $firstName, 'lastName' => $lastName]);
+        return response()->json(['p' => $pupil, 'subjects' => $subjects, 'coefTables' => $coefTables, 'token' => $token, 'classeFMT' => $classeFMT, 'birthFMT' => $birthday, 'classeName' => $classeName, 'firstName' => $firstName, 'lastName' => $lastName]);
     }
 
     public function sendPupilMarks(Request $request, int $id, int $trimestre)
@@ -171,8 +179,21 @@ class PupilsController extends Controller
             $lastSubject = (Subject::find($lastMark->subject_id))->name;
             $bestSubject = (Subject::find($bestMark->subject_id))->name;
             $weakSubject = (Subject::find($weakMark->subject_id))->name;
-            if (true) {
+            if ($pupil->level === "secondary") {
                 foreach ($pupil->classe->subjects as $subject) {
+                    $classe = $pupil->classe->id;
+                    $tr = 'trimestre '.$trimestre;
+                    $marksArray = ['epe' => [], 'devoirs' => []];
+                    $marks = Mark::where('pupil_id', $id)->where('classe_id', $classe)->where('trimestre', $tr)->where('subject_id', $subject->id)->get();
+                    if (count($marks) > 0) {
+                        $marksEPE = Mark::where('pupil_id', $id)->where('classe_id', $classe)->where('trimestre', $tr)->where('subject_id', $subject->id)->where('type', 'epe')->where('value', '>', 0)->get();
+                        $marksDEV = Mark::where('pupil_id', $id)->where('classe_id', $classe)->where('trimestre', $tr)->where('subject_id', $subject->id)->where('type', 'devoir')->where('value', '>', 0)->get();
+                        $marksArrayByType[$subject->id] = ['epe' => $marksEPE, 'devoirs' => $marksDEV];
+                    }
+                }
+            }
+            elseif ($pupil->level == "primary") {
+                foreach (Subject::whereLevel('primary')->get() as $subject) {
                     $classe = $pupil->classe->id;
                     $tr = 'trimestre '.$trimestre;
                     $marksArray = ['epe' => [], 'devoirs' => []];
