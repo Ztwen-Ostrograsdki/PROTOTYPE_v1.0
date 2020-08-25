@@ -34,6 +34,7 @@ let pupils_marks_home = Vue.component('marks-home', require('./components/pupils
 let pupils_marks_table = Vue.component('marks-table', require('./components/pupils/marks/layouts/MarksTableComponent.vue').default)
 let pupils_marks_trimestre = Vue.component('trimestre', require('./components/pupils/marks/layouts/TrimestreTableComponent.vue').default)
 let pupils_marks_general = Vue.component('trimestre-general', require('./components/pupils/marks/layouts/TrimestreGeneralTableComponent.vue').default)
+let bulletin = Vue.component('bulletin', require('./components/admin/layouts/BulletinComponent.vue').default)
 
 //CLASSES
 let classes_home = Vue.component('classes-home', require('./components/classes/HomeComponent.vue').default)
@@ -60,7 +61,6 @@ let pupils_edit_marks = Vue.component('pupil-edit-marks', require('./components/
 let teachers_add = Vue.component('teacher-add', require('./components/formulars/teachers/AddNewComponent.vue').default)
 let teachers_perso_edit = Vue.component('teacher-perso', require('./components/formulars/teachers/EditPersonalComponent.vue').default)
 let teachers_classes_edit = Vue.component('teacher-classes', require('./components/formulars/teachers/EditClassesComponent.vue').default)
-
 
 let default_success = Vue.component('default-success', require('./components/success/SuccessComponent.vue').default)
 
@@ -110,6 +110,12 @@ const routes = [
 				path: '/admin/director/pupilsm/:id/marks/index/trimestre/:trimestre',
 				component: pupils_marks_home,
 				name: 'pupilsMarks',
+				store,
+			},
+			{
+				path: '/admin/director/pupilsm/:id/bulletin&trimestrielle&eleve/index/trimestre/:trimestre',
+				component: bulletin,
+				name: 'bulletin',
 				store,
 			},
 			{

@@ -159,7 +159,7 @@ class PupilsController extends Controller
     {
         $pupil = Pupil::withTrashed('deleted_at')->whereId($id)->firstOrFail();
         $marks = Mark::where('pupil_id', $id)->where('trimestre', 'trimestre '.$trimestre)->get();
-        $lastMark = Mark::where('pupil_id', $id)->where('trimestre', 'trimestre '.$trimestre)->where('value', '>', 0)->orderBy('id', 'asc')->first();
+        $lastMark = Mark::where('pupil_id', $id)->where('trimestre', 'trimestre '.$trimestre)->where('value', '>', 0)->orderBy('id', 'desc')->first();
         $bestMark = Mark::where('pupil_id', $id)->where('trimestre', 'trimestre '.$trimestre)->where('value', '>', 0)->orderBy('value', 'desc')->first();
         $weakMark = Mark::where('pupil_id', $id)->where('trimestre', 'trimestre '.$trimestre)->where('value', '>', 0)->orderBy('value', 'asc')->first();
         $allMarks = Mark::where('pupil_id', $id)->where('trimestre', 'trimestre '.$trimestre)->where('value', '>', 0)->count();
@@ -479,6 +479,11 @@ class PupilsController extends Controller
                 $mark = Mark::create($markDefault);
             }
         }
+    }
+
+    public function buildBulletin(Request $request, int $id, int $trimestre)
+    {
+        return view('directors.pupils.marks.index');
     }
 
 

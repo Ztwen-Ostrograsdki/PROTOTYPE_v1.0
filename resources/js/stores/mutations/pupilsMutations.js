@@ -121,7 +121,7 @@ const pupils_mutations = {
         state.targetPupil = object.pupil
         state.targetPupilClasseFMT = object.dataFMT.classe
         state.targetPupilBirthFMT = object.dataFMT.birth
-        state.targetPupilFirstName = object.dataFMT.fist
+        state.targetPupilFirstName = object.dataFMT.first
         state.targetPupilLastName = object.dataFMT.last
     },
     SET_EDITED_PUPIL: (state, pupil) => {

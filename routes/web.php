@@ -57,6 +57,7 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::get('pupilsm/get&classe&of&pupil&with&data&credentials/id={id}', 'Master\PupilsController@getAPupilData');
 		Route::get('pupilsm/{id}/marks/index/trimestre/{trimestre}', 'Master\PupilsController@showPupilMarks');
 		Route::post('pupilsm/{id}/marks/index/trimestre/{trimestre}', 'Master\PupilsController@sendPupilMarks');
+		Route::get('pupilsm/{id}/bulletin&trimestrielle&eleve/index/trimestre/{trimestre}', 'Master\PupilsController@buildBulletin');
 		Route::put('pupilsm/update/update&perso/id={id}', 'Master\PupilsController@persoUpdate');
 		Route::put('pupilsm/restore/id={id}', 'Master\PupilsController@restore');
 		Route::resource('pupilsm', 'Master\PupilsController')->middleware('onlySuperAdmin');

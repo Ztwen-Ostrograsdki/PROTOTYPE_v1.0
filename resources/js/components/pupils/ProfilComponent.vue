@@ -18,7 +18,7 @@
         created(){
             axios.get('/admin/director/pupilsm/get&classe&of&pupil&with&data&credentials/id=' + this.$route.params.id)
                 .then(response => {
-                    this.$store.commit('UPDATE_TARGET_PUPIL', {pupil: response.data.p, dataFMT: {classe: response.data.classeFMT, birth: response.data.birthFMT, fist: response.data.firstName, last: response.data.lastName}})
+                    this.$store.commit('UPDATE_TARGET_PUPIL', {pupil: response.data.p, dataFMT: {classe: response.data.classeFMT, birth: response.data.birthFMT, first: response.data.firstName, last: response.data.lastName}})
                     this.$store.commit('SET_EDITED_PUPIL_SUBJECTS', response.data.subjects)
                 }
             )

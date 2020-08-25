@@ -40,6 +40,10 @@
 	                            	<i class="fa fa-file-text fa-sm fa-fw mr-2"></i>
 	                              Les notes
             					</router-link>
+            					<router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/bulletin&trimestrielle&eleve/index/trimestre/1'" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+	                            	<i class="fa fa-file-text fa-sm fa-fw mr-2"></i>
+	                              	Générer bulletin
+            					</router-link>
 	                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
 	                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
 	                              Scolarité

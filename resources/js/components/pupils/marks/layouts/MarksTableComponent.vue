@@ -84,7 +84,7 @@
                     		<td class="text-center ">
                     			<table class="text-center w-100 text-primary">
 	                    			<tbody class="w-100">
-	                    				<tr class="w-100 td" v-if="targetPupilMarks !== null">
+	                    				<tr class="w-100 td dev-marks" v-if="targetPupilMarks !== null">
 	                    					<td class="text-center">{{ getSujectMarks(subject, 'devoirs', 0)}}</td>
 	                    					<td>{{ getSujectMarks(subject, 'devoirs', 1)}}</td>
 	                    				</tr>
@@ -150,7 +150,7 @@
 			getSujectMarks(subject, type, id, marks = this.targetPupilMarks){
 				if(marks[subject.id] !== undefined){
 					if(marks[subject.id][type][id] !== undefined){
-						return marks[subject.id][type][id].value > 10 ? marks[subject.id][type][id].value : '0' + marks[subject.id][type][id].value
+						return marks[subject.id][type][id].value >= 10 ? marks[subject.id][type][id].value : '0' + marks[subject.id][type][id].value
 						
 					}
 					
@@ -226,6 +226,10 @@
 <style>
 	.marks-td tr table tr td{
 		width: 15%;
+	}
+
+	.dev-marks td{
+		width: 50% !important;
 	}
 	.marks-td tr table tr td.coef{
 		width: 10% !important;
