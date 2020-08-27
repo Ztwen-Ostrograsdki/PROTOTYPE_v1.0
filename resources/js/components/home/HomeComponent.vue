@@ -1,11 +1,6 @@
 <template>
-	<div class="w-100 m-0 p-0">
+	<div class="w-100 m-0 p-0" style="z-index: 3000">
 		<home-nav></home-nav>
-		<transition name="fade">
-			<div class="position-absolute" style="right: 2px; top: 70px; width: 15%; background-image: url(/media/img/art-2578353_1920.jpg) !important;" v-if="userSettings">
-				<user-main></user-main>
-			</div>
-		</transition>
 		<login></login>
 	</div>
 </template>

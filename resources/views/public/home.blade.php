@@ -3,13 +3,11 @@
     
 @endsection
 @section('content')
-<div class="container mx-auto w-100">
-    <h5>Welcome</h5>
-
-    <p>
-    	Lorem ipsum dolor sit amet, consectetur adipisicing elit. Odit sapiente eveniet totam animi hic in iste, corporis ipsum fugit, aut aliquam veniam ab, ratione, excepturi rerum? Aliquid atque illo odio.
-    	lorem*100
-    </p>
+<div class="w-100 mx-0 px-1 mx-auto w-100 position-relative" style="top: 100px; max-height: 540px; overflow-y: auto;">
+    <div class="m-0 w-100 p-2 bg-linear-official-180 border">
+        <home-container></home-container>
+		
+    </div>
 </div>
 @section('js')
           

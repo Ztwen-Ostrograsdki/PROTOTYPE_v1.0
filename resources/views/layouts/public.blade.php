@@ -56,14 +56,16 @@
 </head>
 <body class="d-flex flex-column h-100">
     <div class="mask w-100 h-100" id="mask" style="position: absolute;top: 0; left: 0; display: none; z-index: 10; background-color: rgba(150, 150, 150, 0.9);"></div>
-    <div class="container-bg app" id="container-bg-admin">
-        <div class="container-mask maskor">
-            <home-public></home-public>         
+        <div class="container-bg app" id="container-bg-admin">
+            <div class="container-mask maskor">
+                <home-public></home-public>  
+            </div>
+            <div class="m-0 p-0 mx-auto w-100">
+                @yield('content')
+            </div>
         </div>
-        
     </div>
 
-    </div>
     
 </footer>
 <script src="{{ asset('js/app.js') }}" defer></script>

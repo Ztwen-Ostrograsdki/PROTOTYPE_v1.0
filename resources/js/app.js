@@ -48,6 +48,7 @@ let listing_pupils_component = Vue.component('listing-pupils', require('./compon
 let home = Vue.component('home-public', require('./components/home/HomeComponent.vue').default)
 let homeNav = Vue.component('home-nav', require('./components/home/NavigationComponent.vue').default)
 let userMain = Vue.component('user-main', require('./components/home/UserMainComponent.vue').default)
+let home_container = Vue.component('home-container', require('./components/home/HomeContainerComponent.vue').default)
 
 //Connexions
 let login = Vue.component('login', require('./components/connexions/LoginComponent.vue').default)
@@ -181,7 +182,6 @@ new Vue({
 		admin_sidebar,
 		error404,
 		error419,
-		home
 	}
 })
 

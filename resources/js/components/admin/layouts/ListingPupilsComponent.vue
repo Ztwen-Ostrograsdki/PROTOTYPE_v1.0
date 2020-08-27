@@ -40,7 +40,7 @@
                             </td>
                             <td v-if="!isProfil">
                             	<router-link class="card-link w-100 d-inline-block" :to="{name: 'classesProfil', params: {id: pupil.classe_id}}">
-                                    <span>{{pupilsArray[pupil.id].name}} <sup>{{pupilsArray[pupil.id].sup}}</sup>{{pupilsArray[pupil.id].idc}}</span>
+                                    <span>{{pupilsArray[pupil.id].name}}<sup>{{pupilsArray[pupil.id].sup}}</sup> {{ pupilsArray[pupil.id].idc}}</span>
                                 </router-link>
                             </td>
                             <td v-if="isProfil">

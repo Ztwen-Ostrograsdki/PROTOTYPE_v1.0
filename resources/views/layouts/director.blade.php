@@ -71,12 +71,12 @@
 
    
 {{-- MODAL SUCCESS --}}
-    @extends('modals.success')        
+    {{-- @extends('modals.success')         --}}
 {{-- END MODAL SUCCESS --}}
 
 
 {{-- ADMIN TO TEACHER REGISTRED MODAL --}}
-    @extends('modals.createUser')
+    {{-- @extends('modals.createUser') --}}
  
 {{-- END ADMIN TO TEACHER REGISTRED MODAL --}}
 
