@@ -19,8 +19,9 @@ const classes_states = {
         subjects: [],
 
     },
-    targetedClasseSubject: {},
+    targetedClasseSubject: 10,
     targetClasseFMT: [],
+    targetedClasseMarks: [],
 
     cl : 0,
     pcl : 0,

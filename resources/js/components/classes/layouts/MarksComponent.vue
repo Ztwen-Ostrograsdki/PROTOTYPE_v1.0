@@ -144,14 +144,15 @@
                     			<table class="w-100">
                     				<tbody class="w-100 notes">
                     					<tr class="w-100">
-		                    				<td>12</td>
-		                    				<td>15</td>
-		                    				<td>17</td>
-		                    				<td>-</td>
-		                    				<td>-</td>
-		                    				<td class="text-primary">16</td>
-		                    				<td class="text-primary">14</td>
-		                    				<td class="text-primary">-</td>
+		                    				<td>{{ getMarks(pupil.id, 'epe', 0, targetedClasseMarks) }}</td>
+		                    				<td>{{ getMarks(pupil.id, 'epe', 1, targetedClasseMarks) }}</td>
+		                    				<td>{{ getMarks(pupil.id, 'epe', 2, targetedClasseMarks) }}</td>
+		                    				<td>{{ getMarks(pupil.id, 'epe', 3, targetedClasseMarks) }}</td>
+		                    				<td>{{ getMarks(pupil.id, 'epe', 4, targetedClasseMarks) }}</td>
+		                    				
+		                    				<td class="text-primary">{{getAverage(pupil.id, targetedClasseMarks).avgEPE}}</td>
+		                    				<td>{{ getMarks(pupil.id, 'devoir', 0, targetedClasseMarks) }}</td>
+		                    				<td>{{ getMarks(pupil.id, 'devoir', 1, targetedClasseMarks) }}</td>
 		                    			</tr>
                     				</tbody>
                     			</table>
@@ -188,10 +189,12 @@
 		data() {
             return {
             	showOptions: false,
+            	trimestre: 1,
             }   
         },
         created(){
             this.$store.dispatch('getAClasseData', this.$route.params.id)
+            this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.targetedClasseSubject, trimestre: this.trimestre})
         },
 
 		methods: {
@@ -219,16 +222,122 @@
 			},
 			updateTargetedSubject(subject){
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.targetedClasseSubject, trimestre: this.trimestre})
 			},
 
 			isTheTargetedSubject(subject){
-				return subject.id == this.targetedClasseSubject.id ? 'border-warning btn-primary' : 'btn-secondary'
+				return subject.id == this.targetedClasseSubject ? 'border-warning btn-primary' : 'btn-secondary'
+			},
+			getMarks(pupil, type, index, targetedClasseMarks){
+				if(targetedClasseMarks[pupil] == null){
+					return '-'
+				}
+				else{
+					let marks = targetedClasseMarks[pupil]
+					let interros = []
+					let devoirs = []
+
+					for (var i = 0; i < marks.length; i++) {
+						if(marks[i].type == 'epe' || marks[i].type == 'interrogations'){
+							interros.push(marks[i])
+						}
+						else if (marks[i].type == 'devoir' || marks[i].type == 'dev') {
+							devoirs.push(marks[i])
+						}
+						
+					}
+					if(type == 'epe' || type == 'interrogations'){
+						if(interros.length > 0){
+							if(interros[index] == undefined){
+								return '-'
+							}
+							else{
+								return interros[index].value
+							}
+							
+						}
+						else{
+							return '-'
+						}
+						
+					}
+					else if (type == 'dev' || type == 'devoir') {
+						if(devoirs.length > 0){
+							if(devoirs[index] == undefined){
+								return '-'
+							}
+							else{
+								return devoirs[index].value
+							}
+						}
+						else{
+							return '-'
+						}
+					}
+				}
+				
+			},
+			getAverage(pupil, targetedClasseMarks){
+				let marksAll = targetedClasseMarks
+				let type = "epe"
+				let interros = []
+				let devoirs = []
+				let som = 0
+				let somEPE = 0
+				let somDEV = 0
+				let avgEPE = 0
+				let avg = 0
+				if(marksAll[pupil] !== null){
+					let marks = marksAll[pupil]
+					for (var i = 0; i < marks.length; i++) {
+						if(marks[i].type == 'epe' || marks[i].type == 'interrogations'){
+							interros.push(marks[i])
+						}
+						else if (marks[i].type == 'devoir' || marks[i].type == 'dev') {
+							devoirs.push(marks[i])
+						}
+					}
+
+					if(interros.length > 0){
+						for (var i = 0; i < interros.length; i++) {
+							somEPE += interros[i].value
+						}
+						avgEPE =  parseFloat(somEPE / interros.length).toFixed(2)
+					}
+					else{
+						avgEPE = 0
+					}
+
+					if(devoirs.length > 0){
+						for (var i = 0; i < devoirs.length; i++) {
+							somDEV += devoirs[i].value
+						}
+
+						if(avgEPE > 0){
+							avg = Number.parseFloat((somDEV + avgEPE) / (devoirs.length + 1)).toFixed(2)
+						}
+						else{
+							avg = Number.parseFloat(somDEV / devoirs.length).toFixed(2)
+						}
+					}
+					else{
+						avg = avgEPE
+					}
+
+					
+					
+					return {avgEPE: avgEPE, avg: avg}
+
+				}
+				else{
+					return {avgEPE: '-', avg: '-'}
+				}
 			},
 
 		},
 
 		computed: mapState([
-            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseSubject'
+            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject'
         ])
 
 	}

@@ -3545,16 +3545,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      showOptions: false
+      showOptions: false,
+      trimestre: 1
     };
   },
   created: function created() {
     this.$store.dispatch('getAClasseData', this.$route.params.id);
+    this.$store.dispatch('getAClasseMarks', {
+      classe: this.$route.params.id,
+      subject: this.targetedClasseSubject,
+      trimestre: this.trimestre
+    });
   },
   methods: {
     toggleOptions: function toggleOptions() {
@@ -3582,12 +3589,113 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateTargetedSubject: function updateTargetedSubject(subject) {
       this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject);
+      this.$store.dispatch('getAClasseMarks', {
+        classe: this.$route.params.id,
+        subject: this.targetedClasseSubject,
+        trimestre: this.trimestre
+      });
     },
     isTheTargetedSubject: function isTheTargetedSubject(subject) {
-      return subject.id == this.targetedClasseSubject.id ? 'border-warning btn-primary' : 'btn-secondary';
+      return subject.id == this.targetedClasseSubject ? 'border-warning btn-primary' : 'btn-secondary';
+    },
+    getMarks: function getMarks(pupil, type, index, targetedClasseMarks) {
+      if (targetedClasseMarks[pupil] == null) {
+        return '-';
+      } else {
+        var marks = targetedClasseMarks[pupil];
+        var interros = [];
+        var devoirs = [];
+
+        for (var i = 0; i < marks.length; i++) {
+          if (marks[i].type == 'epe' || marks[i].type == 'interrogations') {
+            interros.push(marks[i]);
+          } else if (marks[i].type == 'devoir' || marks[i].type == 'dev') {
+            devoirs.push(marks[i]);
+          }
+        }
+
+        if (type == 'epe' || type == 'interrogations') {
+          if (interros.length > 0) {
+            if (interros[index] == undefined) {
+              return '-';
+            } else {
+              return interros[index].value;
+            }
+          } else {
+            return '-';
+          }
+        } else if (type == 'dev' || type == 'devoir') {
+          if (devoirs.length > 0) {
+            if (devoirs[index] == undefined) {
+              return '-';
+            } else {
+              return devoirs[index].value;
+            }
+          } else {
+            return '-';
+          }
+        }
+      }
+    },
+    getAverage: function getAverage(pupil, targetedClasseMarks) {
+      var marksAll = targetedClasseMarks;
+      var type = "epe";
+      var interros = [];
+      var devoirs = [];
+      var som = 0;
+      var somEPE = 0;
+      var somDEV = 0;
+      var avgEPE = 0;
+      var avg = 0;
+
+      if (marksAll[pupil] !== null) {
+        var marks = marksAll[pupil];
+
+        for (var i = 0; i < marks.length; i++) {
+          if (marks[i].type == 'epe' || marks[i].type == 'interrogations') {
+            interros.push(marks[i]);
+          } else if (marks[i].type == 'devoir' || marks[i].type == 'dev') {
+            devoirs.push(marks[i]);
+          }
+        }
+
+        if (interros.length > 0) {
+          for (var i = 0; i < interros.length; i++) {
+            somEPE += interros[i].value;
+          }
+
+          avgEPE = parseFloat(somEPE / interros.length).toFixed(2);
+        } else {
+          avgEPE = 0;
+        }
+
+        if (devoirs.length > 0) {
+          for (var i = 0; i < devoirs.length; i++) {
+            somDEV += devoirs[i].value;
+          }
+
+          if (avgEPE > 0) {
+            avg = Number.parseFloat((somDEV + avgEPE) / (devoirs.length + 1)).toFixed(2);
+          } else {
+            avg = Number.parseFloat(somDEV / devoirs.length).toFixed(2);
+          }
+        } else {
+          avg = avgEPE;
+        }
+
+        return {
+          avgEPE: avgEPE,
+          avg: avg
+        };
+      } else {
+        return {
+          avgEPE: '-',
+          avg: '-'
+        };
+      }
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseSubject'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject'])
 });
 
 /***/ }),
@@ -49403,26 +49511,106 @@ var render = function() {
                           _c("table", { staticClass: "w-100" }, [
                             _c("tbody", { staticClass: "w-100 notes" }, [
                               _c("tr", { staticClass: "w-100" }, [
-                                _c("td", [_vm._v("12")]),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getMarks(
+                                        pupil.id,
+                                        "epe",
+                                        0,
+                                        _vm.targetedClasseMarks
+                                      )
+                                    )
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c("td", [_vm._v("15")]),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getMarks(
+                                        pupil.id,
+                                        "epe",
+                                        1,
+                                        _vm.targetedClasseMarks
+                                      )
+                                    )
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c("td", [_vm._v("17")]),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getMarks(
+                                        pupil.id,
+                                        "epe",
+                                        2,
+                                        _vm.targetedClasseMarks
+                                      )
+                                    )
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c("td", [_vm._v("-")]),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getMarks(
+                                        pupil.id,
+                                        "epe",
+                                        3,
+                                        _vm.targetedClasseMarks
+                                      )
+                                    )
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c("td", [_vm._v("-")]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "text-primary" }, [
-                                  _vm._v("16")
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getMarks(
+                                        pupil.id,
+                                        "epe",
+                                        4,
+                                        _vm.targetedClasseMarks
+                                      )
+                                    )
+                                  )
                                 ]),
                                 _vm._v(" "),
                                 _c("td", { staticClass: "text-primary" }, [
-                                  _vm._v("14")
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getAverage(
+                                        pupil.id,
+                                        _vm.targetedClasseMarks
+                                      ).avgEPE
+                                    )
+                                  )
                                 ]),
                                 _vm._v(" "),
-                                _c("td", { staticClass: "text-primary" }, [
-                                  _vm._v("-")
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getMarks(
+                                        pupil.id,
+                                        "devoir",
+                                        0,
+                                        _vm.targetedClasseMarks
+                                      )
+                                    )
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.getMarks(
+                                        pupil.id,
+                                        "devoir",
+                                        1,
+                                        _vm.targetedClasseMarks
+                                      )
+                                    )
+                                  )
                                 ])
                               ])
                             ])
@@ -81033,6 +81221,13 @@ var classes_actions = {
     })["catch"](function (e) {
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });
+  },
+  getAClasseMarks: function getAClasseMarks(store, target) {
+    axios.post('/admin/director/classesm/c=' + target.classe + '/marks/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/index').then(function (response) {
+      store.commit('RESET_TARGETED_CLASSE_MARKS', response.data.classesMarks);
+    })["catch"](function (e) {
+      store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
+    });
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (classes_actions);
@@ -81442,13 +81637,17 @@ var classes_mutations = {
   GET_A_CLASSE_DATA: function GET_A_CLASSE_DATA(state, data) {
     state.token = data.token;
     state.targetedClasse = data.targetedClasse;
-    state.targetedClasseSubject = data.targetedClasse.targetedSubject; // state.editedPupilSubjects = data.subjects
+    state.targetedClasseSubject = data.targetedClasse.targetedSubject.id; // state.editedPupilSubjects = data.subjects
     // state.token = data.token
     // state.targetPupilClasseFMT = data.classeFMT
     // console.log(data)
   },
   RESET_TARGETED_CLASSE_SUBJECT_TARGETED: function RESET_TARGETED_CLASSE_SUBJECT_TARGETED(state, subject) {
-    state.targetedClasseSubject = subject;
+    state.targetedClasseSubject = subject.id;
+  },
+  RESET_TARGETED_CLASSE_MARKS: function RESET_TARGETED_CLASSE_MARKS(state, marks) {
+    state.targetedClasseMarks = marks;
+    console.log(state.targetedClasseMarks);
   },
   SHOW_CLASSES_BY_LEVEL: function SHOW_CLASSES_BY_LEVEL(state, level) {
     var notBlockedSpace = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -81967,8 +82166,9 @@ var classes_states = {
     pupils: [],
     subjects: []
   },
-  targetedClasseSubject: {},
+  targetedClasseSubject: 10,
   targetClasseFMT: [],
+  targetedClasseMarks: [],
   cl: 0,
   pcl: 0,
   scl: 0,

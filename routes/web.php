@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::get('classesm/DATA&for&classes', 'Master\ClassesController@classesDataSender');
 		Route::get('classesm/get&classe&data&credentials/id={id}', 'Master\ClassesController@getAClasseData');
 		Route::get('classesm/{id}/marks/index', 'Master\ClassesController@show');
+		Route::post('classesm/c={id}/marks/s={subject}/trimestre/t={trimestre}/index', 'Master\ClassesController@getClasseMarks');
 		Route::resource('classesm', 'Master\ClassesController')->middleware('onlySuperAdmin');
 
 		//PUPILS

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\Controller;
 use App\ModelHelper;
 use App\Models\Classe;
+use App\Models\Mark;
 use App\Models\Pupil;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -112,10 +113,29 @@ class ClassesController extends Controller
             ], 
             'token' => $token
         ];
-
-        
-
         return response()->json($data);
+    }
+
+
+    public function getClasseMarks(int $classe, int $subject, int $trimestre = 1)
+    {
+        $trim = 'trimestre ' .$trimestre;
+
+        $pupils = Pupil::where('classe_id', $classe)->get();
+        $marks = [];
+
+        foreach ($pupils as $pupil) {
+            $pupilMarks = Mark::where('pupil_id', $pupil->id)->where('trimestre', $trim)->where('subject_id', $subject)->where('value', '>', 0)->get();
+            if (count($pupilMarks) > 0) {
+                $marks[$pupil->id] = $pupilMarks;
+            }
+            else{
+                $marks[$pupil->id] = null;
+            }
+            
+        }
+        return response()->json(['classesMarks' => $marks]);
+
     }
 
 

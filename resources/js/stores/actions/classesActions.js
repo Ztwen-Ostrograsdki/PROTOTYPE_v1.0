@@ -15,6 +15,16 @@ const classes_actions = {
             })
     },
 
+    getAClasseMarks: (store, target) => {
+        axios.post('/admin/director/classesm/c=' + target.classe + '/marks/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/index')
+            .then(response => {
+                store.commit('RESET_TARGETED_CLASSE_MARKS', response.data.classesMarks)
+            })
+            .catch(e => {
+               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+            })
+    },
+
 }
 
 export default classes_actions

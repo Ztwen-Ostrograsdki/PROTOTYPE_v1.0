@@ -15,7 +15,7 @@ const classes_mutations = {
     GET_A_CLASSE_DATA: (state, data) => {
         state.token = data.token
         state.targetedClasse = data.targetedClasse
-        state.targetedClasseSubject = data.targetedClasse.targetedSubject
+        state.targetedClasseSubject = data.targetedClasse.targetedSubject.id
         // state.editedPupilSubjects = data.subjects
         // state.token = data.token
         // state.targetPupilClasseFMT = data.classeFMT
@@ -23,7 +23,11 @@ const classes_mutations = {
         
     },
     RESET_TARGETED_CLASSE_SUBJECT_TARGETED: (state, subject) =>{
-        state.targetedClasseSubject = subject
+        state.targetedClasseSubject = subject.id
+    },
+    RESET_TARGETED_CLASSE_MARKS: (state, marks) =>{
+        state.targetedClasseMarks = marks
+        console.log(state.targetedClasseMarks)
     },
     
 
