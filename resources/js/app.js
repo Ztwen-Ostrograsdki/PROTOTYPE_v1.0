@@ -39,6 +39,7 @@ let bulletin = Vue.component('bulletin', require('./components/admin/layouts/Bul
 //CLASSES
 let classes_home = Vue.component('classes-home', require('./components/classes/HomeComponent.vue').default)
 let listing_classes = Vue.component('listing-component-classes', require('./components/classes/ListingComponent.vue').default)
+let classe_marks = Vue.component('classe-marks', require('./components/classes/layouts/MarksComponent.vue').default)
 let classe_profil = Vue.component('profil-classe', require('./components/classes/ProfilComponent.vue').default)
 let classe_listing = Vue.component('listing-classe', require('./components/classes/layouts/ListingForAClasseComponent.vue').default)
 let listing_pupils_component = Vue.component('listing-pupils', require('./components/admin/layouts/ListingPupilsComponent.vue').default)
@@ -47,6 +48,7 @@ let listing_pupils_component = Vue.component('listing-pupils', require('./compon
 //HOMES
 let home = Vue.component('home-public', require('./components/home/HomeComponent.vue').default)
 let homeNav = Vue.component('home-nav', require('./components/home/NavigationComponent.vue').default)
+let homeFooter = Vue.component('home-footer', require('./components/home/FooterComponent.vue').default)
 let userMain = Vue.component('user-main', require('./components/home/UserMainComponent.vue').default)
 let home_container = Vue.component('home-container', require('./components/home/HomeContainerComponent.vue').default)
 
@@ -167,6 +169,12 @@ const routes = [
 				path: '/admin/director/classesm/:id',
 				component: classe_profil,
 				name: 'classesProfil',
+				store
+			},
+			{
+				path: '/admin/director/classesm/:id/marks/index',
+				component: classe_marks,
+				name: 'classeMarks',
 				store
 			}
 		]

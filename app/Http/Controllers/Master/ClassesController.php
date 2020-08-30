@@ -103,6 +103,7 @@ class ClassesController extends Controller
                 'classeFMT' => $classeFMT, 
                 'subjects' => $subjects, 
                 'pupils' => $pupils, 
+                'targetedSubject' => $subjects[0], 
                 'heads' => [
                     'teacher' => $teacher, 
                     'respo1' => $respo1, 

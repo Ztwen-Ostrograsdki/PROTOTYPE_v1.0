@@ -142,7 +142,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="w-100" style="min-height: 500px;">
                         <table class="table-table table-striped w-100">
                             <transition name="fadelow" appear>

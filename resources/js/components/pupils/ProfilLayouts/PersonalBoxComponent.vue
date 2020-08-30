@@ -13,7 +13,7 @@
 				</tr>
 				<tr>
 					<td>Age:</td>
-					<td>{{ targetPupilAge + 'ans'}}</td>
+					<td>{{ targetPupilAge + ' ans'}}</td>
 				</tr>
 				<tr>
 					<td>Date de Naissance:</td>
@@ -21,7 +21,7 @@
 				</tr>
 				<tr>
 					<td>Sexe:</td>
-					<td>M</td>
+					<td>{{ targetPupil.sexe == undefined ? '' : ((targetPupil.sexe)[0]).toUpperCase() }}</td>
 				</tr>
 				<tr>
 					<td>Classe:</td>
@@ -81,7 +81,7 @@
             },
 		},
 		computed: mapState([
-           'editedPupil', 'errors', 'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'targetPupilAge'
+           'editedPupil', 'errors', 'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'targetPupilAge', 'targetPupil'
         ])
 
 	}

@@ -23,7 +23,7 @@
 					<span class="fa fa-chevron-up float-right"></span>
 				</div>
 				<transition name="scalefade" appear>
-				<div class="login-profil  position-absolute border border-white" style="width: 250px; top: 110px; z-index: 100; background-image: url(/media/img/art-2578353_1920.jpg) !important; background-position: -200px 200px;" v-if="showOptions">
+				<div class="login-profil  position-absolute border border-white" style="width: 250px; top: 110px; z-index: 100; background-image: url(/media/img/art-2578353_1920.jpg) !important; background-position: -200px 300px;" v-if="showOptions">
 	                <div class="w-100 border" style="">
 	                    <a class="w-100 link-float d-inline-block border m-0 py-1" href="#">
 	                        <i class="fa fa-sliders fa-sm fa-fw mr-2"></i>
@@ -97,21 +97,5 @@ import { mapState } from 'vuex'
 </script>
 
 <style>
-	.depperscale-enter-active, .depperscale-leave-active{
-		transition: opacity 1s, transform 1s;
-	}
-
-	.depperscale-enter, .depperscale-leave-active{
-		opacity: 0;
-		transform: scale(0.1);
-	}
-
-	.scalefade-enter-active, .scalefade-leave-active{
-		transition: opacity 1s, transform 1s;
-	}
-
-	.scalefade-enter, .scalefade-leave-active{
-		opacity: 0;
-		transform: scale(0.1);
-	}
+	
 </style>

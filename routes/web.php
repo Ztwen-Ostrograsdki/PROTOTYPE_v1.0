@@ -50,10 +50,12 @@ Route::group(['prefix' => 'admin'], function(){
 		//CLASSES
 		Route::get('classesm/DATA&for&classes', 'Master\ClassesController@classesDataSender');
 		Route::get('classesm/get&classe&data&credentials/id={id}', 'Master\ClassesController@getAClasseData');
+		Route::get('classesm/{id}/marks/index', 'Master\ClassesController@show');
 		Route::resource('classesm', 'Master\ClassesController')->middleware('onlySuperAdmin');
 
 		//PUPILS
 		Route::get('pupilsm/DATA&for&pupils', 'Master\PupilsController@pupilsDataSender')->name('sender');
+		Route::get('pupilsm/DATA&for&pupils/{q?}', 'Master\PupilsController@getPupilsBySearch');
 		Route::get('pupilsm/get&classe&of&pupil&with&data&credentials/id={id}', 'Master\PupilsController@getAPupilData');
 		Route::get('pupilsm/{id}/marks/index/trimestre/{trimestre}', 'Master\PupilsController@showPupilMarks');
 		Route::post('pupilsm/{id}/marks/index/trimestre/{trimestre}', 'Master\PupilsController@sendPupilMarks');

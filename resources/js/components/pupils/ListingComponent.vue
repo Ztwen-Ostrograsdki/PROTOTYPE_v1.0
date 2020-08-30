@@ -113,17 +113,30 @@
                         <p class="h5-title m-0 mr-3 p-0">Les premiers respo sont en <span class="text-primary">Bleu</span></p>
                         <p class="h5-title m-0 p-0">Les seconds respo sont en <span class="text-success">Vert</span></p>
                     </div>
+                    <div class="d-flex justify-content-start col-5">
+                        <div class="d-flex justify-content-start pr-2 mt-4 mb-0 search-div">
+                            <div class="h5-title m-0 px-1 d-flex" style="width: 95%;">
+                                <form method="get" class="m-0 p-0 opac-form d-flex" style="width: 0%">
+                                    <transition name="justefade">
+                                        <input type="search" placeholder="Veuillez entrer le mot clé..." class="form-control p-0 m-0 w-100" v-if="search" @keyup="searcher()" v-model="q">
+                                    </transition>
+                                </form>
+                                <span class="ml-2 mt-4 fa fa-search" v-if="!search" @click="getSearch()"></span>
+                            </div>
+                            <span class="mr-1 ml-0 fa fa-close text-white-50" v-if="search" @click="closeSearch()"></span>
+                        </div>
+                        <div class="d-flex justify-content-around pr-2 mt-4 mb-0" v-if="!alert">
+                            <span class="btn btn-primary m-0 px-3 float-right " title="Ajouter un nouvel apprenant..." data-toggle="modal" data-target="#newPupilPersoModal" @click="addNew()">
+                                <i class="fa fa-user-plus"></i>
+                            </span>
+                            
+                        </div>
+                    </div>
                     <div class="float-right d-flex justify-content-around pr-2 mt-4 mb-0 border py-2" v-if="alert">
                         <p class="h5-title m-0 px-2">
                             <span class="mx-2 fa fa-envelope-open"></span>{{ message }}
                         </p>
                         <span class="mx-1 fa fa-close text-danger" @click="resetAlert()"></span>
-                    </div>
-                    <div class="offset-7 col-2 mb-0" v-if="!alert">
-                        <span class="btn btn-primary m-0 px-3 float-right mt-1" title="Ajouter un nouvel apprenant..." data-toggle="modal" data-target="#newPupilPersoModal" @click="addNew()">
-                            <i class="fa fa-user-plus"></i>
-                        </span>
-                        
                     </div>
                 </div>
                 <hr class="m-0 mt-1" style="background-color: white">
@@ -136,15 +149,21 @@
                             <button class="btn btn-primary mx-1" @click="filtrer('primary')"> Le Primaire ({{ ' '+ ppl +' ' }}) </button>
                             <button class="btn btn-primary" @click="filtrer('secondary')">Le Secondaire ({{ ' '+ psl +' ' }})</button>
                         </div>
-                        <h5 class="card-link mt-3 text-white-50 ml-3"> {{ alertPupilsSearch }}</h5>
+                        <h5 class="card-link mt-3 text-white-50 ml-3"v-if="!search"> {{ alertPupilsSearch }}</h5>
+                        <h5 class="card-link h5-title mt-3 text-white ml-3" v-if="search"> {{ pupils.length + ' résulat(s) de recherche' }}</h5>
                         <div class="position-absolute profiler" style="top: 150px; left: 10px; display: none">
                             <div class="profil-img">
                                 <span class="photo"><img src="/media/hideface.jpg" width="250"></span>
                             </div>
                         </div>
                     </div>
-                    <listing-pupils :isProfil="false" :thePupils="pupils" :redList="false"></listing-pupils>
-
+                    <listing-pupils :isProfil="false" :thePupils="pupils" :redList="false" v-if="pupils.length > 0"></listing-pupils>
+                    <div class="mx-auto my-2 d-flex justify-content-center w-100" v-if="pupils.length == 0">
+                        <h3 class="cursive text-info text-center d-flex flex-column">
+                            <span class="fa fa-child"></span>
+                            <span>Hoops! Aucun résultats trouvés!</span>
+                        </h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,22 +179,9 @@
 
         data() {
             return {
-                selfMonths : [
-                    "Janvier",
-                    "Février",
-                    "Mars",
-                    "Avril",
-                    "Mai",
-                    "Juin",
-                    "Juillet",
-                    "Août",
-                    "Septembre",
-                    "Octobre",
-                    "Novembre",
-                    "Décembre"
-
-                ],
-                profiler: false
+                profiler: false,
+                search: false,
+                q: ''
             }   
         },
         created(){
@@ -183,63 +189,43 @@
         },
 
         methods :{
+            searcher(){
+
+                if(this.q.length > 0){
+                    this.$store.dispatch('getPupilsDataBySearch', this.q) 
+                }
+                else{
+                    this.$store.dispatch('getPupilsData')
+                }
+                
+            },
+            getSearch(){
+                $(function(){
+                    $('.search-div').animate({
+                        width: '80%'
+                    })
+                    $('.search-div form').animate({
+                        width: '95%'
+                    })
+                })
+                this.search = !this.search
+            },
+            closeSearch(){
+                $(function(){
+                    $('.search-div').animate({
+                        width: '10%'
+                    })
+                    $('.search-div form').animate({
+                        width: '0%'
+                    })
+                })
+                this.search = !this.search
+            },
             gender(sexe){
                 return sexe == "male" ? 'M' : 'F'
             },
             filtrer(level){
                 this.$store.commit('SHOW_PUPILS_BY_LEVEL', {level, blockedSpace: false})
-            },
-
-            birthday(user)
-            {
-                let date = user.birth
-                let parts = (date.split("-")).reverse()
-                let day = parts[0]
-                let m = (this.selfMonths[parts[1] - 1]).length > 5 ? (this.selfMonths[parts[1] - 1]).substring(0, 3) : this.selfMonths[parts[1] - 1]
-                let year = parts[2]
-
-                return day + " " + m + " " + year
-            },
-            destroy(pupil){
-                this.$store.dispatch('lazyDeletePupils', pupil)                
-            },
-
-            closeProfiler(){
-                this.profiler = false
-                $(()=>{
-                    $('.profiler').hide('fade', 500)
-                })
-            },
-            openProfiler(){
-                this.profiler = true
-
-                $(()=>{
-                    $('.profiler').show('fade', 500)
-                })
-            },
-
-            getEdited(pupil){
-                this.$store.dispatch('getTOOLS')
-                this.$store.commit('RESET_INVALID_INPUTS')
-                this.$store.dispatch('getAPupilData', pupil)
-
-                
-                $('#editPupilPersoModal .div-success').hide('slide', 'up')
-                $('#editPupilPersoModal .div-success h4').text('')
-                $('#editPupilPersoModal').animate({
-                    top: '100'
-                })
-                
-                $('#editPupilPersoModal form').show('slide', {direction: 'up'}, 1, function(){
-                    $('#editPupilPersoModal form').animate({
-                        opacity: '0'
-                    }, function(){
-                        $('#editPupilPersoModal form').animate({
-                            opacity: '1'
-                        }, 800)
-                        $('#editPupilPersoModal .buttons-div').show('fade')
-                    })
-                })
             },
 
             addNew(){
@@ -252,10 +238,6 @@
                 $('#newPupilPersoModal form').show('fade', function(){
                     $('#newPupilPersoModal .buttons-div').show('fade')
                 })
-            },
-
-            setEdited(pupil){
-                this.$store.commit('SET_EDITED_PUPIL', pupil)
             },
 
             resetAlert(){

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Master\MarksController;
 use App\Http\ValidatorsSpaces\PupilsValidators;
 use App\ModelHelper;
+use App\Models\Classe;
 use App\Models\Mark;
 use App\Models\Pupil;
 use App\Models\Subject;
@@ -39,7 +40,7 @@ class PupilsController extends Controller
      * Use to send a data to a view in ajax
      * @return a json response 
      */
-    public function pupilsDataSender($pupilEdited = null, array $errors = [])
+    public function pupilsDataSender($pupilSearch = [], $pupilEdited = null, array $errors = [])
     {
         $user = auth()->user();
         $admin = false;
@@ -77,6 +78,7 @@ class PupilsController extends Controller
         $pupilsSecondary = Pupil::whereLevel('secondary')->orderBy('name', 'asc')->get();
         $pupilsPrimary = Pupil::whereLevel('primary')->orderBy('name', 'asc')->get();
 
+
         $data = [
             'user' => $user,
             'admin' => $admin,
@@ -92,8 +94,9 @@ class PupilsController extends Controller
             'PSBlockeds' => $PSBlockeds, 
             'PPBlockeds' => $PPBlockeds, 
             'PBSLength' => $PBSLength, 
-            'PBPLength' => $PBPLength
+            'PBPLength' => $PBPLength,
         ];
+        
         if ($errors !== []) {
             $data['errors'] = $errors;
         }
@@ -116,7 +119,29 @@ class PupilsController extends Controller
             $data['firstName'] = $firstName; 
             $data['lastName'] = $lastName; 
         }
+
+        if ($pupilSearch !== []) {
+            $data['p'] = $pupilSearch;
+        }
+        
         return response()->json($data);
+    }
+
+    public function getPupilsBySearch($q)
+    {
+        $search = $q;
+        if (is_numeric($search)) {
+            $pupils = Pupil::where('classe_id', $search)->get();
+        }
+        else{
+            if (in_array($search, ['prim', 'primary', 'sec', 'secondary', 'second'])) {
+                $pupils = Pupil::where('level', 'like', '%'. $search . '%')->get();
+            }
+            else{
+                $pupils = Pupil::where('name', 'like', '%'. $search . '%')->orwhere('sexe', 'like', '%'. $search . '%')->get();
+            }
+        }
+        return $this->pupilsDataSender($pupils);
     }
 
     /**
@@ -258,7 +283,7 @@ class PupilsController extends Controller
     public function store(Request $request)
     {
         if ((!$request->filled('token') || $request->token == "") || ($request->filled('token') && $request->token !== csrf_token())) {
-            return $this->pupilsDataSender(null, ['status' => true, 'type' => '419']);
+            return $this->pupilsDataSender([], null, ['status' => true, 'type' => '419']);
         }
 
         $validator = $this->pupilsPersoValidator($request->all());
@@ -328,7 +353,7 @@ class PupilsController extends Controller
     {
 
         if ((!$request->filled('token') || $request->token == "") || ($request->filled('token') && $request->token !== csrf_token())) {
-            return $this->pupilsDataSender(null, ['status' => true, 'type' => '419']);
+            return $this->pupilsDataSender([], null, ['status' => true, 'type' => '419']);
         }
 
         $pupil = Pupil::withTrashed('deleted_at')->whereId((int)$id)->firstOrFail();
@@ -350,7 +375,7 @@ class PupilsController extends Controller
             $pupil->save();
         }
 
-        return $this->pupilsDataSender($pupil, []);
+        return $this->pupilsDataSender([], $pupil, []);
 
     }
 

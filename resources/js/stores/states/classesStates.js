@@ -15,9 +15,11 @@ const classes_states = {
             respo2: {},
             respo1: {},
         },
-        pupils: []
-    },
+        pupils: [],
+        subjects: [],
 
+    },
+    targetedClasseSubject: {},
     targetClasseFMT: [],
 
     cl : 0,

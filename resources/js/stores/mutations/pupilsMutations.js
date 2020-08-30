@@ -35,7 +35,6 @@ let getAge = function(theDate){
     let date = new Date(y, m, d)
     let diff = Date.now() - date.getTime()
     let age = new Date(diff)
-
     return Math.abs(age.getUTCFullYear() - 1970)
 
 }
@@ -57,7 +56,6 @@ let birthday = function(user){
     let day = parts[0]
     let m = (months[parts[1] - 1]).length > 5 ? (months[parts[1] - 1]).substring(0, 3) : months[parts[1] - 1]
     let year = parts[2]
-
     let theAge = getAge(date)
     tab = {birthday: day + " " + m + " " + year, age: theAge}
     return tab
@@ -88,6 +86,7 @@ const pupils_mutations = {
 
     GET_A_PUPIL_DATA: (state, data) => {
         state.editedPupil = data.p
+        state.targetPupil = data.p
         state.editedPupilSubjects = data.subjects
         state.editedPupilCoefTables = data.coefTables
         state.token = data.token
@@ -123,6 +122,8 @@ const pupils_mutations = {
         state.targetPupilBirthFMT = object.dataFMT.birth
         state.targetPupilFirstName = object.dataFMT.first
         state.targetPupilLastName = object.dataFMT.last
+        state.targetPupilBirthFMT = birthday(object.pupil).birthday
+        state.targetPupilAge = birthday(object.pupil).age
     },
     SET_EDITED_PUPIL: (state, pupil) => {
         state.editedPupil = pupil

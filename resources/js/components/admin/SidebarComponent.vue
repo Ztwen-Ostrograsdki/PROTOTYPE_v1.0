@@ -174,12 +174,12 @@
     }
 
     .scale-enter-active, .scale-leave-active{
-        transition: opacity 2s, transform 2s;
+        transition: opacity 0.5s, transform 0.2s;
     }
 
     .scale-enter, .scale-leave-active{
         opacity: 0;
-        transform: scale(0.7);
+        transform: scale(0.8);
     }
 
     .rapidScale-enter-active, .rapidScale-leave-active{
@@ -191,7 +191,7 @@
         transform: scale(0.7);
     }
     .fadelow-enter-active, .fadelow-leave-active{
-        transition: opacity 7s, transform 2s;
+        transition: opacity 1s, transform 1s;
     }
 
     .fadelow-enter, .fadelow-leave-active{
@@ -210,7 +210,7 @@
         
     }
     .bodyfade-enter-active, .bodyfade-leave-active{
-        transition: opacity 7s, transform 2s;
+        transition: opacity 1s, transform 1s;
     }
 
     .bodyfade-enter, .bodyfade-leave-active{
@@ -219,5 +219,22 @@
         -ms-transform: translateY(20px);
         -o-transform: translateY(20px);
         transform: translateY(20px);
+    }
+    .depperscale-enter-active, .depperscale-leave-active{
+        transition: opacity 1s, transform 1s;
+    }
+
+    .depperscale-enter, .depperscale-leave-active{
+        opacity: 0;
+        transform: scale(0.1);
+    }
+
+    .scalefade-enter-active, .scalefade-leave-active{
+        transition: opacity 1s, transform 1s;
+    }
+
+    .scalefade-enter, .scalefade-leave-active{
+        opacity: 0;
+        transform: scale(0.1);
     }
 </style>

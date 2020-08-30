@@ -5,6 +5,12 @@ const pupils_actions = {
              	store.commit('GET_PUPILS_DATA', response.data)
         })
 	},
+    getPupilsDataBySearch: (store, search) => {
+        axios.get('/admin/director/pupilsm/DATA&for&pupils/' + search)
+            .then(response => {
+                store.commit('GET_PUPILS_DATA', response.data)
+        })
+    },
     getAPupilData: (store, pupil) => {
         axios.get('/admin/director/pupilsm/get&classe&of&pupil&with&data&credentials/id=' + pupil.id)
             .then(response => {
