@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Master;
 
 use App\ClasseAndSubjectJoiner;
 use App\Http\Controllers\Controller;
+use App\Http\ValidatorsSpaces\ClassesValidators;
 use App\ModelHelper;
 use App\Models\Classe;
 use App\Models\Mark;
@@ -15,6 +16,8 @@ use Illuminate\Http\Request;
 
 class ClassesController extends Controller
 {
+    use ClassesValidators;
+
     public function __construct()
     {
         $this->middleware('onlySuperAdmin');
@@ -82,7 +85,7 @@ class ClassesController extends Controller
      * @param  int    $id [description]
      * @return a json response to a view
      */
-    public function getAClasseData(int $id)
+    public function getAClasseData(int $id, $defaultsPupils = [])
     {
         $token = csrf_token();
         $classe = Classe::withTrashed('deleted_at')->whereId($id)->firstOrFail();
@@ -150,7 +153,23 @@ class ClassesController extends Controller
             
         }
         return response()->json(['classesMarks' => $marks, 'coefTables' => $coefTables]);
+    }
 
+
+    /**
+     * To get a pupil of classe order by average
+     * @param  int         $id        [description]
+     * @param  int         $classe    [description]
+     * @param  int         $subject   [description]
+     * @param  int|integer $trimestre [description]
+     * @return [type]                 [description]
+     */
+    public function orderPupilsOfThisClasse(int $id, int $classe, int $subject, int $trimestre = 1)
+    {
+
+        $pupils = [];
+
+        return $this->getAClasseData($id, $pupils);
     }
 
 
@@ -175,11 +194,12 @@ class ClassesController extends Controller
     {
         $classes = Classe::all();
 
-        foreach ($classes as $classe) {
-            if ($classe->name == $request['name']) {
-                return response()->json(['invalidInputs' => "Le nom de la classe que vous avez erneignez est déjà existante!"]);
-            }
+        $validator = $this->createClassesValidator($request->all());
+
+        if ($validator->fails()) {
+            return response()->json(['invalidInputs' => $validator->errors()]);
         }
+
         $classe = Classe::create($request->all());
         if ($classe) {
             (New ClasseAndSubjectJoiner($classe))->joinedSubjectsNow($classe);

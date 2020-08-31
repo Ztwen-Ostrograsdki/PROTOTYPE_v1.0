@@ -20,6 +20,11 @@ body{
     color: black !important;
 }
 
+.border-white-50{
+    border-color: rgba(200, 200, 200, 0.5) !important;
+}
+
+
 .btn-focus:hover{
     color: black !important;
 }

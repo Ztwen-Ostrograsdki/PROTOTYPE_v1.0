@@ -95,7 +95,7 @@
 			<table class="table-table table-striped w-100 classes-marks">
 				<transition name="justefade" appear>
                     <thead>
-                        <th class=" no-tag">No</th>
+                        <th class="no-tag">No</th>
                         <th class=" pupils-tag">Elèves</th>
                         <th class="subjects-tag">Notes</th>
                         <th class="subjects-tag">Moyennes</th>
@@ -138,7 +138,7 @@
                     			<span class="fa fa-recycle"></span>
                     		</td>
                     	</tr>
-                    	<tr class="border-bottom border-white" v-for="(pupil, k) in targetedClasse.pupils">
+                    	<tr class="border-bottom border-white-50" v-for="(pupil, k) in targetedClasse.pupils">
                     		<td>{{ k + 1 }}</td>
                     		<td class="text-left pl-2">{{pupil.name}}</td>
                     		<td>
@@ -164,7 +164,7 @@
                     					<tr class="w-100">
 		                    				<td class="text-success">{{getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avg}}</td>
 		                    				<td class="text-warning">{{getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avgCoef}}</td>
-		                    				<td class="text-info">1er</td>
+		                    				<td class="text-info">-</td>
 		                    			</tr>
                     				</tbody>
                     			</table>
@@ -344,6 +344,14 @@
 
 			},
 
+			oderer(classe, subject, trimestre){
+				this.$store.dispatch('getOderer', {classe: classe, subject: subject, trimestre: trimestre})
+			},
+
+			getRange(key){
+
+			}
+
 		},
 
 		computed: mapState([
@@ -366,15 +374,25 @@
 	.actions-tag{
 		width: 5%;
 	}
+	.border-white-50{
+		border-color: rgba(200, 200, 200, 0.5) !important;
+	}
 
-	.classes-marks tr td{
-		border-right: thin solid white;
+	td{
+		border-right: thin solid rgba(200, 200, 200, 0.5);
+		padding-bottom: 2px;
+		padding-top: 2px;
 	}
 	.classes-marks .notes td{
 		width: 12.49% !important;
 	}
 	.classes-marks .moyennes td{
 		min-width: 33.3% !important;
+	}
+
+	tr:nth-child(even){
+		background: linear-gradient(60deg,rgba(0, 0, 0, 0.8), rgba(100, 100, 150, 0.7), rgba(0, 0, 0, 0.8)) !important;
+
 	}
 
 	

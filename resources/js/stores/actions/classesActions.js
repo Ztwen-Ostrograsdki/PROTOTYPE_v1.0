@@ -62,6 +62,16 @@ const classes_actions = {
         .catch(e => {
            store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
         })
+    },
+
+    getOderer: (store, target) =>{
+        axios.post('/admin/director/classesm/c=' + target.classe + '/marks&with&order/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/ordering')
+            .then(response => {
+                store.commit('RESET_TARGETED_CLASSE_MARKS', response.data)
+            })
+            .catch(e => {
+               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+            })
     }
 
 }

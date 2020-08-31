@@ -16,10 +16,7 @@ const classes_mutations = {
         state.token = data.token
         state.targetedClasse = data.targetedClasse
         state.targetedClasseSubject = data.targetedClasse.targetedSubject.id
-        // state.editedPupilSubjects = data.subjects
-        // state.token = data.token
-        // state.targetPupilClasseFMT = data.classeFMT
-        // console.log(data)
+        
         
     },
     RESET_TARGETED_CLASSE_SUBJECT_TARGETED: (state, subject) =>{

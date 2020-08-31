@@ -3708,7 +3708,15 @@ __webpack_require__.r(__webpack_exports__);
           avgCoef: '-'
         };
       }
-    }
+    },
+    oderer: function oderer(classe, subject, trimestre) {
+      this.$store.dispatch('getOderer', {
+        classe: classe,
+        subject: subject,
+        trimestre: trimestre
+      });
+    },
+    getRange: function getRange(key) {}
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef'])
 });
@@ -3994,15 +4002,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       show: true,
       classes: [],
-      invalidName: {
+      invalids: {
         status: false,
-        msg: ''
+        name: {
+          status: false,
+          msg: ''
+        },
+        month: {
+          status: false,
+          msg: ''
+        },
+        year: {
+          status: false,
+          msg: ''
+        },
+        level: {
+          status: false,
+          msg: ''
+        }
       }
     };
   },
@@ -4018,22 +4046,81 @@ __webpack_require__.r(__webpack_exports__);
     },
     createNewClasse: function createNewClasse(token) {
       for (var i = 0; i < this.secondaryClasses.length; i++) {
-        this.classes.push(this.secondaryClasses[i].name);
+        this.classes.push(this.secondaryClasses[i].name.toUpperCase());
       }
 
       for (var i = 0; i < this.primaryClasses.length; i++) {
-        this.classes.push(this.primaryClasses[i].name);
+        this.classes.push(this.primaryClasses[i].name.toUpperCase());
       }
 
       var newClasse = this.newClasse;
-      var key = this.classes.indexOf(newClasse.name);
-      key == -1 ? this.$store.dispatch('addANewClasse', {
-        newClasse: newClasse,
-        token: token
-      }) : this.invalidName = {
-        status: true,
-        msg: 'Cette classe existe déja!'
-      };
+      var month = this.newClasse.month;
+      var year = this.newClasse.year;
+      var level = this.newClasse.level;
+      var key = this.classes.indexOf(newClasse.name.toUpperCase());
+
+      if (newClasse.name == null || newClasse.name == undefined || newClasse.name == '') {
+        this.invalids.status = true;
+        this.invalids.name.status = true;
+        this.invalids.name.msg = 'Veuillez renseigner le nom de la classe!';
+      } else if (key !== -1) {
+        this.invalids.status = true;
+        this.invalids.name.status = true;
+        this.invalids.name.msg = 'Le nom de la classe que vous avez renseigner est déjà existante!';
+      } else {
+        if (this.invalids.level.status == false && this.invalids.month.status == false && this.invalids.year.status == false) {
+          this.invalids.status = false;
+        }
+
+        this.invalids.name.status = false;
+        this.invalids.name.msg = '';
+      }
+
+      if (year == null || year == undefined || year == '') {
+        this.invalids.status = true;
+        this.invalids.year.status = true;
+        this.invalids.year.msg = 'Veuillez renseigner une date!';
+      } else {
+        if (this.invalids.level.status == false && this.invalids.month.status == false && this.invalids.name.status == false) {
+          this.invalids.status = false;
+        }
+
+        this.invalids.year.status = false;
+        this.invalids.year.msg = '';
+      }
+
+      if (month == null || month == undefined || month == '') {
+        this.invalids.status = true;
+        this.invalids.month.status = true;
+        this.invalids.month.msg = 'Veuillez renseigner un mois!';
+      } else {
+        if (this.invalids.level.status == false && this.invalids.name.status == false && this.invalids.year.status == false) {
+          this.invalids.status = false;
+        }
+
+        this.invalids.month.status = false;
+        this.invalids.month.msg = '';
+      }
+
+      if (level == null || level == undefined || level == '') {
+        this.invalids.status = true;
+        this.invalids.level.status = true;
+        this.invalids.level.msg = 'Veuillez renseigner un cycle!';
+      } else {
+        if (this.invalids.name.status == false && this.invalids.month.status == false && this.invalids.year.status == false) {
+          this.invalids.status = false;
+        }
+
+        this.invalids.level.status = false;
+        this.invalids.level.msg = '';
+      }
+
+      if (!this.invalids.status) {
+        this.$store.dispatch('addANewClasse', {
+          newClasse: newClasse,
+          token: token
+        });
+      } else {}
     },
     getYears: function getYears() {
       var $tab = [];
@@ -4044,9 +4131,6 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return $tab;
-    },
-    getInvalid: function getInvalid() {
-      return this.invalidName.status == true ? 'is-invalid' : '';
     }
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['newClasse', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses'])
@@ -12727,7 +12811,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n.no-tag{\n\twidth: 1%;\n}\n.pupils-tag{\n\twidth: 20%;\n}\n.subjects-tag{\n}\n.actions-tag{\n\twidth: 5%;\n}\n.classes-marks tr td{\n\tborder-right: thin solid white;\n}\n.classes-marks .notes td{\n\twidth: 12.49% !important;\n}\n.classes-marks .moyennes td{\n\tmin-width: 33.3% !important;\n}\n\n\n", ""]);
+exports.push([module.i, "\n.no-tag{\n\twidth: 1%;\n}\n.pupils-tag{\n\twidth: 20%;\n}\n.subjects-tag{\n}\n.actions-tag{\n\twidth: 5%;\n}\n.border-white-50{\n\tborder-color: rgba(200, 200, 200, 0.5) !important;\n}\ntd{\n\tborder-right: thin solid rgba(200, 200, 200, 0.5);\n\tpadding-bottom: 2px;\n\tpadding-top: 2px;\n}\n.classes-marks .notes td{\n\twidth: 12.49% !important;\n}\n.classes-marks .moyennes td{\n\tmin-width: 33.3% !important;\n}\ntr:nth-child(even){\n\tbackground: linear-gradient(60deg,rgba(0, 0, 0, 0.8), rgba(100, 100, 150, 0.7), rgba(0, 0, 0, 0.8)) !important;\n}\n\n\n", ""]);
 
 // exports
 
@@ -47530,13 +47614,16 @@ var render = function() {
               ])
             ]),
             _vm._v(" "),
-            _c("transition", { attrs: { name: "bodyfade", appear: "" } }, [
+            _c("transition", { attrs: { name: "justefade", appear: "" } }, [
               _c(
                 "tbody",
                 _vm._l(_vm.thePupils, function(pupil, k) {
                   return _c(
                     "tr",
-                    { key: pupil.id, staticClass: "border-bottom border-dark" },
+                    {
+                      key: pupil.id,
+                      staticClass: "border-bottom border-white-50"
+                    },
                     [
                       _c("td", [
                         _vm._v(
@@ -47548,7 +47635,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "td",
-                        { staticClass: "text-left" },
+                        { staticClass: "text-left px-1" },
                         [
                           _c(
                             "router-link",
@@ -49617,7 +49704,7 @@ var render = function() {
           [
             _c("transition", { attrs: { name: "justefade", appear: "" } }, [
               _c("thead", [
-                _c("th", { staticClass: " no-tag" }, [_vm._v("No")]),
+                _c("th", { staticClass: "no-tag" }, [_vm._v("No")]),
                 _vm._v(" "),
                 _c("th", { staticClass: " pupils-tag" }, [_vm._v("Elèves")]),
                 _vm._v(" "),
@@ -49723,7 +49810,7 @@ var render = function() {
                   _vm._l(_vm.targetedClasse.pupils, function(pupil, k) {
                     return _c(
                       "tr",
-                      { staticClass: "border-bottom border-white" },
+                      { staticClass: "border-bottom border-white-50" },
                       [
                         _c("td", [_vm._v(_vm._s(k + 1))]),
                         _vm._v(" "),
@@ -49872,7 +49959,7 @@ var render = function() {
                                 ]),
                                 _vm._v(" "),
                                 _c("td", { staticClass: "text-info" }, [
-                                  _vm._v("1er")
+                                  _vm._v("-")
                                 ])
                               ])
                             ])
@@ -50457,6 +50544,10 @@ var render = function() {
             "div",
             {
               staticClass: "bg-linear-official-50 modal-content",
+              class:
+                _vm.invalids.status || _vm.invalidInputs !== undefined
+                  ? "border-danger"
+                  : "",
               staticStyle: { "border-style": "solid", "border-radius": "0" }
             },
             [
@@ -50478,7 +50569,7 @@ var render = function() {
               _vm._m(0),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
-                _vm.invalidInputs !== undefined
+                _vm.invalids.status || _vm.invalidInputs !== undefined
                   ? _c(
                       "h5",
                       {
@@ -50486,6 +50577,9 @@ var render = function() {
                           "w-100 mx-auto p-1 h5-title text-danger text-center"
                       },
                       [
+                        _c("span", {
+                          staticClass: "fa fa-warning text-danger mx-2"
+                        }),
                         _vm._v(
                           "\n\t      \t\t\tLe formulaire est invalid\n\t      \t\t"
                         )
@@ -50556,7 +50650,9 @@ var render = function() {
                                 }
                               ],
                               staticClass: "m-0 p-0 form-control p-1",
-                              class: _vm.getInvalid(),
+                              class: _vm.invalids.name.status
+                                ? "is-invalid"
+                                : "",
                               attrs: {
                                 type: "text",
                                 name: "name",
@@ -50576,10 +50672,21 @@ var render = function() {
                               }
                             }),
                             _vm._v(" "),
-                            _vm.invalidName.status
+                            _vm.invalids.name.status
                               ? _c("i", { staticClass: "h5-title" }, [
                                   _vm._v(
-                                    " " + _vm._s(_vm.invalidName.msg) + " "
+                                    " " + _vm._s(_vm.invalids.name.msg) + " "
+                                  )
+                                ])
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.invalidInputs !== undefined &&
+                            _vm.invalidInputs.name !== undefined
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(_vm.invalidInputs.name[0]) +
+                                      " "
                                   )
                                 ])
                               : _vm._e()
@@ -50608,6 +50715,9 @@ var render = function() {
                                 }
                               ],
                               staticClass: "custom-select",
+                              class: _vm.invalids.level.status
+                                ? "is-invalid"
+                                : "",
                               attrs: { name: "level", id: "add_c_level" },
                               on: {
                                 change: function($event) {
@@ -50647,7 +50757,15 @@ var render = function() {
                                 _vm._v(" Le supérieur ")
                               ])
                             ]
-                          )
+                          ),
+                          _vm._v(" "),
+                          _vm.invalids.level.status
+                            ? _c("i", { staticClass: "h5-title" }, [
+                                _vm._v(
+                                  " " + _vm._s(_vm.invalids.level.msg) + " "
+                                )
+                              ])
+                            : _vm._e()
                         ])
                       ]
                     ),
@@ -50660,7 +50778,7 @@ var render = function() {
                         staticStyle: { width: "93%" }
                       },
                       [
-                        _c("div", { staticStyle: { width: "32.8%" } }, [
+                        _c("div", { staticStyle: { width: "37%" } }, [
                           _c(
                             "label",
                             {
@@ -50682,6 +50800,9 @@ var render = function() {
                                 }
                               ],
                               staticClass: "custom-select",
+                              class: _vm.invalids.month.status
+                                ? "is-invalid"
+                                : "",
                               attrs: { name: "month", id: "add_c_month" },
                               on: {
                                 change: function($event) {
@@ -50718,14 +50839,22 @@ var render = function() {
                               })
                             ],
                             2
-                          )
+                          ),
+                          _vm._v(" "),
+                          _vm.invalids.month.status
+                            ? _c("i", { staticClass: "h5-title" }, [
+                                _vm._v(
+                                  " " + _vm._s(_vm.invalids.month.msg) + " "
+                                )
+                              ])
+                            : _vm._e()
                         ]),
                         _vm._v(" "),
                         _c(
                           "div",
                           {
                             staticClass: "mx-2",
-                            staticStyle: { width: "32.8%" }
+                            staticStyle: { width: "37%" }
                           },
                           [
                             _c(
@@ -50749,6 +50878,9 @@ var render = function() {
                                   }
                                 ],
                                 staticClass: "custom-select",
+                                class: _vm.invalids.year.status
+                                  ? "is-invalid"
+                                  : "",
                                 attrs: { name: "year", id: "add_c_year" },
                                 on: {
                                   change: function($event) {
@@ -50785,7 +50917,15 @@ var render = function() {
                                 })
                               ],
                               2
-                            )
+                            ),
+                            _vm._v(" "),
+                            _vm.invalids.year.status
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " + _vm._s(_vm.invalids.year.msg) + " "
+                                  )
+                                ])
+                              : _vm._e()
                           ]
                         )
                       ]
@@ -82086,6 +82226,13 @@ var classes_actions = {
     })["catch"](function (e) {
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });
+  },
+  getOderer: function getOderer(store, target) {
+    axios.post('/admin/director/classesm/c=' + target.classe + '/marks&with&order/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/ordering').then(function (response) {
+      store.commit('RESET_TARGETED_CLASSE_MARKS', response.data);
+    })["catch"](function (e) {
+      store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
+    });
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (classes_actions);
@@ -82495,10 +82642,7 @@ var classes_mutations = {
   GET_A_CLASSE_DATA: function GET_A_CLASSE_DATA(state, data) {
     state.token = data.token;
     state.targetedClasse = data.targetedClasse;
-    state.targetedClasseSubject = data.targetedClasse.targetedSubject.id; // state.editedPupilSubjects = data.subjects
-    // state.token = data.token
-    // state.targetPupilClasseFMT = data.classeFMT
-    // console.log(data)
+    state.targetedClasseSubject = data.targetedClasse.targetedSubject.id;
   },
   RESET_TARGETED_CLASSE_SUBJECT_TARGETED: function RESET_TARGETED_CLASSE_SUBJECT_TARGETED(state, subject) {
     state.targetedClasseSubject = subject.id;
