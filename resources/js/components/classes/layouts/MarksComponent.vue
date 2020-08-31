@@ -83,7 +83,8 @@
 						</div>
 					</div>
 					<transition name="fadelow" appear>
-						<div class="d-flex w-75 float-right justify-content-end pr-2">
+						<div class="d-flex float-right justify-content-end pr-2" style="width: 95%">
+							<span class="text-muted mt-2 mr-2 cursive">Coef: <i>{{ targetedClasseSubjectsCoef[targetedClasseSubject] }}</i></span>
 							<span class="btn border p-1 ml-1" :class="isTheTargetedSubject(subject)" v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject)">{{ subject.name }}</span>
 						</div>
 					</transition>
@@ -139,7 +140,7 @@
                     	</tr>
                     	<tr class="border-bottom border-white" v-for="(pupil, k) in targetedClasse.pupils">
                     		<td>{{ k + 1 }}</td>
-                    		<td>{{pupil.name}}</td>
+                    		<td class="text-left pl-2">{{pupil.name}}</td>
                     		<td>
                     			<table class="w-100">
                     				<tbody class="w-100 notes">
@@ -151,8 +152,8 @@
 		                    				<td>{{ getMarks(pupil.id, 'epe', 4, targetedClasseMarks) }}</td>
 		                    				
 		                    				<td class="text-primary">{{getAverage(pupil.id, targetedClasseMarks).avgEPE}}</td>
-		                    				<td>{{ getMarks(pupil.id, 'devoir', 0, targetedClasseMarks) }}</td>
-		                    				<td>{{ getMarks(pupil.id, 'devoir', 1, targetedClasseMarks) }}</td>
+		                    				<td class="text-primary">{{ getMarks(pupil.id, 'devoir', 0, targetedClasseMarks) }}</td>
+		                    				<td class="text-primary">{{ getMarks(pupil.id, 'devoir', 1, targetedClasseMarks) }}</td>
 		                    			</tr>
                     				</tbody>
                     			</table>
@@ -161,8 +162,8 @@
                     			<table class="w-100">
                     				<tbody class="w-100">
                     					<tr class="w-100">
-		                    				<td class="text-success">12</td>
-		                    				<td class="text-warning">45</td>
+		                    				<td class="text-success">{{getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avg}}</td>
+		                    				<td class="text-warning">{{getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avgCoef}}</td>
 		                    				<td class="text-info">1er</td>
 		                    			</tr>
                     				</tbody>
@@ -277,67 +278,76 @@
 				}
 				
 			},
-			getAverage(pupil, targetedClasseMarks){
+			getAverage(pupil, targetedClasseMarks, coefs = this.targetedClasseSubjectsCoef, subject = this.targetedClasseSubject){
+
 				let marksAll = targetedClasseMarks
 				let type = "epe"
 				let interros = []
 				let devoirs = []
 				let som = 0
 				let somEPE = 0
-				let somDEV = 0
+				let coef = coefs[subject]
+				
 				let avgEPE = 0
 				let avg = 0
-				if(marksAll[pupil] !== null){
+				if(marksAll[pupil] !== null && marksAll[pupil] !== undefined){
 					let marks = marksAll[pupil]
 					for (var i = 0; i < marks.length; i++) {
 						if(marks[i].type == 'epe' || marks[i].type == 'interrogations'){
-							interros.push(marks[i])
+							interros.push(marks[i].value)
 						}
-						else if (marks[i].type == 'devoir' || marks[i].type == 'dev') {
-							devoirs.push(marks[i])
+						else{
+							devoirs.push(marks[i].value)
 						}
 					}
 
 					if(interros.length > 0){
 						for (var i = 0; i < interros.length; i++) {
-							somEPE += interros[i].value
+							somEPE += interros[i]
 						}
-						avgEPE =  parseFloat(somEPE / interros.length).toFixed(2)
-					}
-					else{
-						avgEPE = 0
+						avgEPE = somEPE / interros.length
 					}
 
+					let somDEV = 0
 					if(devoirs.length > 0){
 						for (var i = 0; i < devoirs.length; i++) {
-							somDEV += devoirs[i].value
+							somDEV = somDEV + devoirs[i]
 						}
 
-						if(avgEPE > 0){
-							avg = Number.parseFloat((somDEV + avgEPE) / (devoirs.length + 1)).toFixed(2)
+						if(avgEPE !== 0){
+							avg = (somDEV + avgEPE) / (devoirs.length + 1)
 						}
 						else{
-							avg = Number.parseFloat(somDEV / devoirs.length).toFixed(2)
+							avg = somDEV / devoirs.length
 						}
 					}
+
 					else{
 						avg = avgEPE
 					}
 
-					
-					
-					return {avgEPE: avgEPE, avg: avg}
+					if(avgEPE == 0){
+						avgEPE = '-'
+					}
+					if(avg == 0){
+						avg = '-'
+					}
+
+
+					return {avgEPE: Number.parseFloat(avgEPE).toFixed(2), avg: Number.parseFloat(avg).toFixed(2), avgCoef: Number.parseFloat(avg * coef).toFixed(2)}
 
 				}
 				else{
-					return {avgEPE: '-', avg: '-'}
+					return {avgEPE: '-', avg: '-', avgCoef: '-'}
 				}
+
+
 			},
 
 		},
 
 		computed: mapState([
-            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject'
+            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef'
         ])
 
 	}

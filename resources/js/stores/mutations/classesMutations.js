@@ -25,9 +25,9 @@ const classes_mutations = {
     RESET_TARGETED_CLASSE_SUBJECT_TARGETED: (state, subject) =>{
         state.targetedClasseSubject = subject.id
     },
-    RESET_TARGETED_CLASSE_MARKS: (state, marks) =>{
-        state.targetedClasseMarks = marks
-        console.log(state.targetedClasseMarks)
+    RESET_TARGETED_CLASSE_MARKS: (state, data) =>{
+        state.targetedClasseMarks = data.classesMarks
+        state.targetedClasseSubjectsCoef = data.coefTables
     },
     
 
@@ -46,7 +46,16 @@ const classes_mutations = {
                 state.alertClassesSearch = "Toutes les classes"  
             }
         }
-	}
+	},
+
+    RESET_NEW_CLASSE: (state) =>{
+        state.newClasse = {
+            name: '',
+            level: 'secondary',
+            month: '',
+            year: (new Date).getFullYear(),
+        }
+    }
 }
 
 export default classes_mutations

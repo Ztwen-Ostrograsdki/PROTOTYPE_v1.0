@@ -119,7 +119,7 @@
                         <span class="mx-1 fa fa-close text-danger" @click="resetAlert()"></span>
                     </div>
                     <div class="offset-7 col-2 mb-0" v-if="!alert">
-                        <span class="btn btn-primary m-0 px-3 float-right mt-1" title="Ajouter une nouvelle classe..." data-toggle="modal" data-target="#newClassePersoModal" @click="addNew()">
+                        <span class="btn btn-primary m-0 px-3 float-right mt-1" title="Ajouter une nouvelle classe..." data-toggle="modal" data-target="#newClasseModal" @click="addNew()">
                             <i class="fa fa-plus"></i>
                         </span>
                         
@@ -286,14 +286,14 @@
             },
 
             addNew(){
-                // this.$store.commit('RESET_NEW_PUPIL')
-                // this.$store.dispatch('getTOOLS')
-                // this.$store.commit('RESET_INVALID_INPUTS')
+                this.$store.commit('RESET_NEW_CLASSE')
+                this.$store.dispatch('getTOOLS')
+                this.$store.commit('RESET_INVALID_INPUTS')
                 
-                $('#newClassePersoModal .div-success').hide('slide', 'up')
-                $('#newClassePersoModal .div-success h4').text('')
-                $('#newClassePersoModal form').show('fade', function(){
-                    $('#newClassePersoModal .buttons-div').show('fade')
+                $('#newClasseModal .div-success').hide('slide', 'up')
+                $('#newClasseModal .div-success h4').text('')
+                $('#newClasseModal form').show('fade', function(){
+                    $('#newClasseModal .buttons-div').show('fade')
                 })
             },
 

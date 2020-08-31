@@ -1,6 +1,12 @@
 const classes_states = {
 	pupilsArray : [], //With her classes formatted
     secondaryClasses : {},
+    newClasse: {
+        name: '',
+        level: 'secondary',
+        month: '',
+        year: (new Date).getFullYear(),
+    },
 
     targetedClasse : {
         classe: {},
@@ -22,6 +28,7 @@ const classes_states = {
     targetedClasseSubject: 10,
     targetClasseFMT: [],
     targetedClasseMarks: [],
+    targetedClasseSubjectsCoef: [],
 
     cl : 0,
     pcl : 0,

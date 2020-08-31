@@ -18,12 +18,51 @@ const classes_actions = {
     getAClasseMarks: (store, target) => {
         axios.post('/admin/director/classesm/c=' + target.classe + '/marks/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/index')
             .then(response => {
-                store.commit('RESET_TARGETED_CLASSE_MARKS', response.data.classesMarks)
+                store.commit('RESET_TARGETED_CLASSE_MARKS', response.data)
             })
             .catch(e => {
                store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
+
+    addANewClasse: (store, inputs) => {
+        axios.post('/admin/director/classesm', {
+            token: inputs.token,
+            name: inputs.newClasse.name,
+            level: inputs.newClasse.level,
+            month: inputs.newClasse.month,
+            year: inputs.newClasse.year,
+        })
+        .then(response => {
+            if(response.data.invalidInputs == undefined){
+                store.commit('RESET_INVALID_INPUTS')
+                store.commit('GET_CLASSES_DATA', response.data)
+                store.commit('RESET_NEW_CLASSE')
+                store.commit('SUCCESSED', 'Insertion des données réussie')
+                
+                $('#newClasseModal .buttons-div').hide('size', function(){
+                    $('#newClasseModal form').hide('fade', function(){
+                        $('#newClasseModal').animate({
+                            top: '90'
+                        }, function(){
+                            $('#newClasseModal .div-success').show('fade', 200)
+                            $('#newClasseModal .div-success h4').text('Création de classe reussie')
+                        })
+                        
+                    })
+                    
+                })
+                
+            }
+            else{
+                store.commit('INVALID_INPUTS', response.data.invalidInputs)
+            }
+            
+        })
+        .catch(e => {
+           store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+        })
+    }
 
 }
 

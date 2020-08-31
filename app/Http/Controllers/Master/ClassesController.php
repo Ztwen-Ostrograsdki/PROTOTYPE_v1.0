@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Master;
 
+use App\ClasseAndSubjectJoiner;
 use App\Http\Controllers\Controller;
 use App\ModelHelper;
 use App\Models\Classe;
@@ -122,7 +123,21 @@ class ClassesController extends Controller
         $trim = 'trimestre ' .$trimestre;
 
         $pupils = Pupil::where('classe_id', $classe)->get();
+
+        $c = Classe::find($classe);
         $marks = [];
+
+        $subjects = $c->subjects;
+        if ($c->level === "primary") {
+           $subjects = Subject::whereLevel('primary')->get();
+        }
+
+        $coefTables = [];
+        $joiner = new ClasseAndSubjectJoiner($c);
+        foreach ($subjects as $sub) {
+            $coef = $joiner->getCoefiscientOfSubject($sub);
+            $coefTables[$sub->id] = $coef;
+        }
 
         foreach ($pupils as $pupil) {
             $pupilMarks = Mark::where('pupil_id', $pupil->id)->where('trimestre', $trim)->where('subject_id', $subject)->where('value', '>', 0)->get();
@@ -134,7 +149,7 @@ class ClassesController extends Controller
             }
             
         }
-        return response()->json(['classesMarks' => $marks]);
+        return response()->json(['classesMarks' => $marks, 'coefTables' => $coefTables]);
 
     }
 
@@ -158,7 +173,18 @@ class ClassesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $classes = Classe::all();
+
+        foreach ($classes as $classe) {
+            if ($classe->name == $request['name']) {
+                return response()->json(['invalidInputs' => "Le nom de la classe que vous avez erneignez est déjà existante!"]);
+            }
+        }
+        $classe = Classe::create($request->all());
+        if ($classe) {
+            (New ClasseAndSubjectJoiner($classe))->joinedSubjectsNow($classe);
+        }
+        return $this->classesDataSender();
     }
 
     /**
