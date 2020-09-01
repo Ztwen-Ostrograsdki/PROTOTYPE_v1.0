@@ -140,7 +140,14 @@
                     	</tr>
                     	<tr class="border-bottom border-white-50" v-for="(pupil, k) in targetedClasse.pupils">
                     		<td>{{ k + 1 }}</td>
-                    		<td class="text-left pl-2">{{pupil.name}}</td>
+                    		<td class="text-left pl-2">
+	                    		<router-link :to="{name: 'pupilsProfil', params: {id: pupil.id}}"   class="card-link d-inline-block" >
+	                                    <span  class="w-100 d-inline-block link-profiler"  @click="setEdited(pupil)">
+	                                        {{pupil.name}}
+                                    	</span>
+                                </router-link>
+                                	<a href="#" title="card-link Editer les informations de" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editPupilMarks" @click="editedPupilClasseAndSubjectMarks(pupil, targetedClasseSubject)" ></a>
+                    		</td>
                     		<td>
                     			<table class="w-100">
                     				<tbody class="w-100 notes">
@@ -212,8 +219,9 @@
 			toggleOptions(){
 				return this.showOptions = !this.showOptions
 			},
-			editedPupilClasseAndSubjectMarks(subject){
-				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject)
+			editedPupilClasseAndSubjectMarks(pupil, subject){
+				this.$store.commit('SET_EDITED_PUPIL', pupil)
+				this.$store.dispatch('getAPupilDataAndMarks', {route: pupil.id, trimestre: this.trimestre})
 				$('#editPupilMarks .div-success').hide('slide', 'up')
                 $('#editPupilMarks .div-success h4').text('')
                 $('#editPupilMarks').animate({
@@ -233,6 +241,7 @@
 			},
 			updateTargetedSubject(subject){
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
+				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject)
 				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.targetedClasseSubject, trimestre: this.trimestre})
 			},
 
@@ -379,12 +388,15 @@
 					return '-'
 				}
 				
-			}
+			},
+            setEdited(pupil){
+                this.$store.commit('SET_EDITED_PUPIL', pupil)
+            },
 
 		},
 
 		computed: mapState([
-            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef'
+            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks'
         ])
 
 	}

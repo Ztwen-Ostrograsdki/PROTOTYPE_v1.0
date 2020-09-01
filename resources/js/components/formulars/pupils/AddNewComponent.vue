@@ -120,7 +120,8 @@
 
 			createNewPupil(token){
 				let newPupil = this.newPupil
-				this.$store.dispatch('addANewPupil', {newPupil, token})
+				let route = this.$route
+				this.$store.dispatch('addANewPupil', {newPupil, token, route})
 			},
 			getYears(){
 				let $tab = []

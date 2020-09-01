@@ -41,6 +41,11 @@ const pupils_actions = {
         .then(response => {
             if(response.data.invalidInputs == undefined){
                 store.commit('RESET_INVALID_INPUTS')
+                if(inputs.route !== undefined && inputs.route.name == "classeMarks"){
+                    store.dispatch('getAClasseData', inputs.route.params.id)
+                    store.dispatch('getAClasseMarks', {classe: inputs.route.params.id, subject: inputs.keys.subject, trimestre: inputs.trimestre})
+                }
+                
 
                 $('#editPupilMarks .buttons-div').hide('size', function(){
                     $('#editPupilMarks form').hide('fade', function(){
@@ -125,6 +130,9 @@ const pupils_actions = {
                 store.commit('GET_PUPILS_DATA', response.data)
                 store.commit('RESET_NEW_PUPIL')
                 store.commit('SUCCESSED', 'Insertion des données réussie')
+                if(inputs.route !== undefined &&  inputs.route.name == 'classesProfil'){
+                    store.dispatch('getAClasseData', inputs.route.params.id)
+                }
                 
                 $('#newPupilPersoModal .buttons-div').hide('size', function(){
                     $('#newPupilPersoModal form').hide('fade', function(){

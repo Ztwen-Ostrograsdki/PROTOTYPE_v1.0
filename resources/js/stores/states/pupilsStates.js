@@ -1,3 +1,18 @@
+let MONTHS = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre"
+]
+
 const pupils_states = {
 	pupilsArray : [], //With her classes formatted
     secondaryPupils : {},

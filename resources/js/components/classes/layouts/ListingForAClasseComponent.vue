@@ -204,7 +204,8 @@
 			addNewPupil(){
                 this.$store.commit('RESET_NEW_PUPIL')
                 this.newPupil.classe_id = this.$route.params.id
-                console.log(this.newPupil)
+                this.newPupil.level = this.targetedClasse.classe.level
+                this.newPupil.month = this.selfMonths[(new Date).getMonth()]
                 this.$store.dispatch('getTOOLS')
                 this.$store.commit('RESET_INVALID_INPUTS')
                 

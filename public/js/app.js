@@ -3357,7 +3357,8 @@ __webpack_require__.r(__webpack_exports__);
     addNewPupil: function addNewPupil() {
       this.$store.commit('RESET_NEW_PUPIL');
       this.newPupil.classe_id = this.$route.params.id;
-      console.log(this.newPupil);
+      this.newPupil.level = this.targetedClasse.classe.level;
+      this.newPupil.month = this.selfMonths[new Date().getMonth()];
       this.$store.dispatch('getTOOLS');
       this.$store.commit('RESET_INVALID_INPUTS');
       $('#newPupilPersoModal .div-success').hide('slide', 'up');
@@ -3576,6 +3577,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3598,8 +3606,12 @@ __webpack_require__.r(__webpack_exports__);
     toggleOptions: function toggleOptions() {
       return this.showOptions = !this.showOptions;
     },
-    editedPupilClasseAndSubjectMarks: function editedPupilClasseAndSubjectMarks(subject) {
-      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject);
+    editedPupilClasseAndSubjectMarks: function editedPupilClasseAndSubjectMarks(pupil, subject) {
+      this.$store.commit('SET_EDITED_PUPIL', pupil);
+      this.$store.dispatch('getAPupilDataAndMarks', {
+        route: pupil.id,
+        trimestre: this.trimestre
+      });
       $('#editPupilMarks .div-success').hide('slide', 'up');
       $('#editPupilMarks .div-success h4').text('');
       $('#editPupilMarks').animate({
@@ -3620,6 +3632,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     updateTargetedSubject: function updateTargetedSubject(subject) {
       this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject);
+      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject);
       this.$store.dispatch('getAClasseMarks', {
         classe: this.$route.params.id,
         subject: this.targetedClasseSubject,
@@ -3765,9 +3778,12 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         return '-';
       }
+    },
+    setEdited: function setEdited(pupil) {
+      this.$store.commit('SET_EDITED_PUPIL', pupil);
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks'])
 });
 
 /***/ }),
@@ -4312,9 +4328,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     createNewPupil: function createNewPupil(token) {
       var newPupil = this.newPupil;
+      var route = this.$route;
       this.$store.dispatch('addANewPupil', {
         newPupil: newPupil,
-        token: token
+        token: token,
+        route: route
       });
     },
     getYears: function getYears() {
@@ -4511,9 +4529,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     getMarks: function getMarks(marks, subject, type, id) {
       if (subject !== null && marks !== null) {
-        if (marks[subject.id] !== undefined) {
-          if (marks[subject.id][type] !== undefined) {
-            return marks[subject.id][type][id] !== undefined ? marks[subject.id][type][id].value : 0;
+        if (marks[subject] !== undefined) {
+          if (marks[subject][type] !== undefined) {
+            return marks[subject][type][id] !== undefined ? marks[subject][type][id].value : 0;
           }
 
           return 0;
@@ -4528,16 +4546,16 @@ __webpack_require__.r(__webpack_exports__);
       var cl = null;
 
       if (subject !== null && marks !== null) {
-        if (marks[subject.id] !== undefined) {
-          if (marks[subject.id]['epe'] !== undefined) {
-            if (marks[subject.id]['epe'][0] !== undefined) {
-              cl = marks[subject.id]['epe'][0].classe_id;
+        if (marks[subject] !== undefined) {
+          if (marks[subject]['epe'] !== undefined) {
+            if (marks[subject]['epe'][0] !== undefined) {
+              cl = marks[subject]['epe'][0].classe_id;
             } else {
               cl = pupil.classe_id;
             }
-          } else if (marks[subject.id]['devoirs'] !== undefined) {
-            if (marks[subject.id]['devoirs'][0] !== undefined) {
-              cl = marks[subject.id]['devoirs'][0].classe_id;
+          } else if (marks[subject]['devoirs'] !== undefined) {
+            if (marks[subject]['devoirs'][0] !== undefined) {
+              cl = marks[subject]['devoirs'][0].classe_id;
             } else {
               cl = pupil.classe_id;
             }
@@ -4553,23 +4571,25 @@ __webpack_require__.r(__webpack_exports__);
 
       var keys = {
         classe: cl,
-        subject: subject.id
+        subject: subject
       };
       var notes = {
-        epe1: $('form#edit-pupil-marks input[name=epe1]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks, 'epe', 0) : $('form#edit-pupil-marks input[name=epe1]').val(),
-        epe2: $('form#edit-pupil-marks input[name=epe2]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks, 'epe', 1) : $('form#edit-pupil-marks input[name=epe2]').val(),
-        epe3: $('form#edit-pupil-marks input[name=epe3]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks, 'epe', 2) : $('form#edit-pupil-marks input[name=epe3]').val(),
-        epe4: $('form#edit-pupil-marks input[name=epe4]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks, 'epe', 3) : $('form#edit-pupil-marks input[name=epe4]').val(),
-        epe5: $('form#edit-pupil-marks input[name=epe5]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks, 'epe', 4) : $('form#edit-pupil-marks input[name=epe5]').val(),
-        dev1: $('form#edit-pupil-marks input[name=dev1]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks, 'devoirs', 0) : $('form#edit-pupil-marks input[name=dev1]').val(),
-        dev2: $('form#edit-pupil-marks input[name=dev2]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks, 'devoirs', 1) : $('form#edit-pupil-marks input[name=dev2]').val()
+        epe1: $('form#edit-pupil-marks input[name=epe1]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks.id, 'epe', 0) : $('form#edit-pupil-marks input[name=epe1]').val(),
+        epe2: $('form#edit-pupil-marks input[name=epe2]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks.id, 'epe', 1) : $('form#edit-pupil-marks input[name=epe2]').val(),
+        epe3: $('form#edit-pupil-marks input[name=epe3]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks.id, 'epe', 2) : $('form#edit-pupil-marks input[name=epe3]').val(),
+        epe4: $('form#edit-pupil-marks input[name=epe4]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks.id, 'epe', 3) : $('form#edit-pupil-marks input[name=epe4]').val(),
+        epe5: $('form#edit-pupil-marks input[name=epe5]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks.id, 'epe', 4) : $('form#edit-pupil-marks input[name=epe5]').val(),
+        dev1: $('form#edit-pupil-marks input[name=dev1]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks.id, 'devoirs', 0) : $('form#edit-pupil-marks input[name=dev1]').val(),
+        dev2: $('form#edit-pupil-marks input[name=dev2]').val() == undefined ? this.getMarks(this.targetPupilMarks, this.editedPupilSubjectMarks.id, 'devoirs', 1) : $('form#edit-pupil-marks input[name=dev2]').val()
       };
+      var route = this.$route;
       this.$store.dispatch('updateAPupilMarks', {
         pupil: pupil,
         token: token,
         keys: keys,
         notes: notes,
-        trimestre: trimestre
+        trimestre: trimestre,
+        route: route
       });
     },
     beforeDestroy: function beforeDestroy() {
@@ -49898,9 +49918,69 @@ var render = function() {
                       [
                         _c("td", [_vm._v(_vm._s(k + 1))]),
                         _vm._v(" "),
-                        _c("td", { staticClass: "text-left pl-2" }, [
-                          _vm._v(_vm._s(pupil.name))
-                        ]),
+                        _c(
+                          "td",
+                          { staticClass: "text-left pl-2" },
+                          [
+                            _c(
+                              "router-link",
+                              {
+                                staticClass: "card-link d-inline-block",
+                                attrs: {
+                                  to: {
+                                    name: "pupilsProfil",
+                                    params: { id: pupil.id }
+                                  }
+                                }
+                              },
+                              [
+                                _c(
+                                  "span",
+                                  {
+                                    staticClass:
+                                      "w-100 d-inline-block link-profiler",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.setEdited(pupil)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n\t                                        " +
+                                        _vm._s(pupil.name) +
+                                        "\n                                    \t"
+                                    )
+                                  ]
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("a", {
+                              staticClass:
+                                "fa fa-edit text-white-50 float-right",
+                              staticStyle: {
+                                "font-size": "10px!important",
+                                "font-weight": "200!important"
+                              },
+                              attrs: {
+                                href: "#",
+                                title: "card-link Editer les informations de",
+                                "data-toggle": "modal",
+                                "data-target": "#editPupilMarks"
+                              },
+                              on: {
+                                click: function($event) {
+                                  return _vm.editedPupilClasseAndSubjectMarks(
+                                    pupil,
+                                    _vm.targetedClasseSubject
+                                  )
+                                }
+                              }
+                            })
+                          ],
+                          1
+                        ),
                         _vm._v(" "),
                         _c("td", [
                           _c("table", { staticClass: "w-100" }, [
@@ -52207,7 +52287,8 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks,
+                                                  _vm.editedPupilSubjectMarks
+                                                    .id,
                                                   "epe",
                                                   0
                                                 )
@@ -52265,7 +52346,8 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks,
+                                                  _vm.editedPupilSubjectMarks
+                                                    .id,
                                                   "epe",
                                                   1
                                                 )
@@ -52323,7 +52405,8 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks,
+                                                  _vm.editedPupilSubjectMarks
+                                                    .id,
                                                   "epe",
                                                   2
                                                 )
@@ -52381,7 +52464,8 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks,
+                                                  _vm.editedPupilSubjectMarks
+                                                    .id,
                                                   "epe",
                                                   3
                                                 )
@@ -52439,7 +52523,8 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks,
+                                                  _vm.editedPupilSubjectMarks
+                                                    .id,
                                                   "epe",
                                                   4
                                                 )
@@ -52582,7 +52667,8 @@ var render = function() {
                                                 domProps: {
                                                   value: _vm.getMarks(
                                                     _vm.targetPupilMarks,
-                                                    _vm.editedPupilSubjectMarks,
+                                                    _vm.editedPupilSubjectMarks
+                                                      .id,
                                                     "devoirs",
                                                     0
                                                   )
@@ -52641,7 +52727,8 @@ var render = function() {
                                                 domProps: {
                                                   value: _vm.getMarks(
                                                     _vm.targetPupilMarks,
-                                                    _vm.editedPupilSubjectMarks,
+                                                    _vm.editedPupilSubjectMarks
+                                                      .id,
                                                     "devoirs",
                                                     1
                                                   )
@@ -52699,7 +52786,7 @@ var render = function() {
                           return _vm.updateTargetedPupilMarks(
                             _vm.editedPupil,
                             _vm.token,
-                            _vm.editedPupilSubjectMarks,
+                            _vm.editedPupilSubjectMarks.id,
                             _vm.editedPupilClasseMarks,
                             _vm.targetPupilMarks,
                             _vm.trimestre
@@ -82429,6 +82516,16 @@ var pupils_actions = {
     }).then(function (response) {
       if (response.data.invalidInputs == undefined) {
         store.commit('RESET_INVALID_INPUTS');
+
+        if (inputs.route !== undefined && inputs.route.name == "classeMarks") {
+          store.dispatch('getAClasseData', inputs.route.params.id);
+          store.dispatch('getAClasseMarks', {
+            classe: inputs.route.params.id,
+            subject: inputs.keys.subject,
+            trimestre: inputs.trimestre
+          });
+        }
+
         $('#editPupilMarks .buttons-div').hide('size', function () {
           $('#editPupilMarks form').hide('fade', function () {
             $('#editPupilMarks').animate({
@@ -82511,6 +82608,11 @@ var pupils_actions = {
         store.commit('GET_PUPILS_DATA', response.data);
         store.commit('RESET_NEW_PUPIL');
         store.commit('SUCCESSED', 'Insertion des données réussie');
+
+        if (inputs.route !== undefined && inputs.route.name == 'classesProfil') {
+          store.dispatch('getAClasseData', inputs.route.params.id);
+        }
+
         $('#newPupilPersoModal .buttons-div').hide('size', function () {
           $('#newPupilPersoModal form').hide('fade', function () {
             $('#newPupilPersoModal').animate({
@@ -83297,6 +83399,7 @@ var auth_states = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+var MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 var classes_states = {
   pupilsArray: [],
   //With her classes formatted
@@ -83304,7 +83407,7 @@ var classes_states = {
   newClasse: {
     name: '',
     level: 'secondary',
-    month: '',
+    month: MONTHS[new Date().getMonth()],
     year: new Date().getFullYear()
   },
   targetedClasse: {
@@ -83381,6 +83484,7 @@ var notifications_states = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+var MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 var pupils_states = {
   pupilsArray: [],
   //With her classes formatted

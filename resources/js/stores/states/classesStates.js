@@ -1,10 +1,25 @@
+let MONTHS = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre"
+]
+
 const classes_states = {
 	pupilsArray : [], //With her classes formatted
     secondaryClasses : {},
     newClasse: {
         name: '',
         level: 'secondary',
-        month: '',
+        month: MONTHS[(new Date).getMonth()],
         year: (new Date).getFullYear(),
     },
 
