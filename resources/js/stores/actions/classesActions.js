@@ -65,9 +65,9 @@ const classes_actions = {
     },
 
     getOderer: (store, target) =>{
-        axios.post('/admin/director/classesm/c=' + target.classe + '/marks&with&order/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/ordering')
+        axios.get('/admin/director/classesm/c=' + target.classe + '/marks&with&order/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/ordering')
             .then(response => {
-                store.commit('RESET_TARGETED_CLASSE_MARKS', response.data)
+                store.commit('GET_A_CLASSE_DATA', response.data)
             })
             .catch(e => {
                store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")

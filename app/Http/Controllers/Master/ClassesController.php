@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\ClasseAndSubjectJoiner;
+use App\Helpers\Operators\Computator;
 use App\Http\Controllers\Controller;
 use App\Http\ValidatorsSpaces\ClassesValidators;
 use App\ModelHelper;
@@ -85,12 +86,16 @@ class ClassesController extends Controller
      * @param  int    $id [description]
      * @return a json response to a view
      */
-    public function getAClasseData(int $id, $defaultsPupils = [])
+    public function getAClasseData(int $id, $defaultsPupils = null)
     {
         $token = csrf_token();
         $classe = Classe::withTrashed('deleted_at')->whereId($id)->firstOrFail();
 
         $pupils = Pupil::whereClasseId($classe->id)->get();
+
+        if ($defaultsPupils !== null) {
+            $pupils = $defaultsPupils;
+        }
         $teacher = $classe->teacher;
         $respo1 = $classe->respo1();
         $respo2 = $classe->respo2();
@@ -164,12 +169,23 @@ class ClassesController extends Controller
      * @param  int|integer $trimestre [description]
      * @return [type]                 [description]
      */
-    public function orderPupilsOfThisClasse(int $id, int $classe, int $subject, int $trimestre = 1)
+    public function orderPupilsOfThisClasse(int $classe, int $subject, int $trimestre = 1)
     {
+        $classe = Classe::find((int)$classe);
+        $pupils = $classe->pupils;
+        $pupilsOrdered = [];
+        $pupilsMarks = [];
 
-        $pupils = [];
+        foreach ($pupils as $pupil) {
+            $pupilsMarks[$pupil->id] = (new Computator($pupil->id, $subject , $trimestre))->computor();
+        }
 
-        return $this->getAClasseData($id, $pupils);
+        arsort($pupilsMarks);
+
+        foreach ($pupilsMarks as $key => $value) {
+            $pupilsOrdered[] = Pupil::find($key);
+        }
+        return $this->getAClasseData($classe->id, $pupilsOrdered);
     }
 
 

@@ -3301,6 +3301,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: [],
@@ -3347,9 +3353,21 @@ __webpack_require__.r(__webpack_exports__);
     },
     toggleOptions: function toggleOptions() {
       return this.showOptions = !this.showOptions;
+    },
+    addNewPupil: function addNewPupil() {
+      this.$store.commit('RESET_NEW_PUPIL');
+      this.newPupil.classe_id = this.$route.params.id;
+      console.log(this.newPupil);
+      this.$store.dispatch('getTOOLS');
+      this.$store.commit('RESET_INVALID_INPUTS');
+      $('#newPupilPersoModal .div-success').hide('slide', 'up');
+      $('#newPupilPersoModal .div-success h4').text('');
+      $('#newPupilPersoModal form').show('fade', function () {
+        $('#newPupilPersoModal .buttons-div').show('fade');
+      });
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'months', 'successed',, 'errors', 'targetedClasse'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'months', 'successed',, 'errors', 'targetedClasse', 'newPupil'])
 });
 
 /***/ }),
@@ -3549,13 +3567,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       showOptions: false,
-      trimestre: 1
+      trimestre: 1,
+      range: false
     };
   },
   created: function created() {
@@ -3715,8 +3743,29 @@ __webpack_require__.r(__webpack_exports__);
         subject: subject,
         trimestre: trimestre
       });
+      this.range = true;
     },
-    getRange: function getRange(key) {}
+    getRange: function getRange(key, avg) {
+      if (this.range) {
+        if (avg !== '-') {
+          if (key == 1) {
+            return {
+              num: 1,
+              sup: 'er'
+            };
+          } else {
+            return {
+              num: key,
+              sup: 'ème'
+            };
+          }
+        } else {
+          return '-';
+        }
+      } else {
+        return '-';
+      }
+    }
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef'])
 });
@@ -48702,43 +48751,65 @@ var render = function() {
                   "div",
                   { staticClass: "w-100 float-left" },
                   [
-                    !_vm.showOptions
-                      ? _c(
-                          "div",
-                          {
-                            staticClass: "text-right w-100",
+                    _c(
+                      "div",
+                      { staticClass: "w-50 d-flex justify-content-start" },
+                      [
+                        !_vm.showOptions
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "mx-1",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.toggleOptions(_vm.showOptions)
+                                  }
+                                }
+                              },
+                              [
+                                _c("span", {
+                                  staticClass: "fa fa-sliders float-right"
+                                })
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.showOptions
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "mx-1",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.toggleOptions(_vm.showOptions)
+                                  }
+                                }
+                              },
+                              [
+                                _c("span", {
+                                  staticClass: "fa fa-chevron-up float-right"
+                                })
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "mx-1" }, [
+                          _c("span", {
+                            staticClass: "float-right fa fa-user-plus",
+                            attrs: {
+                              title: "Ajouter un nouvel apprenant...",
+                              "data-toggle": "modal",
+                              "data-target": "#newPupilPersoModal"
+                            },
                             on: {
                               click: function($event) {
-                                return _vm.toggleOptions(_vm.showOptions)
+                                return _vm.addNewPupil()
                               }
                             }
-                          },
-                          [
-                            _c("span", {
-                              staticClass: "fa fa-sliders float-right"
-                            })
-                          ]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.showOptions
-                      ? _c(
-                          "div",
-                          {
-                            staticClass: "text-right w-100",
-                            on: {
-                              click: function($event) {
-                                return _vm.toggleOptions(_vm.showOptions)
-                              }
-                            }
-                          },
-                          [
-                            _c("span", {
-                              staticClass: "fa fa-chevron-up float-right"
-                            })
-                          ]
-                        )
-                      : _vm._e(),
+                          })
+                        ])
+                      ]
+                    ),
                     _vm._v(" "),
                     _c(
                       "transition",
@@ -49712,7 +49783,7 @@ var render = function() {
                 _vm._v(" "),
                 _c("th", { staticClass: "subjects-tag" }, [_vm._v("Moyennes")]),
                 _vm._v(" "),
-                _c("th", { staticClass: "actions-tag" }, [_vm._v("Actions")])
+                _c("th", { staticClass: "actions-tag" }, [_vm._v("Classer")])
               ])
             ]),
             _vm._v(" "),
@@ -49804,7 +49875,20 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _c("td", [_c("span", { staticClass: "fa fa-recycle" })])
+                    _c("td", [
+                      _c("span", {
+                        staticClass: "fa fa-recycle",
+                        on: {
+                          click: function($event) {
+                            return _vm.oderer(
+                              _vm.$route.params.id,
+                              _vm.targetedClasseSubject,
+                              _vm.trimestre
+                            )
+                          }
+                        }
+                      })
+                    ])
                   ]),
                   _vm._v(" "),
                   _vm._l(_vm.targetedClasse.pupils, function(pupil, k) {
@@ -49958,9 +50042,66 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
-                                _c("td", { staticClass: "text-info" }, [
-                                  _vm._v("-")
-                                ])
+                                _vm.getRange(
+                                  k + 1,
+                                  _vm.getAverage(
+                                    pupil.id,
+                                    _vm.targetedClasseMarks,
+                                    _vm.targetedClasseSubjectsCoef,
+                                    _vm.targetedClasseSubject
+                                  ).avg
+                                ) !== "-"
+                                  ? _c("td", { staticClass: "text-info" }, [
+                                      _vm._v(
+                                        "\n\t\t                    \t\t\t\t\t" +
+                                          _vm._s(
+                                            _vm.getRange(
+                                              k + 1,
+                                              _vm.getAverage(
+                                                pupil.id,
+                                                _vm.targetedClasseMarks,
+                                                _vm.targetedClasseSubjectsCoef,
+                                                _vm.targetedClasseSubject
+                                              ).avg
+                                            ).num
+                                          ) +
+                                          "\n\t\t                    \t\t\t\t\t"
+                                      ),
+                                      _c("sup", [
+                                        _vm._v(
+                                          "\n\t\t                    \t\t\t\t\t\t" +
+                                            _vm._s(
+                                              _vm.getRange(
+                                                k + 1,
+                                                _vm.getAverage(
+                                                  pupil.id,
+                                                  _vm.targetedClasseMarks,
+                                                  _vm.targetedClasseSubjectsCoef,
+                                                  _vm.targetedClasseSubject
+                                                ).avg
+                                              ).sup
+                                            ) +
+                                            "\n\t\t                    \t\t\t\t\t"
+                                        )
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getRange(
+                                  k + 1,
+                                  _vm.getAverage(
+                                    pupil.id,
+                                    _vm.targetedClasseMarks,
+                                    _vm.targetedClasseSubjectsCoef,
+                                    _vm.targetedClasseSubject
+                                  ).avg
+                                ) == "-"
+                                  ? _c("td", { staticClass: "text-info" }, [
+                                      _vm._v(
+                                        "\n\t\t                    \t\t\t\t\t-\n\t\t                    \t\t\t\t"
+                                      )
+                                    ])
+                                  : _vm._e()
                               ])
                             ])
                           ])
@@ -82228,8 +82369,8 @@ var classes_actions = {
     });
   },
   getOderer: function getOderer(store, target) {
-    axios.post('/admin/director/classesm/c=' + target.classe + '/marks&with&order/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/ordering').then(function (response) {
-      store.commit('RESET_TARGETED_CLASSE_MARKS', response.data);
+    axios.get('/admin/director/classesm/c=' + target.classe + '/marks&with&order/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/ordering').then(function (response) {
+      store.commit('GET_A_CLASSE_DATA', response.data);
     })["catch"](function (e) {
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });

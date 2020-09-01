@@ -99,7 +99,7 @@
                         <th class=" pupils-tag">Elèves</th>
                         <th class="subjects-tag">Notes</th>
                         <th class="subjects-tag">Moyennes</th>
-                        <th class="actions-tag">Actions</th>
+                        <th class="actions-tag">Classer</th>
                     </thead>
                 </transition>
                	<transition name="fadelow" appear>
@@ -135,7 +135,7 @@
 	                    		</table>
                     		</td>
                     		<td>
-                    			<span class="fa fa-recycle"></span>
+                    			<span class="fa fa-recycle" @click="oderer($route.params.id, targetedClasseSubject, trimestre)"></span>
                     		</td>
                     	</tr>
                     	<tr class="border-bottom border-white-50" v-for="(pupil, k) in targetedClasse.pupils">
@@ -164,7 +164,16 @@
                     					<tr class="w-100">
 		                    				<td class="text-success">{{getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avg}}</td>
 		                    				<td class="text-warning">{{getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avgCoef}}</td>
-		                    				<td class="text-info">-</td>
+
+		                    				<td class="text-info" v-if="getRange(k + 1, getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avg) !== '-'">
+		                    					{{getRange(k + 1, getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avg).num}}
+		                    					<sup>
+		                    						{{getRange(k + 1, getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avg).sup}}
+		                    					</sup>
+		                    				</td>
+		                    				<td class="text-info" v-if="getRange(k + 1, getAverage(pupil.id, targetedClasseMarks, targetedClasseSubjectsCoef, targetedClasseSubject).avg) == '-'">
+		                    					-
+		                    				</td>
 		                    			</tr>
                     				</tbody>
                     			</table>
@@ -191,6 +200,7 @@
             return {
             	showOptions: false,
             	trimestre: 1,
+            	range: false,
             }   
         },
         created(){
@@ -346,10 +356,29 @@
 
 			oderer(classe, subject, trimestre){
 				this.$store.dispatch('getOderer', {classe: classe, subject: subject, trimestre: trimestre})
+				this.range = true
 			},
 
-			getRange(key){
-
+			getRange(key, avg){
+				if(this.range){
+					if(avg !== '-'){
+						if(key == 1){
+							return {num: 1, sup: 'er'}
+						}
+						else{
+							return {num: key, sup: 'ème'}
+						}
+					}
+					else{
+						return '-'
+					}
+					
+					
+				}
+				else{
+					return '-'
+				}
+				
 			}
 
 		},

@@ -24,11 +24,17 @@
 		        </div>
 		        <div class="profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around float-left">
 					<div class="w-100 float-left">
-						<div class="text-right w-100" @click="toggleOptions(showOptions)" v-if="!showOptions">
-							<span class="fa fa-sliders float-right"></span>
-						</div>
-						<div class="text-right w-100" @click="toggleOptions(showOptions)" v-if="showOptions">
-							<span class="fa fa-chevron-up float-right"></span>
+						<div class="w-50 d-flex justify-content-start">
+							<div class="mx-1" @click="toggleOptions(showOptions)" v-if="!showOptions">
+								<span class="fa fa-sliders float-right"></span>
+							</div>
+							<div class="mx-1" @click="toggleOptions(showOptions)" v-if="showOptions">
+								<span class="fa fa-chevron-up float-right"></span>
+							</div>
+							<div class="mx-1">
+								<span class="float-right fa fa-user-plus" title="Ajouter un nouvel apprenant..." data-toggle="modal" data-target="#newPupilPersoModal" @click="addNewPupil()">
+	                            </span>
+							</div>
 						</div>
 						<transition name="scalefade" appear>
 						<div class="login-profil  position-absolute border border-white" style="width: 250px; top: 165px; left:18px; z-index: 100; background-image: url(/media/img/art-2578353_1920.jpg) !important; background-position: -200px 300px;" v-if="showOptions">
@@ -194,12 +200,24 @@
         	},
         	toggleOptions(){
 				return this.showOptions = !this.showOptions
-			}
+			},
+			addNewPupil(){
+                this.$store.commit('RESET_NEW_PUPIL')
+                this.newPupil.classe_id = this.$route.params.id
+                console.log(this.newPupil)
+                this.$store.dispatch('getTOOLS')
+                this.$store.commit('RESET_INVALID_INPUTS')
+                
+                $('#newPupilPersoModal .div-success').hide('slide', 'up')
+                $('#newPupilPersoModal .div-success h4').text('')
+                $('#newPupilPersoModal form').show('fade', function(){
+                    $('#newPupilPersoModal .buttons-div').show('fade')
+                })
+            },
         },
 
-
         computed: mapState([
-           'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'months', 'successed', , 'errors', 'targetedClasse'
+           'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'months', 'successed', , 'errors', 'targetedClasse', 'newPupil'
         ])
     }
 
