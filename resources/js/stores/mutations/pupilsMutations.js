@@ -85,6 +85,7 @@ const pupils_mutations = {
 	}, 
 
     GET_A_PUPIL_DATA: (state, data) => {
+        state.targetPupilParents = data.pupilParents
         state.editedPupil = data.p
         state.targetPupil = data.p
         state.editedPupilSubjects = data.subjects
@@ -97,6 +98,7 @@ const pupils_mutations = {
     },
 
     SET_TARGET_PUPIL_MARKS: (state, data) =>{
+
         state.targetPupilMarks = data.data.marks
         state.trimestre = data.trimestre
         state.targetPupilPercentageSuccedMarks = data.data.percentage

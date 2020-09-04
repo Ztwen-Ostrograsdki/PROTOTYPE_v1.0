@@ -20,6 +20,26 @@ const pupils_actions = {
                store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
+
+    resetTargetedPupil: (store, id) => {
+        axios.get('/admin/director/pupilsm/get&classe&of&pupil&with&data&credentials/id=' + id)
+            .then(response => {
+                store.commit('GET_A_PUPIL_DATA', response.data)
+                store.commit('UPDATE_TARGET_PUPIL', {
+                    pupil: response.data.p, 
+                    dataFMT: {
+                        classe: response.data.classeFMT, 
+                        birth: response.data.birthFMT, 
+                        first: response.data.firstName, 
+                        last: response.data.lastName
+                    }
+                })
+                this.$store.commit('SET_EDITED_PUPIL_SUBJECTS', response.data.subjects)
+            })
+            .catch(e => {
+               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+            })
+    },
     getAPupilDataAndMarks: (store, pupil) => {
         axios.post('/admin/director/pupilsm/' + pupil.route + '/marks/index/trimestre/' + pupil.trimestre)
             .then(response => {

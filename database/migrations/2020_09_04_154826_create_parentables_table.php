@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateParentPupilTable extends Migration
+class CreateParentablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,12 +14,14 @@ class CreateParentPupilTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('parent_pupil', function (Blueprint $table) {
+        Schema::create('parentables', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('parent_id');
-            $table->foreign('parent_id')
+            $table->string('relation')->default('Père');
+            $table->boolean('ability')->default(false);
+            $table->unsignedBigInteger('parentor_id');
+            $table->foreign('parentor_id')
                   ->references('id')
-                  ->on('parents')
+                  ->on('parentors')
                   ->onDelete('cascade')
                   ->onUpdate('cascade');
 
@@ -39,6 +41,6 @@ class CreateParentPupilTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parent_pupil');
+        Schema::dropIfExists('parentables');
     }
 }

@@ -10,6 +10,7 @@ use App\Http\ValidatorsSpaces\PupilsValidators;
 use App\ModelHelper;
 use App\Models\Classe;
 use App\Models\Mark;
+use App\Models\Parentable;
 use App\Models\Pupil;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -177,7 +178,9 @@ class PupilsController extends Controller
 
         $classeName = $pupil->classe->name;
 
-        return response()->json(['p' => $pupil, 'subjects' => $subjects, 'coefTables' => $coefTables, 'token' => $token, 'classeFMT' => $classeFMT, 'birthFMT' => $birthday, 'classeName' => $classeName, 'firstName' => $firstName, 'lastName' => $lastName]);
+        $parents = $pupil->parentors();
+
+        return response()->json(['p' => $pupil, 'subjects' => $subjects, 'coefTables' => $coefTables, 'token' => $token, 'classeFMT' => $classeFMT, 'birthFMT' => $birthday, 'classeName' => $classeName, 'firstName' => $firstName, 'lastName' => $lastName, 'pupilParents' => $parents]);
     }
 
     public function sendPupilMarks(Request $request, int $id, int $trimestre)

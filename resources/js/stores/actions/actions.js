@@ -2,6 +2,7 @@ import pupils_actions from './pupilsActions.js'
 import teachers_actions from './teachersActions.js'
 import classes_actions from './classesActions.js'
 import auth_actions from './authActions.js'
+import parents_actions from './parentsActions.js'
 
 
 const default_actions = {
@@ -22,7 +23,7 @@ const default_actions = {
 }
 
 const actions = {
-	...teachers_actions, ...pupils_actions, ...classes_actions, ...auth_actions, ...default_actions
+	...teachers_actions, ...parents_actions, ...pupils_actions, ...classes_actions, ...auth_actions, ...default_actions
 }
 
 export default actions

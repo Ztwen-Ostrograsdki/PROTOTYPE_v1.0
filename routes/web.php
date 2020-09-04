@@ -66,6 +66,12 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::put('pupilsm/restore/id={id}', 'Master\PupilsController@restore');
 		Route::resource('pupilsm', 'Master\PupilsController')->middleware('onlySuperAdmin');
 
+
+		//PARENTS
+		Route::get('parentsm/auth/get&all&parents', 'Master\ParentsController@getAllParents');
+		Route::get('parentsm/search/get&only&parents&targeted/{search?}', 'Master\ParentsController@getAllParentsBySearch');
+		Route::resource('parentsm', 'Master\ParentsController')->middleware('onlySuperAdmin');
+
 		//Marks
 		Route::put('pupilsm/update/marks/update&marks/p={id}&s={s}&c={c}', 'Master\PupilsController@updateAPupilMarks');
 		

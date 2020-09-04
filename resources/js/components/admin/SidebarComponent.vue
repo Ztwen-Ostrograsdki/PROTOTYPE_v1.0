@@ -99,6 +99,7 @@
         <pupil-perso></pupil-perso>
         <pupil-add></pupil-add>
         <pupil-edit-marks></pupil-edit-marks>
+        <pupil-edit-parents></pupil-edit-parents>
         
         <classe-add></classe-add>
 

@@ -75,7 +75,7 @@ class ModelHelper extends Model
 
     public function setLastNameAndFirstName()
     {
-        $defaultName = $this->model->name;
+        $defaultName = trim($this->model->name);
         if ($defaultName == ""  || $defaultName == null || empty($defaultName)){
             return [];
         }

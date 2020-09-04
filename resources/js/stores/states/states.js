@@ -3,6 +3,7 @@ import pupils_states from './pupilsStates.js'
 import teachers_states from './teachersStates.js'
 import classes_states from './classesStates.js'
 import notifications_states from './notificationsStates.js'
+import parents_states from './parentsStates.js'
 
 const default_states = {
 	pl: 0,
@@ -34,7 +35,7 @@ const default_states = {
 }
 
 const states = {
-	...auth_states, ...teachers_states, ...classes_states, ...pupils_states, ...notifications_states, ...default_states
+	...auth_states, ...parents_states, ...teachers_states, ...classes_states, ...pupils_states, ...notifications_states, ...default_states
 }
 
 export default states

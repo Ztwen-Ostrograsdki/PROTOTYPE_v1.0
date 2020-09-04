@@ -59,6 +59,8 @@ const pupils_states = {
     targetPupilWeakMarkSuject : '',
     targetPupilPercentageSuccedMarks : undefined,
     editedPupilCoefTables: [],
+
+    targetPupilParents: [],
     
         
 }

@@ -60,6 +60,7 @@ let login = Vue.component('login', require('./components/connexions/LoginCompone
 let pupils_add = Vue.component('pupil-add', require('./components/formulars/pupils/AddNewComponent.vue').default)
 let pupils_perso_edit = Vue.component('pupil-perso', require('./components/formulars/pupils/EditPersonalComponent.vue').default)
 let pupils_edit_marks = Vue.component('pupil-edit-marks', require('./components/formulars/pupils/EditMarkComponent.vue').default)
+let pupils_edit_parents = Vue.component('pupil-edit-parents', require('./components/formulars/pupils/EditParentComponent.vue').default)
 
 let teachers_add = Vue.component('teacher-add', require('./components/formulars/teachers/AddNewComponent.vue').default)
 let teachers_perso_edit = Vue.component('teacher-perso', require('./components/formulars/teachers/EditPersonalComponent.vue').default)

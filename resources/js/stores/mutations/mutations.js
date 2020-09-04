@@ -2,6 +2,7 @@ import pupils_mutations from './pupilsMutations.js'
 import teachers_mutations from './teachersMutations.js'
 import classes_mutations from './classesMutations.js'
 import auth_mutations from './authMutations.js'
+import parents_mutations from './parentsMutations.js'
 
 const default_mutations = {
 
@@ -80,7 +81,7 @@ const default_mutations = {
 }
 
 const mutations = {
-	...pupils_mutations, ...teachers_mutations, ...classes_mutations, ...auth_mutations, ...default_mutations
+	...pupils_mutations, ...parents_mutations, ...teachers_mutations, ...classes_mutations, ...auth_mutations, ...default_mutations
 }
 
 export default mutations

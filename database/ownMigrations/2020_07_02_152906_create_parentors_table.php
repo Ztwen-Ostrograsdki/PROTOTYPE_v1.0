@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateParentsTable extends Migration
+class CreateParentorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,14 @@ class CreateParentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('parents', function (Blueprint $table) {
+        Schema::disableForeignKeyConstraints();
+        Schema::create('parentors', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->string('sexe');
             $table->string('contact')->nullable();
             $table->date('birth')->nullable();
+            $table->string('works')->nullable();
             $table->string('residence')->nullable();
             $table->string('email')->unique();
             $table->string('creator')->nullable();
@@ -36,6 +38,6 @@ class CreateParentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parents');
+        Schema::dropIfExists('parentors');
     }
 }

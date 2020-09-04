@@ -4,6 +4,7 @@ namespace App\Models;
 use App\Helpers\TrashedGet;
 use App\Models\Classe;
 use App\Models\Mark;
+use App\Models\Parentable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -79,5 +80,11 @@ class Pupil extends Model
         }
 
     }
+
+    public function parentors()
+    {
+        return Parentable::where('pupil_id', $this->id)->get();
+    }
+
 
 }
