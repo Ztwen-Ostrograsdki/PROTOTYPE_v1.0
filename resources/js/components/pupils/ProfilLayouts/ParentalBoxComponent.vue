@@ -58,7 +58,7 @@
 
         methods: {
         	addParents(){
-        		this.$store.dispatch('addNewParentForTargetedParent')
+        		this.$store.dispatch('addNewParentForTargetedPupil')
         		$('#editPupilParentsModal .div-success').hide('slide', 'up')
                 $('#editPupilParentsModal .div-success h4').text('')
                 $('#editPupilParentsModal form').show('fade', function(){

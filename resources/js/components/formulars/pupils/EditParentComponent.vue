@@ -14,20 +14,38 @@
 	      		</h5>
 		        <form class="opac-form" id="add-pupil" method="post">
 		        	<input type="text" name="token" v-model="token" hidden="hidden">
-			        <div class="mx-auto mt-2 d-flex justify-content-center" style="width: 93%">
-                        <div class="mx-auto" style="width: 89%">
-                            <label for="edit_p_parent" class="m-0 p-0">Adresse électronique ou Contact du parent de l'apprenant</label>
-                            <input type="text" @keyup="fetchTargets()" v-model="written" class="m-0 p-0 form-control p-1" name="name" id="edit_p_parent" placeholder="Veuillez renseigner l'adresse électronique ou le contact du parent de l'apprenant">
+			        <div class="mx-auto mt-2 d-flex justify-content-between" style="width: 93%">
+                        <div class="mx-auto" style="width: 69%">
+                            <label for="edit_p_parent_address" class="m-0 p-0">Adresse électronique ou Contact du parent de l'apprenant</label>
+                            <input type="text" @keyup="fetchTargets()" v-model="parent.identify" class="m-0 p-0 form-control p-1" name="address" id="edit_p_parent_address" placeholder="Veuillez renseigner l'adresse électronique ou le contact du parent de l'apprenant">
                             <i class="h5-title" v-if="invalidInputs !== undefined"> </i>
+                        </div>
+                        <div style="width: 30%;">
+                            <label for="edit_p_parent_type" class="m-0 p-0">Le lien familiale</label>
+                            <select name="relation" id="edit_p_parent_type" class="custom-select" v-model="parent.relation">
+                                <option value="">Choisissez le lien</option>
+                                <option :value="relation" v-for="relation in relations" > {{ relation }} </option>
+                            </select>
                         </div>
                     </div>
                     <div class="mx-auto mt-1 d-flex justify-content-center" style="width: 93%" v-if="targets.length > 0">
                     	<div class="d-flex justify-content-start flex-column" style="width: 89%">
 	                    	<span class="mx-1 text-white-50 h5-title">Voulez-vous parler de?</span>
-							<span @click="resetWritten(target.email)" class="h5-title text-warning indicators-search" v-for="target in targets">
+							<span @click="resetIdentify(target.email)" class="h5-title text-warning indicators-search" v-for="target in targets">
 								<span class="text-primary fa fa-chevron-right mr-1"></span>
 								{{ target.name }}  <i class="text-white-50"> ({{ target.works }}) </i> <i class="mx-1 text-white-50"> Tel: {{target.contact}}</i>
 							</span>
+						</div>
+                    </div>
+                    <div class="mx-auto mt-1 d-flex justify-content-center" style="width: 93%" v-if="parent.identify.length > 7 && targets.length == 0">
+                    	<div class="d-flex justify-content-start" style="width: 92%">
+	                    	<span class="mx-1 text-white-50 h5-title">Le parent que vous essayer de renseigner n'existe pas dans la base de donner. Voulez-vous l'inserer maintenant?
+								<span class="d-flex justify-content-start mx-1">
+									<span @click="openNewParent()" class="text-primary mx-1 fa fa-user-plus border border-primary p-1 px-2" data-toggle="modal" data-target="#newParentModal" data-dismiss="modal" title="Ajouter ce parent maintenant"></span>
+									<span @click="openNewParent()" class="text-danger border-danger fa fa-user-times border p-1 px-2" data-toggle="modal" title="Ne pas ajouter le parent" data-target="#newParentModal" data-dismiss="modal"></span>
+								</span>
+	                    	</span>
+							
 						</div>
                     </div>
 			    </form>
@@ -56,8 +74,13 @@
 		data(){
 			return {
 				show: true,
-				written: '',
+				parent: {
+					identify: '',
+					relation: 'Père',
+				},
 				targets: [],
+
+				relations: ['Père', 'Mère', 'Tante', 'Oncle', 'Grand-père', 'Grand-Mère', 'Soeur', 'Frère', 'Beau-frère', 'Belle-sœur', 'Autres lien de parenté']
 
 			}
 		},
@@ -80,19 +103,27 @@
 			},
 
 			fetchTargets(){
-				if(this.written.length > 4){
-					axios.get('/admin/director/parentsm/search/get&only&parents&targeted/' + this.written)
+				if(this.parent.identify.length > 4){
+					axios.get('/admin/director/parentsm/search/get&only&parents&targeted/' + this.parent.identify)
 			            .then(response => {
 			            this.targets = response.data
 			        })
 				}
-				else if(this.written.length < 2){
+				else if(this.parent.identify.length < 2){
 					this.targets = []
 				}
 			},
 
-			resetWritten(email){
-				this.written = email
+			resetIdentify(email){
+				this.parent.identify = email
+			},
+
+			openNewParent(){
+				$('#newParentModal .div-success').hide('slide', 'up')
+                $('#newParentModal .div-success h4').text('')
+                $('#newParentModal form').show('fade', function(){
+                    $('#newParentModal .buttons-div').show('fade')
+                })
 			},
 
 			updateTargetedPupilParents(){
@@ -102,7 +133,7 @@
 		},
 
 		computed: mapState([
-            'invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents'
+            'invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents', 'newParent'
         ]),
 
 

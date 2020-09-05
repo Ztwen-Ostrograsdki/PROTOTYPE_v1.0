@@ -37,25 +37,21 @@
 		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe1', invalidInputs)" name="epe1" id="edit_p_epe1" placeholder="EPE 1" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 0)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe1 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
-
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe2" class="m-0 p-0">EPE 2</label>
 		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe2', invalidInputs)" name="epe2" id="edit_p_epe2" placeholder="EPE 2" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 1)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe2 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
-
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe3" class="m-0 p-0">EPE 3</label>
 		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe3', invalidInputs)" name="epe3" id="edit_p_epe3" placeholder="EPE 3" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 2)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe3 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
-
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe4" class="m-0 p-0">EPE 4</label>
 		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe4', invalidInputs)" name="epe4" id="edit_p_epe4" placeholder="EPE 4" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 3)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe4 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
-
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe5" class="m-0 p-0">EPE 5</label>
 		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe5', invalidInputs)" name="epe5" id="edit_p_epe5" placeholder="EPE 5" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 4)">

@@ -66,6 +66,8 @@ let teachers_add = Vue.component('teacher-add', require('./components/formulars/
 let teachers_perso_edit = Vue.component('teacher-perso', require('./components/formulars/teachers/EditPersonalComponent.vue').default)
 let teachers_classes_edit = Vue.component('teacher-classes', require('./components/formulars/teachers/EditClassesComponent.vue').default)
 
+let parents_add = Vue.component('parent-add', require('./components/formulars/parents/AddNewComponent.vue').default)
+
 
 let classes_add = Vue.component('classe-add', require('./components/formulars/classes/AddNewComponent.vue').default)
 

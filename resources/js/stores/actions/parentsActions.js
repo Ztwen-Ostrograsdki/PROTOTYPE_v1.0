@@ -7,9 +7,15 @@ const parents_actions = {
         })
 	},
 
-	addNewParentForTargetedParent: (store) => {
+	addNewParentForTargetedPupil: (store) => {
 		store.dispatch('getParentsData')
 	},
+
+	createNewParent: (store, inputs) => {
+		
+	},
+
+
 
 	updateTargetedPupilParents: (store) =>{
 

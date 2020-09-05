@@ -101,6 +101,7 @@
         <pupil-edit-marks></pupil-edit-marks>
         <pupil-edit-parents></pupil-edit-parents>
         
+        <parent-add></parent-add>
         <classe-add></classe-add>
 
         <teacher-perso></teacher-perso>
