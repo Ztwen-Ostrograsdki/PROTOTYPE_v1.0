@@ -24,7 +24,7 @@ class ParentsController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -69,7 +69,7 @@ class ParentsController extends Controller
         return $this->getAllParents();
     }
 
-    public function joinedParentToPupil(Request $request, $pupil)
+    public function joinedParentToPupil(Request $request, int $pupil)
     {
         $parentEmail = $request->identify;
         $p = Pupil::find((int)$pupil);
@@ -79,21 +79,21 @@ class ParentsController extends Controller
         if ($parentExisted !== null) {
             if (count(Parentable::all()) > 0) {
                 $wasLied = Parentable::where('parentor_id', $parentExisted->id)->where('pupil_id', $p->id)->get();
-                if(!wasLied){
+                if(count($wasLied) < 1){
                    Parentable::create(['parentor_id' => $parentExisted->id, 'pupil_id' => $p->id, 'relation' => $request->relation]);
-
                    $controller = (new PupilsController())->getAPupilData($p->id);
                    return $controller;
                 }
+                else{
+                   return (new PupilsController())->getAPupilData($p->id);
+               }
             }
             else{
-                // Parentable::create(['parentor_id' => $parentExisted->id, 'pupil_id' => $p->id, 'relation' => $request->relation]);
-
-               // $controller = (new PupilsController())->getAPupilData($p->id);
-               // return $controller;
+                Parentable::create(['parentor_id' => $parentExisted->id, 'pupil_id' => $pupil, 'relation' => $request->relation]);
+               $controller = (new PupilsController())->getAPupilData($p->id);
+               return $controller;
             }
         }
-        return response()->json(['req' => $parentExisted, 'pupil' => $p->parentors()]);
     }
 
     /**

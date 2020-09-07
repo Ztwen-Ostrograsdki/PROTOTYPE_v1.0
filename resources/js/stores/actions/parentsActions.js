@@ -63,10 +63,9 @@ const parents_actions = {
             pupil: inputs.pupil.id,
         })
 		.then(response => {
-			console.log(response.data)
 			if(response.invalidInputs == undefined){
 				store.commit('RESET_INVALID_INPUTS')
-				// store.dispatch('resetTargetedPupil', inputs.route.params.id)
+				store.dispatch('resetTargetedPupil', inputs.route.params.id)
 				$('#editPupilParentsModal .buttons-div').hide('size', function(){
 		            $('#editPupilParentsModal form').hide('fade', function(){
 		                $('#editPupilParentsModal').animate({

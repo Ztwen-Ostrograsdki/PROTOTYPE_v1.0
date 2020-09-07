@@ -5,6 +5,7 @@ use App\Helpers\TrashedGet;
 use App\Models\Classe;
 use App\Models\Mark;
 use App\Models\Parentable;
+use App\Models\Parentor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -83,7 +84,16 @@ class Pupil extends Model
 
     public function parentors()
     {
-        return Parentable::where('pupil_id', $this->id)->get();
+        $parentors = [];
+        $parenters = Parentable::where('pupil_id', $this->id)->get();
+
+        if (count($parenters) > 0) {
+            foreach ($parenters as $parenter) {
+                $parentors[] = Parentor::withTrashed('deleted_at')->where('id', $parenter->parentor_id)->first();
+            }
+        }
+
+        return $parentors;
     }
 
 

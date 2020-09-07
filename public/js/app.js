@@ -59509,20 +59509,55 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "onetable", staticStyle: { width: "48%" } }, [
     _vm.targetPupilParents.length !== 0
-      ? _c("div", { staticClass: "w-100 m-0 p-0" }, [
-          _c("h5", [_vm._v("Les infos parentales")]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _vm._m(1)
-        ])
+      ? _c(
+          "div",
+          { staticClass: "w-100 m-0 p-0" },
+          [
+            _c("h5", [_vm._v("Les infos parentales")]),
+            _vm._v(" "),
+            _vm._l(_vm.targetPupilParents, function(parent) {
+              return _c("table", { staticClass: "table-profil " }, [
+                _c("tr", [
+                  _c("td", [_vm._v("Père :")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(parent.name))])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Profession :")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(parent.works))])
+                ]),
+                _vm._v(" "),
+                _vm._m(0, true),
+                _vm._v(" "),
+                _vm._m(1, true),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Contacts :")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(parent.contact))])
+                ]),
+                _vm._v(" "),
+                _c("tr", [
+                  _c("td", [_vm._v("Localité :")]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(parent.residence))])
+                ])
+              ])
+            }),
+            _vm._v(" "),
+            _vm._m(2)
+          ],
+          2
+        )
       : _vm._e(),
     _vm._v(" "),
     _vm.targetPupilParents.length == 0
       ? _c("div", { staticClass: "w-100 m-0 p-0" }, [
           _c("h5", [_vm._v("Les infos parentales")]),
           _vm._v(" "),
-          _vm._m(2),
+          _vm._m(3),
           _vm._v(" "),
           _c(
             "span",
@@ -59533,7 +59568,7 @@ var render = function() {
                 }
               }
             },
-            [_vm._m(3)]
+            [_vm._m(4)]
           )
         ])
       : _vm._e()
@@ -59544,42 +59579,20 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("table", { staticClass: "table-profil " }, [
-      _c("tr", [
-        _c("td", [_vm._v("Père :")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("Hubert")])
-      ]),
+    return _c("tr", [
+      _c("td", [_vm._v("Mère :")]),
       _vm._v(" "),
-      _c("tr", [
-        _c("td", [_vm._v("Profession :")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("Enseignant")])
-      ]),
+      _c("td", [_vm._v("Germaine")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("td", [_vm._v("Profession :")]),
       _vm._v(" "),
-      _c("tr", [
-        _c("td", [_vm._v("Mère :")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("Germaine")])
-      ]),
-      _vm._v(" "),
-      _c("tr", [
-        _c("td", [_vm._v("Profession :")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("Enseignant")])
-      ]),
-      _vm._v(" "),
-      _c("tr", [
-        _c("td", [_vm._v("Contacts :")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("65547585/96857415")])
-      ]),
-      _vm._v(" "),
-      _c("tr", [
-        _c("td", [_vm._v("Localité :")]),
-        _vm._v(" "),
-        _c("td", [_vm._v("Cotonou")])
-      ])
+      _c("td", [_vm._v("Enseignant")])
     ])
   },
   function() {
@@ -84467,11 +84480,9 @@ var parents_actions = {
       relation: inputs.parentToPupil.relation,
       pupil: inputs.pupil.id
     }).then(function (response) {
-      console.log(response.data);
-
       if (response.invalidInputs == undefined) {
-        store.commit('RESET_INVALID_INPUTS'); // store.dispatch('resetTargetedPupil', inputs.route.params.id)
-
+        store.commit('RESET_INVALID_INPUTS');
+        store.dispatch('resetTargetedPupil', inputs.route.params.id);
         $('#editPupilParentsModal .buttons-div').hide('size', function () {
           $('#editPupilParentsModal form').hide('fade', function () {
             $('#editPupilParentsModal').animate({
@@ -85173,6 +85184,7 @@ var pupils_mutations = {
     state.PBSLength = data.PBSLength;
   },
   GET_A_PUPIL_DATA: function GET_A_PUPIL_DATA(state, data) {
+    console.log(data);
     state.targetPupilParents = data.pupilParents;
     state.editedPupil = data.p;
     state.targetPupil = data.p;

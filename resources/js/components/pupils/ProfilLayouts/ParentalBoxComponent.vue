@@ -2,15 +2,15 @@
 	<div class="onetable" style="width:48%">
 		<div class="w-100 m-0 p-0" v-if="targetPupilParents.length !== 0">
 			<h5>Les infos parentales</h5>
-			<table class="table-profil ">
+			<table class="table-profil " v-for="parent in targetPupilParents">
 
 				<tr>
 					<td>Père :</td>
-					<td>Hubert</td>
+					<td>{{ parent.name }}</td>
 				</tr>
 				<tr>
 					<td>Profession :</td>
-					<td>Enseignant</td>
+					<td>{{ parent.works }}</td>
 				</tr>
 				<tr>
 					<td>Mère :</td>
@@ -22,11 +22,11 @@
 				</tr>
 				<tr>
 					<td>Contacts :</td>
-					<td>65547585/96857415</td>
+					<td>{{ parent.contact }}</td>
 				</tr>
 				<tr>
 					<td>Localité :</td>
-					<td>Cotonou</td>
+					<td>{{ parent.residence }}</td>
 				</tr>
 			</table>
 			<span>
