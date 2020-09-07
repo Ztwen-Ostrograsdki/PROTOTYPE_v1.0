@@ -305,8 +305,6 @@ class PupilsController extends Controller
             }
             $pupil->save();
         }
-
-
         
         return $this->pupilsDataSender();
     }

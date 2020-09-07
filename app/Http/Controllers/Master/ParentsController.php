@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Master\PupilsController;
+use App\Http\ValidatorsSpaces\ParentsValidators;
+use App\Models\Parentable;
 use App\Models\Parentor;
+use App\Models\Pupil;
 use Illuminate\Http\Request;
 
 class ParentsController extends Controller
 {
+    use ParentsValidators;
     public function __construct()
     {
         $this->middleware('onlySuperAdmin');
@@ -40,7 +45,55 @@ class ParentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if ((!$request->filled('token') || $request->token == "") || ($request->filled('token') && $request->token !== csrf_token())) {
+            // return $this->pupilsDataSender([], null, ['status' => true, 'type' => '419']);
+        }
+
+        $validator = $this->parentPersoValidator($request->all());
+
+        if ($validator->fails()) {
+            return response()->json(['invalidInputs' => $validator->errors()]);
+        }
+
+        $parent = Parentor::create($request->all());
+        if ($parent) {
+            $creator = auth()->user();
+            $parent->creator = $creator->name;
+
+            if (in_array('admin', $creator->getRoles()) || in_array('superAdmin', $creator->getRoles())) {
+                $parent->authorized = true;
+            }
+            $parent->save();
+        }
+
+        return $this->getAllParents();
+    }
+
+    public function joinedParentToPupil(Request $request, $pupil)
+    {
+        $parentEmail = $request->identify;
+        $p = Pupil::find((int)$pupil);
+
+        $parentExisted = Parentor::where('email', $parentEmail)->first();
+
+        if ($parentExisted !== null) {
+            if (count(Parentable::all()) > 0) {
+                $wasLied = Parentable::where('parentor_id', $parentExisted->id)->where('pupil_id', $p->id)->get();
+                if(!wasLied){
+                   Parentable::create(['parentor_id' => $parentExisted->id, 'pupil_id' => $p->id, 'relation' => $request->relation]);
+
+                   $controller = (new PupilsController())->getAPupilData($p->id);
+                   return $controller;
+                }
+            }
+            else{
+                // Parentable::create(['parentor_id' => $parentExisted->id, 'pupil_id' => $p->id, 'relation' => $request->relation]);
+
+               // $controller = (new PupilsController())->getAPupilData($p->id);
+               // return $controller;
+            }
+        }
+        return response()->json(['req' => $parentExisted, 'pupil' => $p->parentors()]);
     }
 
     /**

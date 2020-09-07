@@ -4290,6 +4290,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4298,6 +4313,8 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
+    this.$store.commit('RESET_NEW_PARENT');
+    this.$store.commit('RESET_INVALID_INPUTS');
     this.$store.dispatch('getParentsData');
   },
   methods: {
@@ -4306,9 +4323,11 @@ __webpack_require__.r(__webpack_exports__);
     },
     createNewParent: function createNewParent(token) {
       var newParent = this.newParent;
+      var route = this.$route;
       this.$store.dispatch('createNewParent', {
         newParent: newParent,
-        token: token
+        token: token,
+        route: route
       });
     },
     getInvalids: function getInvalids(input) {
@@ -4320,6 +4339,10 @@ __webpack_require__.r(__webpack_exports__);
         return '';
       }
     }
+  },
+  beforeDestroy: function beforeDestroy() {
+    this.$store.commit('RESET_NEW_PARENT');
+    this.$store.commit('RESET_INVALID_INPUTS');
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['newParent', 'invalidInputs', 'successed', 'token', 'allParents'])
 });
@@ -4804,10 +4827,6 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       show: true,
-      parent: {
-        identify: '',
-        relation: 'Père'
-      },
       targets: [],
       relations: ['Père', 'Mère', 'Tante', 'Oncle', 'Grand-père', 'Grand-Mère', 'Soeur', 'Frère', 'Beau-frère', 'Belle-sœur', 'Autres lien de parenté']
     };
@@ -4826,29 +4845,39 @@ __webpack_require__.r(__webpack_exports__);
     fetchTargets: function fetchTargets() {
       var _this = this;
 
-      if (this.parent.identify.length > 4) {
-        axios.get('/admin/director/parentsm/search/get&only&parents&targeted/' + this.parent.identify).then(function (response) {
+      if (this.parentToPupil.identify.length > 4) {
+        axios.get('/admin/director/parentsm/search/get&only&parents&targeted/' + this.parentToPupil.identify).then(function (response) {
           _this.targets = response.data;
         });
-      } else if (this.parent.identify.length < 2) {
+      } else if (this.parentToPupil.identify.length < 2) {
         this.targets = [];
       }
     },
     resetIdentify: function resetIdentify(email) {
-      this.parent.identify = email;
+      this.parentToPupil.identify = email;
     },
     openNewParent: function openNewParent() {
+      this.$store.commit('RESET_NEW_PARENT');
+      this.$store.commit('RESET_INVALID_INPUTS');
       $('#newParentModal .div-success').hide('slide', 'up');
       $('#newParentModal .div-success h4').text('');
       $('#newParentModal form').show('fade', function () {
         $('#newParentModal .buttons-div').show('fade');
       });
     },
-    updateTargetedPupilParents: function updateTargetedPupilParents() {
-      this.$store.dispatch('updateTargetedPupilParents');
+    updateTargetedPupilParents: function updateTargetedPupilParents(token) {
+      var parentToPupil = this.parentToPupil;
+      var pupil = this.targetPupil;
+      var route = this.$route;
+      this.$store.dispatch('updateTargetedPupilParents', {
+        token: token,
+        pupil: pupil,
+        parentToPupil: parentToPupil,
+        route: route
+      });
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents', 'newParent'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents', 'newParent', 'parentToPupil'])
 });
 
 /***/ }),
@@ -6596,6 +6625,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     addParents: function addParents() {
       this.$store.dispatch('addNewParentForTargetedPupil');
+      this.$store.commit('RESET_INVALID_INPUTS');
       $('#editPupilParentsModal .div-success').hide('slide', 'up');
       $('#editPupilParentsModal .div-success h4').text('');
       $('#editPupilParentsModal form').show('fade', function () {
@@ -51690,6 +51720,7 @@ var render = function() {
             "div",
             {
               staticClass: "bg-linear-official-50 modal-content",
+              class: _vm.invalidInputs !== undefined ? "border-danger" : "",
               staticStyle: { "border-style": "solid", "border-radius": "0" }
             },
             [
@@ -51762,7 +51793,67 @@ var render = function() {
                         staticStyle: { width: "93%" }
                       },
                       [
-                        _vm._m(1),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "mx-auto",
+                            staticStyle: { width: "69%" }
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "m-0 p-0",
+                                attrs: { for: "add_parent_name" }
+                              },
+                              [_vm._v("Nom et Prénoms du parent")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.newParent.name,
+                                  expression: "newParent.name"
+                                }
+                              ],
+                              staticClass: "m-0 p-0 form-control p-1",
+                              class: _vm.getInvalids("name", _vm.invalidInputs),
+                              attrs: {
+                                type: "text",
+                                name: "name",
+                                id: "add_parent_name",
+                                placeholder:
+                                  "Veuillez renseigner le nom et les prénoms du parent"
+                              },
+                              domProps: { value: _vm.newParent.name },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.newParent,
+                                    "name",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.invalidInputs !== undefined &&
+                            _vm.invalidInputs.name !== undefined
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(_vm.invalidInputs.name[0]) +
+                                      " "
+                                  )
+                                ])
+                              : _vm._e()
+                          ]
+                        ),
                         _vm._v(" "),
                         _c("div", { staticStyle: { width: "30%" } }, [
                           _c(
@@ -51834,16 +51925,389 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _vm._m(2),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "mx-auto mt-2 d-flex justify-content-between",
+                        staticStyle: { width: "93%" }
+                      },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "mx-auto",
+                            staticStyle: { width: "49%" }
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "m-0 p-0",
+                                attrs: { for: "add_parent_email" }
+                              },
+                              [_vm._v("Adresse électronique du parent")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.newParent.email,
+                                  expression: "newParent.email"
+                                }
+                              ],
+                              staticClass: "m-0 p-0 form-control p-1",
+                              class: _vm.getInvalids(
+                                "email",
+                                _vm.invalidInputs
+                              ),
+                              attrs: {
+                                type: "email",
+                                name: "email",
+                                id: "add_parent_email",
+                                placeholder:
+                                  "Veuillez renseigner l'adresse électronique du parent"
+                              },
+                              domProps: { value: _vm.newParent.email },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.newParent,
+                                    "email",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.invalidInputs !== undefined &&
+                            _vm.invalidInputs.email !== undefined
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(_vm.invalidInputs.email[0]) +
+                                      " "
+                                  )
+                                ])
+                              : _vm._e()
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "mx-auto",
+                            staticStyle: { width: "49%" }
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "m-0 p-0",
+                                attrs: { for: "add_parent_contact" }
+                              },
+                              [_vm._v("Contacts du parent")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.newParent.contact,
+                                  expression: "newParent.contact"
+                                }
+                              ],
+                              staticClass: "m-0 p-0 form-control p-1",
+                              class: _vm.getInvalids(
+                                "contact",
+                                _vm.invalidInputs
+                              ),
+                              attrs: {
+                                type: "text",
+                                name: "contact",
+                                id: "add_parent_contact",
+                                placeholder:
+                                  "Veuillez renseigner les contacts du parent les séparer par un /"
+                              },
+                              domProps: { value: _vm.newParent.contact },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.newParent,
+                                    "contact",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.invalidInputs !== undefined &&
+                            _vm.invalidInputs.contact !== undefined
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(_vm.invalidInputs.contact[0]) +
+                                      " "
+                                  )
+                                ])
+                              : _vm._e()
+                          ]
+                        )
+                      ]
+                    ),
                     _vm._v(" "),
-                    _vm._m(3)
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "mx-auto mt-2 d-flex justify-content-between",
+                        staticStyle: { width: "93%" }
+                      },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "mx-auto",
+                            staticStyle: { width: "33.3%" }
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "m-0 p-0",
+                                attrs: { for: "add_parent_residence" }
+                              },
+                              [_vm._v("Localité du parent")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.newParent.residence,
+                                  expression: "newParent.residence"
+                                }
+                              ],
+                              staticClass: "m-0 p-0 form-control p-1",
+                              class: _vm.getInvalids(
+                                "residence",
+                                _vm.invalidInputs
+                              ),
+                              attrs: {
+                                type: "text",
+                                name: "residence",
+                                id: "add_parent_residence",
+                                placeholder:
+                                  "Veuillez renseigner la localité du parent"
+                              },
+                              domProps: { value: _vm.newParent.residence },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.newParent,
+                                    "residence",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.invalidInputs !== undefined &&
+                            _vm.invalidInputs.residence !== undefined
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(_vm.invalidInputs.residence[0]) +
+                                      " "
+                                  )
+                                ])
+                              : _vm._e()
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "mx-auto",
+                            staticStyle: { width: "33.3%" }
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "m-0 p-0",
+                                attrs: { for: "add_parent_works" }
+                              },
+                              [_vm._v("Fonction du parent")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.newParent.works,
+                                  expression: "newParent.works"
+                                }
+                              ],
+                              staticClass: "m-0 p-0 form-control p-1",
+                              class: _vm.getInvalids(
+                                "works",
+                                _vm.invalidInputs
+                              ),
+                              attrs: {
+                                type: "text",
+                                name: "works",
+                                id: "add_parent_works",
+                                placeholder:
+                                  "Veuillez renseigner la fonction du parent"
+                              },
+                              domProps: { value: _vm.newParent.works },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.newParent,
+                                    "works",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.invalidInputs !== undefined &&
+                            _vm.invalidInputs.works !== undefined
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(_vm.invalidInputs.works[0]) +
+                                      " "
+                                  )
+                                ])
+                              : _vm._e()
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "mx-auto",
+                            staticStyle: { width: "32%" }
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass: "m-0 p-0",
+                                class: _vm.getInvalids(
+                                  "birth",
+                                  _vm.invalidInputs
+                                ),
+                                attrs: { for: "add_parent_birth" }
+                              },
+                              [_vm._v("Date de naissance du parent")]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.newParent.birth,
+                                  expression: "newParent.birth"
+                                }
+                              ],
+                              staticClass: "m-0 p-0 form-control p-1",
+                              attrs: {
+                                type: "date",
+                                name: "works",
+                                id: "add_parent_birth",
+                                placeholder:
+                                  "Veuillez renseigner la date de naissance du parent"
+                              },
+                              domProps: { value: _vm.newParent.birth },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.$set(
+                                    _vm.newParent,
+                                    "birth",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _vm.invalidInputs !== undefined &&
+                            _vm.invalidInputs.birth !== undefined
+                              ? _c("i", { staticClass: "h5-title" }, [
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(_vm.invalidInputs.birth[0]) +
+                                      " "
+                                  )
+                                ])
+                              : _vm._e()
+                          ]
+                        )
+                      ]
+                    )
                   ]
                 )
               ]),
               _vm._v(" "),
-              _vm._m(4),
+              _c(
+                "div",
+                {
+                  staticClass: "mx-auto mt-2 p-1 pb-2 buttons-div",
+                  staticStyle: { width: "93%" }
+                },
+                [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary w-25 float-right",
+                      attrs: { type: "button" },
+                      on: {
+                        click: function($event) {
+                          return _vm.createNewParent(_vm.token)
+                        }
+                      }
+                    },
+                    [_vm._v("Inserer")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary w-25 mx-1 float-right",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Annuler")]
+                  )
+                ]
+              ),
               _vm._v(" "),
-              _vm._m(5)
+              _vm._m(1),
+              _vm._v(" "),
+              _vm._m(2)
             ]
           )
         ]
@@ -51884,171 +52348,47 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c(
       "div",
-      { staticClass: "mx-auto", staticStyle: { width: "69%" } },
-      [
-        _c(
-          "label",
-          { staticClass: "m-0 p-0", attrs: { for: "add_parent_name" } },
-          [_vm._v("Nom et Prénoms du parent")]
-        ),
-        _vm._v(" "),
-        _c("input", {
-          staticClass: "m-0 p-0 form-control p-1",
-          attrs: {
-            type: "text",
-            name: "name",
-            id: "add_parent_name",
-            placeholder: "Veuillez renseigner le nom et les prénoms du parent"
-          }
-        })
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
       {
-        staticClass: "mx-auto mt-2 d-flex justify-content-between",
-        staticStyle: { width: "93%" }
-      },
-      [
-        _c("div", { staticClass: "mx-auto", staticStyle: { width: "49%" } }, [
-          _c(
-            "label",
-            { staticClass: "m-0 p-0", attrs: { for: "add_parent_email" } },
-            [_vm._v("Adresse électronique du parent")]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "m-0 p-0 form-control p-1",
-            attrs: {
-              type: "email",
-              name: "email",
-              id: "add_parent_email",
-              placeholder:
-                "Veuillez renseigner l'adresse électronique du parent"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "mx-auto", staticStyle: { width: "49%" } }, [
-          _c(
-            "label",
-            { staticClass: "m-0 p-0", attrs: { for: "add_parent_contact" } },
-            [_vm._v("Contacts du parent")]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "m-0 p-0 form-control p-1",
-            attrs: {
-              type: "text",
-              name: "contact",
-              id: "add_parent_contact",
-              placeholder:
-                "Veuillez renseigner les contacts du parent les séparer par un /"
-            }
-          })
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "mx-auto mt-2 d-flex justify-content-between",
-        staticStyle: { width: "93%" }
-      },
-      [
-        _c("div", { staticClass: "mx-auto", staticStyle: { width: "33.3%" } }, [
-          _c(
-            "label",
-            { staticClass: "m-0 p-0", attrs: { for: "add_parent_residence" } },
-            [_vm._v("Localité du parent")]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "m-0 p-0 form-control p-1",
-            attrs: {
-              type: "text",
-              name: "residence",
-              id: "add_parent_residence",
-              placeholder: "Veuillez renseigner la localité du parent"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "mx-auto", staticStyle: { width: "33.3%" } }, [
-          _c(
-            "label",
-            { staticClass: "m-0 p-0", attrs: { for: "add_parent_works" } },
-            [_vm._v("Fonction du parent")]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "m-0 p-0 form-control p-1",
-            attrs: {
-              type: "text",
-              name: "works",
-              id: "add_parent_works",
-              placeholder: "Veuillez renseigner la fonction du parent"
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "mx-auto", staticStyle: { width: "32%" } }, [
-          _c(
-            "label",
-            { staticClass: "m-0 p-0", attrs: { for: "add_parent_birth" } },
-            [_vm._v("Date de naissance du parent")]
-          ),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "m-0 p-0 form-control p-1",
-            attrs: {
-              type: "date",
-              name: "works",
-              id: "add_parent_birth",
-              placeholder: "Veuillez renseigner la date de naissance du parent"
-            }
-          })
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "mx-auto mt-2 p-1 pb-2 buttons-div",
-        staticStyle: { width: "93%" }
+        staticClass: "mx-auto mt-2 p-1 pb-2 div-continue",
+        staticStyle: { width: "93%", display: "none" }
       },
       [
         _c(
-          "button",
-          {
-            staticClass: "btn btn-primary w-25 float-right",
-            attrs: { type: "button" }
-          },
-          [_vm._v("Inserer")]
+          "div",
+          { staticClass: "d-flex justify-content-center w-100 p-2 my-1" },
+          [_c("h4", [_vm._v("Voulez vous lier l'apprenant au parent")])]
         ),
         _vm._v(" "),
         _c(
-          "button",
+          "div",
           {
-            staticClass: "btn btn-secondary w-25 mx-1 float-right",
-            attrs: { type: "button", "data-dismiss": "modal" }
+            staticClass: "mx-auto d-flex justify-content-center",
+            staticStyle: { width: "60%" }
           },
-          [_vm._v("Annuler")]
+          [
+            _c(
+              "button",
+              {
+                staticClass: "btn w-50 btn-primary border shadow mx-1 px-1",
+                attrs: {
+                  type: "button",
+                  "data-dismiss": "modal",
+                  "data-toggle": "modal",
+                  "data-target": "#editPupilParentsModal"
+                }
+              },
+              [_vm._v("Lier")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn w-50 btn-danger border shadow mx-1 px-1",
+                attrs: { type: "button", "data-dismiss": "modal" }
+              },
+              [_vm._v("Avorter")]
+            )
+          ]
         )
       ]
     )
@@ -53734,6 +54074,7 @@ var render = function() {
             "div",
             {
               staticClass: "bg-linear-official-50 modal-content",
+              class: _vm.invalidInputs !== undefined ? "border-danger" : "",
               staticStyle: { "border-style": "solid", "border-radius": "0" }
             },
             [
@@ -53826,8 +54167,8 @@ var render = function() {
                                 {
                                   name: "model",
                                   rawName: "v-model",
-                                  value: _vm.parent.identify,
-                                  expression: "parent.identify"
+                                  value: _vm.parentToPupil.identify,
+                                  expression: "parentToPupil.identify"
                                 }
                               ],
                               staticClass: "m-0 p-0 form-control p-1",
@@ -53838,7 +54179,7 @@ var render = function() {
                                 placeholder:
                                   "Veuillez renseigner l'adresse électronique ou le contact du parent de l'apprenant"
                               },
-                              domProps: { value: _vm.parent.identify },
+                              domProps: { value: _vm.parentToPupil.identify },
                               on: {
                                 keyup: function($event) {
                                   return _vm.fetchTargets()
@@ -53848,7 +54189,7 @@ var render = function() {
                                     return
                                   }
                                   _vm.$set(
-                                    _vm.parent,
+                                    _vm.parentToPupil,
                                     "identify",
                                     $event.target.value
                                   )
@@ -53879,8 +54220,8 @@ var render = function() {
                                 {
                                   name: "model",
                                   rawName: "v-model",
-                                  value: _vm.parent.relation,
-                                  expression: "parent.relation"
+                                  value: _vm.parentToPupil.relation,
+                                  expression: "parentToPupil.relation"
                                 }
                               ],
                               staticClass: "custom-select",
@@ -53900,7 +54241,7 @@ var render = function() {
                                       return val
                                     })
                                   _vm.$set(
-                                    _vm.parent,
+                                    _vm.parentToPupil,
                                     "relation",
                                     $event.target.multiple
                                       ? $$selectedVal
@@ -54004,7 +54345,8 @@ var render = function() {
                         )
                       : _vm._e(),
                     _vm._v(" "),
-                    _vm.parent.identify.length > 7 && _vm.targets.length == 0
+                    _vm.parentToPupil.identify.length > 7 &&
+                    _vm.targets.length == 0
                       ? _c(
                           "div",
                           {
@@ -54061,11 +54403,6 @@ var render = function() {
                                             title: "Ne pas ajouter le parent",
                                             "data-target": "#newParentModal",
                                             "data-dismiss": "modal"
-                                          },
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.openNewParent()
-                                            }
                                           }
                                         })
                                       ]
@@ -54095,7 +54432,7 @@ var render = function() {
                       attrs: { type: "button" },
                       on: {
                         click: function($event) {
-                          return _vm.updateTargetedPupilParents()
+                          return _vm.updateTargetedPupilParents(_vm.token)
                         }
                       }
                     },
@@ -84087,17 +84424,67 @@ var parents_actions = {
   addNewParentForTargetedPupil: function addNewParentForTargetedPupil(store) {
     store.dispatch('getParentsData');
   },
-  createNewParent: function createNewParent(store, inputs) {},
-  updateTargetedPupilParents: function updateTargetedPupilParents(store) {
-    $('#editPupilParentsModal .buttons-div').hide('size', function () {
-      $('#editPupilParentsModal form').hide('fade', function () {
-        $('#editPupilParentsModal').animate({
-          top: '90'
-        }, function () {
-          $('#editPupilParentsModal .div-success').show('fade', 200);
-          $('#editPupilParentsModal .div-success h4').text('Mise à jour réussie');
+  createNewParent: function createNewParent(store, inputs) {
+    axios.post('/admin/director/parentsm', {
+      token: inputs.token,
+      name: inputs.newParent.name,
+      birth: inputs.newParent.birth,
+      email: inputs.newParent.email,
+      works: inputs.newParent.works,
+      contact: inputs.newParent.contact,
+      residence: inputs.newParent.residence,
+      sexe: inputs.newParent.sexe,
+      status: 0
+    }).then(function (response) {
+      if (response.data.invalidInputs == undefined) {
+        if (inputs.route !== undefined && inputs.route !== null) {
+          if (inputs.route.name == 'pupilsProfil') {
+            // store.commit('RESET_ALL_PARENTS_ARRAY', response.data)
+            store.commit('RESET_PARENT_TO_PUPIL', {
+              identify: inputs.newParent.email,
+              relation: 'Père'
+            });
+            $('#newParentModal .buttons-div').hide('size', function () {
+              $('#newParentModal form').hide('fade', function () {
+                $('#newParentModal').animate({
+                  top: '50'
+                }, function () {
+                  $('#newParentModal .div-continue').show('fade', 200);
+                });
+              });
+            });
+          }
+        }
+      } else {
+        store.commit('INVALID_INPUTS', response.data.invalidInputs);
+      }
+    });
+  },
+  updateTargetedPupilParents: function updateTargetedPupilParents(store, inputs) {
+    axios.post('/admin/director/parentsm/myChildren/related&to/' + inputs.route.params.id + '/joined', {
+      token: inputs.token,
+      identify: inputs.parentToPupil.identify,
+      relation: inputs.parentToPupil.relation,
+      pupil: inputs.pupil.id
+    }).then(function (response) {
+      console.log(response.data);
+
+      if (response.invalidInputs == undefined) {
+        store.commit('RESET_INVALID_INPUTS'); // store.dispatch('resetTargetedPupil', inputs.route.params.id)
+
+        $('#editPupilParentsModal .buttons-div').hide('size', function () {
+          $('#editPupilParentsModal form').hide('fade', function () {
+            $('#editPupilParentsModal').animate({
+              top: '90'
+            }, function () {
+              $('#editPupilParentsModal .div-success').show('fade', 200);
+              $('#editPupilParentsModal .div-success h4').text('Mise à jour réussie');
+            });
+          });
         });
-      });
+      } else {
+        store.commit('INVALID_INPUTS', response.data.invalidInputs);
+      }
     });
   }
 };
@@ -84695,6 +85082,9 @@ var parents_mutations = {
       residence: '',
       works: ''
     };
+  },
+  RESET_PARENT_TO_PUPIL: function RESET_PARENT_TO_PUPIL(state, data) {
+    state.parentToPupil = data;
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (parents_mutations);
@@ -85176,6 +85566,10 @@ var notifications_states = {
 __webpack_require__.r(__webpack_exports__);
 var parents_states = {
   allParents: [],
+  parentToPupil: {
+    identify: '',
+    relation: 'Père'
+  },
   newParent: {
     name: '',
     email: '',

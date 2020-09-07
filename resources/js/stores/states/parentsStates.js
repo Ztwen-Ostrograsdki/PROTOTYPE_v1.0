@@ -1,5 +1,9 @@
 const parents_states = {
 	allParents: [],
+	parentToPupil: {
+		identify: '',
+		relation: 'Père',
+	},
 	newParent: {
 		name: '',
 		email: '',

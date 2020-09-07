@@ -59,6 +59,7 @@
         methods: {
         	addParents(){
         		this.$store.dispatch('addNewParentForTargetedPupil')
+        		this.$store.commit('RESET_INVALID_INPUTS')
         		$('#editPupilParentsModal .div-success').hide('slide', 'up')
                 $('#editPupilParentsModal .div-success h4').text('')
                 $('#editPupilParentsModal form').show('fade', function(){

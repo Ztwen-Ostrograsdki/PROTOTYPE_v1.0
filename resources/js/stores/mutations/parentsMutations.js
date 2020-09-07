@@ -14,6 +14,9 @@ const parents_mutations = {
 	        residence: '',
 	        works: ''
     	}
+    },
+    RESET_PARENT_TO_PUPIL: (state, data) =>{
+    	state.parentToPupil = data
     }
     
 }

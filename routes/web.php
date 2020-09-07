@@ -70,6 +70,7 @@ Route::group(['prefix' => 'admin'], function(){
 		//PARENTS
 		Route::get('parentsm/auth/get&all&parents', 'Master\ParentsController@getAllParents');
 		Route::get('parentsm/search/get&only&parents&targeted/{search?}', 'Master\ParentsController@getAllParentsBySearch');
+		Route::post('parentsm/myChildren/related&to/{pupil}/joined', 'Master\ParentsController@joinedParentToPupil');
 		Route::resource('parentsm', 'Master\ParentsController')->middleware('onlySuperAdmin');
 
 		//Marks

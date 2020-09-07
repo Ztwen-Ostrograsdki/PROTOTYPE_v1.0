@@ -12,7 +12,7 @@ class Parentable extends Model
 
     public function relationner(Pupil $pupil, Parentor $parent)
     {
-
+    	
     }
 
 

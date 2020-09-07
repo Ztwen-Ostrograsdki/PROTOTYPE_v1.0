@@ -1,7 +1,7 @@
 <template>
 	<div class="modal fade" id="editPupilParentsModal" tabindex="-1" role="dialog" aria-labelledby="editPupilParentsModalLabel" aria-hidden="true">
   		<div class="modal-dialog modal-lg" role="document" style="background-image: url(/media/silouhette.jpg) !important; width: 100%; background-position: -200px -400px; padding: 0px;">
-	    	<div class="bg-linear-official-50 modal-content" style="border-style: solid; border-radius: 0;">
+	    	<div class="bg-linear-official-50 modal-content" :class="(invalidInputs !== undefined)? 'border-danger' : ''" style="border-style: solid; border-radius: 0;">
 		    	<span class="d-inline-block text-white close py-2 px-3 align-self-end modalCloser" data-dismiss="modal" aria-label="Close">x</span>
 		      	<div class="modal-header w-100 d-flex justify-content-between p-0 pl-2 m-0">
 			        <div class="modal-header w-100 d-flex justify-content-between p-0 pl-2 m-0">
@@ -17,12 +17,12 @@
 			        <div class="mx-auto mt-2 d-flex justify-content-between" style="width: 93%">
                         <div class="mx-auto" style="width: 69%">
                             <label for="edit_p_parent_address" class="m-0 p-0">Adresse électronique ou Contact du parent de l'apprenant</label>
-                            <input type="text" @keyup="fetchTargets()" v-model="parent.identify" class="m-0 p-0 form-control p-1" name="address" id="edit_p_parent_address" placeholder="Veuillez renseigner l'adresse électronique ou le contact du parent de l'apprenant">
+                            <input type="text" @keyup="fetchTargets()" v-model="parentToPupil.identify" class="m-0 p-0 form-control p-1" name="address" id="edit_p_parent_address" placeholder="Veuillez renseigner l'adresse électronique ou le contact du parent de l'apprenant">
                             <i class="h5-title" v-if="invalidInputs !== undefined"> </i>
                         </div>
                         <div style="width: 30%;">
                             <label for="edit_p_parent_type" class="m-0 p-0">Le lien familiale</label>
-                            <select name="relation" id="edit_p_parent_type" class="custom-select" v-model="parent.relation">
+                            <select name="relation" id="edit_p_parent_type" class="custom-select" v-model="parentToPupil.relation">
                                 <option value="">Choisissez le lien</option>
                                 <option :value="relation" v-for="relation in relations" > {{ relation }} </option>
                             </select>
@@ -37,12 +37,12 @@
 							</span>
 						</div>
                     </div>
-                    <div class="mx-auto mt-1 d-flex justify-content-center" style="width: 93%" v-if="parent.identify.length > 7 && targets.length == 0">
+                    <div class="mx-auto mt-1 d-flex justify-content-center" style="width: 93%" v-if="parentToPupil.identify.length > 7 && targets.length == 0">
                     	<div class="d-flex justify-content-start" style="width: 92%">
 	                    	<span class="mx-1 text-white-50 h5-title">Le parent que vous essayer de renseigner n'existe pas dans la base de donner. Voulez-vous l'inserer maintenant?
 								<span class="d-flex justify-content-start mx-1">
 									<span @click="openNewParent()" class="text-primary mx-1 fa fa-user-plus border border-primary p-1 px-2" data-toggle="modal" data-target="#newParentModal" data-dismiss="modal" title="Ajouter ce parent maintenant"></span>
-									<span @click="openNewParent()" class="text-danger border-danger fa fa-user-times border p-1 px-2" data-toggle="modal" title="Ne pas ajouter le parent" data-target="#newParentModal" data-dismiss="modal"></span>
+									<span class="text-danger border-danger fa fa-user-times border p-1 px-2" data-toggle="modal" title="Ne pas ajouter le parent" data-target="#newParentModal" data-dismiss="modal"></span>
 								</span>
 	                    	</span>
 							
@@ -51,7 +51,7 @@
 			    </form>
 	      		</div>
 			    <div class="mx-auto mt-2 p-1 pb-2 buttons-div" style="width: 93%">
-			        <button type="button" class="btn btn-primary w-25 float-right" @click="updateTargetedPupilParents()">Mettre à jour</button>
+			        <button type="button" class="btn btn-primary w-25 float-right" @click="updateTargetedPupilParents(token)">Mettre à jour</button>
 			        <button type="button" class="btn btn-secondary w-25 mx-1 float-right" data-dismiss="modal">Annuler</button>
 			    </div>
 			    <div class="mx-auto mt-2 p-1 pb-2 div-success" style="width: 93%; display: none">
@@ -74,10 +74,6 @@
 		data(){
 			return {
 				show: true,
-				parent: {
-					identify: '',
-					relation: 'Père',
-				},
 				targets: [],
 
 				relations: ['Père', 'Mère', 'Tante', 'Oncle', 'Grand-père', 'Grand-Mère', 'Soeur', 'Frère', 'Beau-frère', 'Belle-sœur', 'Autres lien de parenté']
@@ -103,22 +99,24 @@
 			},
 
 			fetchTargets(){
-				if(this.parent.identify.length > 4){
-					axios.get('/admin/director/parentsm/search/get&only&parents&targeted/' + this.parent.identify)
+				if(this.parentToPupil.identify.length > 4){
+					axios.get('/admin/director/parentsm/search/get&only&parents&targeted/' + this.parentToPupil.identify)
 			            .then(response => {
 			            this.targets = response.data
 			        })
 				}
-				else if(this.parent.identify.length < 2){
+				else if(this.parentToPupil.identify.length < 2){
 					this.targets = []
 				}
 			},
 
 			resetIdentify(email){
-				this.parent.identify = email
+				this.parentToPupil.identify = email
 			},
 
 			openNewParent(){
+				this.$store.commit('RESET_NEW_PARENT')
+				this.$store.commit('RESET_INVALID_INPUTS')
 				$('#newParentModal .div-success').hide('slide', 'up')
                 $('#newParentModal .div-success h4').text('')
                 $('#newParentModal form').show('fade', function(){
@@ -126,14 +124,17 @@
                 })
 			},
 
-			updateTargetedPupilParents(){
-				this.$store.dispatch('updateTargetedPupilParents')
+			updateTargetedPupilParents(token){
+				let parentToPupil = this.parentToPupil
+				let pupil = this.targetPupil
+				let route = this.$route
+				this.$store.dispatch('updateTargetedPupilParents', {token, pupil, parentToPupil, route})
 			}
 			
 		},
 
 		computed: mapState([
-            'invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents', 'newParent'
+            'invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents', 'newParent', 'parentToPupil'
         ]),
 
 
