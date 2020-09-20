@@ -184,7 +184,7 @@
                                         
                                         <td>
                                             <span class="d-inline-block w-100">
-                                                <button title="Voulez vous supprimer" class="px-1 btn bg-transparent w-100" @click="destroy(classe)">
+                                                <button title="Voulez vous supprimer" class="px-1 btn bg-transparent w-100" @click="destroy(classe.id)">
                                                     <i class="fa fa-trash text-danger"></i>
                                                 </button>
                                             </span>
@@ -243,8 +243,8 @@
             },
 
             
-            destroy(pupil){
-                this.$store.dispatch('lazyDeletePupils', pupil)                
+            destroy(id){
+                this.$store.dispatch('lazyDeleteClasse', {id: id, forced: false})                
             },
 
             closeProfiler(){

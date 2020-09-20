@@ -16,8 +16,11 @@ const classes_mutations = {
         state.token = data.token
         state.targetedClasse = data.targetedClasse
         state.targetedClasseSubject = data.targetedClasse.targetedSubject.id
-        
-        
+    },
+
+    RESET_BLOCKED_CLASSSES: (state, data) => {
+        console.log(data)
+        state.classesBlockedsAll = data
     },
     RESET_TARGETED_CLASSE_SUBJECT_TARGETED: (state, subject) =>{
         state.targetedClasseSubject = subject.id

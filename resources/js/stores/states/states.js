@@ -17,6 +17,7 @@ const default_states = {
 	message: "",
 	primaryClasses: {},
 	secondaryClasses: {},
+	secondaryClassesFormatted: {},
 	allClasses: {},
 	primarySubjects: {},
 	subjects: {},

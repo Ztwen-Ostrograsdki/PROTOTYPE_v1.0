@@ -68,6 +68,11 @@ class SuperAdminController extends Controller
         $classesPrimaryBlockeds = [];
         $classesSecondaryBlockeds = [];
 
+        $classesB = Classe::withTrashed('deleted_at')->where('deleted_at', '!=', null)->get();
+        foreach ($classesB as $cl) {
+            $classesBlockeds[$cl->id] = $cl;
+        }
+
         $p = Pupil::all()->count();
         $ps = Pupil::whereLevel('secondary')->count();
         $pp = Pupil::whereLevel('primary')->count();
@@ -105,6 +110,8 @@ class SuperAdminController extends Controller
     */
     public function getTOOLS()
     {   
+        $secondaryClassesFormatted = [];
+
         $token = csrf_token();
         $secondarySubjects = Subject::whereLevel('secondary')->get();
         $primarySubjects = Subject::whereLevel('primary')->get();
@@ -112,8 +119,15 @@ class SuperAdminController extends Controller
         $secondaryClasses = Classe::whereLevel('secondary')->get();
         $months = Tools::months();
         $roles = Tools::roles();
+
+        if (count($secondaryClasses) > 0) {
+           foreach ($secondaryClasses as $classe) {
+                $secondaryClassesFormatted[$classe->id] = $classe->getFormattedClasseName();
+           }
+        }
         $data = [
             'secondaryClasses' => $secondaryClasses, 
+            'secondaryClassesFormatted' => $secondaryClassesFormatted, 
             'primaryClasses' => $primaryClasses, 
             'primarySubjects' => $primarySubjects, 
             'secondarySubjects' => $secondarySubjects,
@@ -211,6 +225,12 @@ class SuperAdminController extends Controller
     {
         Auth::logout();
         return response()->json(['msg' => "deconnection réussie"]);
+    }
+
+
+    public function dashboarder()
+    {
+        return view('directors.dashboards.index');
     }
 
 }

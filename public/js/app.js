@@ -2190,6 +2190,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {},
@@ -2346,7 +2359,7 @@ __webpack_require__.r(__webpack_exports__);
       return tag == target ? 'selected' : '';
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'user', 'admin', 'errors', 'subjects'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'user', 'admin', 'errors', 'subjects', 'classesBlockeds', 'classesBlockedsAll'])
 });
 
 /***/ }),
@@ -2702,7 +2715,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['isProfil', 'thePupils', 'redList'],
+  props: ['isProfil', 'thePupils', 'redList', 'deletedClasses'],
   data: function data() {
     return {
       selfMonths: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
@@ -2713,6 +2726,9 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     gender: function gender(sexe) {
       return sexe == "male" ? 'M' : 'F';
+    },
+    hisClasseWasBlocked: function hisClasseWasBlocked(pupilClasse, deletedClasses) {
+      return deletedClasses[pupilClasse] == undefined ? '' : 'text-muted';
     },
     birthday: function birthday(user) {
       var date = user.birth;
@@ -2774,9 +2790,84 @@ __webpack_require__.r(__webpack_exports__);
     },
     resetAlert: function resetAlert() {
       this.$store.commit('ALERT_RESET');
+    },
+    restore: function restore(pupil) {
+      this.$store.dispatch('restorePupils', pupil);
     }
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['pupilsArray', 'targetedClasse', 'editedPupil'])
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    this.$store.dispatch('getTOOLS');
+  },
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'admin', 'secondaryClasses', 'secondaryClassesFormatted'])
 });
 
 /***/ }),
@@ -3040,8 +3131,11 @@ __webpack_require__.r(__webpack_exports__);
     filtrer: function filtrer(level) {
       this.$store.commit('SHOW_CLASSES_BY_LEVEL', level);
     },
-    destroy: function destroy(pupil) {
-      this.$store.dispatch('lazyDeletePupils', pupil);
+    destroy: function destroy(id) {
+      this.$store.dispatch('lazyDeleteClasse', {
+        id: id,
+        forced: false
+      });
     },
     closeProfiler: function closeProfiler() {
       this.profiler = false;
@@ -6287,7 +6381,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('ALERT_RESET');
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['pupilsArray', 'pupils', 'secondaryPupils', 'primaryPupils', 'pupilsAll', 'pl', 'tl', 'ul', 'psl', 'ppl', 'tpl', 'tsl', 'alertPupilsSearch', 'alert', 'message', 'editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'successed', 'invalidInputs', 'errors'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['pupilsArray', 'pupils', 'secondaryPupils', 'primaryPupils', 'pupilsAll', 'pl', 'tl', 'ul', 'psl', 'ppl', 'tpl', 'tsl', 'alertPupilsSearch', 'alert', 'message', 'editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'successed', 'invalidInputs', 'errors', 'classesBlockedsAll'])
 });
 $(function () {
   var sup_tag = $('#sup-tag');
@@ -13172,6 +13266,25 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 // module
 exports.push([module.i, "\n#bulletin .text-title{\n\ttext-shadow: 2px 0px 0px black; \n\tfont-size: 20px; \n\tfont-weight: bold; \n\tfont-family: verdana; \n\tletter-spacing: 1.5px; \n\tword-spacing: 3px\n}\n#bulletin td, #bulletin th{\n\ttext-align: center;\n}\n#bulletin td, #bulletin th{\n\tborder: solid thin white;\n}\n.cursive{\n\tfont-family: cursive !important;\n\tfont-style: italic;\n}\n#bulletin td.cursive{\n\tfont-size: 14px;\n}\n.cursor{\n\tcursor: pointer !important;\n}\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.table-plan th{\n\tpadding: 0 !important;\n\tpadding-bottom: 1px !important;\n\tpadding-top: 1px !important;\n}\n.td-days td{\n\tborder-right: thin solid white;\n}\n", ""]);
 
 // exports
 
@@ -45041,6 +45154,36 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../../../node_modules/css-loader??ref--6-1!../../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlansComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/MarksComponent.vue?vue&type=style&index=0&lang=css&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/layouts/MarksComponent.vue?vue&type=style&index=0&lang=css& ***!
@@ -46573,166 +46716,218 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return !_vm.errors.status
-    ? _c(
-        "div",
-        {
-          staticClass:
-            "first-div d-flex justify-content-around py-1 w-100 border float-right mx-0 bg-linear-official-50",
-          staticStyle: { "z-index": "100" }
-        },
-        [
-          _c(
-            "div",
-            {
-              staticClass: "d-flex row justify-content-around",
-              staticStyle: { width: "98.5%" }
-            },
-            [
-              _c("div", { staticClass: "border py-2 col-4" }, [
-                _vm._m(0),
-                _vm._v(" "),
-                _c("hr", {
-                  staticClass: "m-0",
-                  staticStyle: { "background-color": "white" }
-                }),
-                _vm._v(" "),
-                _c("div", { staticClass: "mt-1 w-100" }, [
-                  _c(
-                    "a",
-                    {
-                      staticClass:
-                        "w-100 d-flex link-white mt-1 d-flex justify-content-between",
-                      attrs: { href: "" }
-                    },
-                    [
-                      _c("span", { staticClass: "fa fa-user fa-2x" }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "fa fa-2x" }, [
-                        _vm._v(_vm._s(_vm.tl))
-                      ])
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "w-100 d-block" }, [
-                    _c(
-                      "span",
-                      { staticClass: "w-100 d-flex justify-content-around" },
-                      [
-                        _c("span", { staticClass: "m-0 p-0" }, [
-                          _c("i", { staticClass: "text-white-50 h5-title " }, [
-                            _vm._v("Primaire:")
-                          ]),
-                          _vm._v(" "),
-                          _c("i", { staticClass: "text-white-50 h5-title " }, [
-                            _vm._v(_vm._s(_vm.tpl))
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "m-0 p-0" }, [
-                          _c("i", { staticClass: "text-white-50 h5-title " }, [
-                            _vm._v("Secondaire:")
-                          ]),
-                          _vm._v(" "),
-                          _c("i", { staticClass: "text-white-50 h5-title " }, [
-                            _vm._v(_vm._s(_vm.tsl))
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _vm._m(1)
-                      ]
-                    )
-                  ])
-                ])
-              ]),
-              _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "border py-2 col-2" },
-                [
-                  _vm._m(3),
+    ? _c("div", { staticClass: "w-100", staticStyle: { "z-index": "100" } }, [
+        _c(
+          "div",
+          {
+            staticClass:
+              "first-div mb-2 d-flex justify-content-around py-1 bg-linear-official-50 w-100 border float-right mx-0 "
+          },
+          [
+            _c(
+              "div",
+              {
+                staticClass: "d-flex row justify-content-around",
+                staticStyle: { width: "98.5%" }
+              },
+              [
+                _c("div", { staticClass: "border py-2 col-4" }, [
+                  _vm._m(0),
                   _vm._v(" "),
                   _c("hr", {
                     staticClass: "m-0",
                     staticStyle: { "background-color": "white" }
                   }),
                   _vm._v(" "),
+                  _c("div", { staticClass: "mt-1 w-100" }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass:
+                          "w-100 d-flex link-white mt-1 d-flex justify-content-between",
+                        attrs: { href: "" }
+                      },
+                      [
+                        _c("span", { staticClass: "fa fa-user fa-2x" }),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "fa fa-2x" }, [
+                          _vm._v(_vm._s(_vm.tl))
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "w-100 d-block" }, [
+                      _c(
+                        "span",
+                        { staticClass: "w-100 d-flex justify-content-around" },
+                        [
+                          _c("span", { staticClass: "m-0 p-0" }, [
+                            _c(
+                              "i",
+                              { staticClass: "text-white-50 h5-title " },
+                              [_vm._v("Primaire:")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "i",
+                              { staticClass: "text-white-50 h5-title " },
+                              [_vm._v(_vm._s(_vm.tpl))]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("span", { staticClass: "m-0 p-0" }, [
+                            _c(
+                              "i",
+                              { staticClass: "text-white-50 h5-title " },
+                              [_vm._v("Secondaire:")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "i",
+                              { staticClass: "text-white-50 h5-title " },
+                              [_vm._v(_vm._s(_vm.tsl))]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(1)
+                        ]
+                      )
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "border py-2 col-2" },
+                  [
+                    _vm._m(3),
+                    _vm._v(" "),
+                    _c("hr", {
+                      staticClass: "m-0",
+                      staticStyle: { "background-color": "white" }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "router-link",
+                      {
+                        staticClass:
+                          "link-white mt-1 d-flex justify-content-between",
+                        attrs: { to: "/admin/director/pupilsm" }
+                      },
+                      [
+                        _c("span", { staticClass: "fa fa-book fa-2x" }),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "fa fa-2x" }, [
+                          _vm._v(_vm._s(_vm.pl))
+                        ])
+                      ]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-2 border" }, [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "py-2",
+                      staticStyle: {
+                        display: "none",
+                        width: "0",
+                        opacity: "0"
+                      },
+                      attrs: { id: "users-tag" }
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "d-flex justify-content-between tag-container",
+                          staticStyle: { width: "100%" }
+                        },
+                        [
+                          _c("div", { staticStyle: { width: "98.5%" } }, [
+                            _vm._m(4),
+                            _vm._v(" "),
+                            _c("hr", {
+                              staticClass: "m-0",
+                              staticStyle: { "background-color": "white" }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              {
+                                staticClass:
+                                  "mt-1 link-white d-flex justify-content-between",
+                                attrs: { href: "#" }
+                              },
+                              [
+                                _vm._m(5),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "fa fa-2x" }, [
+                                  _vm._v(_vm._s(_vm.ul))
+                                ])
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(6)
+                        ]
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _vm._m(7)
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _vm._m(8)
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "w-100 d-flex justify-content-end bg-linear-official-50 border border-white"
+          },
+          [
+            _c("div", { staticClass: "d-flex p-1" }, [
+              _c(
+                "span",
+                { staticClass: "mx-1" },
+                [
                   _c(
                     "router-link",
                     {
-                      staticClass:
-                        "link-white mt-1 d-flex justify-content-between",
-                      attrs: { to: "/admin/director/pupilsm" }
+                      attrs: {
+                        to: "/admin/director/master/dashboards/emplois-du-temps"
+                      }
                     },
                     [
-                      _c("span", { staticClass: "fa fa-book fa-2x" }),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "fa fa-2x" }, [
-                        _vm._v(_vm._s(_vm.pl))
-                      ])
+                      _c(
+                        "span",
+                        {
+                          staticClass:
+                            "btn btn-secondary py-2 px-2 w-100 border border-white"
+                        },
+                        [_vm._v("Les emplois du temps")]
+                      )
                     ]
                   )
                 ],
                 1
               ),
               _vm._v(" "),
-              _c("div", { staticClass: "col-2 border" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "py-2",
-                    staticStyle: { display: "none", width: "0", opacity: "0" },
-                    attrs: { id: "users-tag" }
-                  },
-                  [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "d-flex justify-content-between tag-container",
-                        staticStyle: { width: "100%" }
-                      },
-                      [
-                        _c("div", { staticStyle: { width: "98.5%" } }, [
-                          _vm._m(4),
-                          _vm._v(" "),
-                          _c("hr", {
-                            staticClass: "m-0",
-                            staticStyle: { "background-color": "white" }
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "a",
-                            {
-                              staticClass:
-                                "mt-1 link-white d-flex justify-content-between",
-                              attrs: { href: "#" }
-                            },
-                            [
-                              _vm._m(5),
-                              _vm._v(" "),
-                              _c("span", { staticClass: "fa fa-2x" }, [
-                                _vm._v(_vm._s(_vm.ul))
-                              ])
-                            ]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _vm._m(6)
-                      ]
-                    )
-                  ]
-                ),
-                _vm._v(" "),
-                _vm._m(7)
-              ])
-            ]
-          ),
-          _vm._v(" "),
-          _vm._m(8)
-        ]
-      )
+              _vm._m(9)
+            ])
+          ]
+        )
+      ])
     : _vm._e()
 }
 var staticRenderFns = [
@@ -46906,6 +47101,18 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", [_c("span", { staticClass: "fa fa-chevron-up" })])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c(
+        "span",
+        { staticClass: "btn btn-info py-2 px-2 w-100 border border-white" },
+        [_vm._v("Les tableaux synoptiques")]
+      )
+    ])
   }
 ]
 render._withStripped = true
@@ -48209,7 +48416,18 @@ var render = function() {
                                 "router-link",
                                 {
                                   staticClass: "card-link w-100 d-inline-block",
+                                  class: _vm.hisClasseWasBlocked(
+                                    pupil.classe_id,
+                                    _vm.deletedClasses
+                                  ),
                                   attrs: {
+                                    title:
+                                      _vm.hisClasseWasBlocked(
+                                        pupil.classe_id,
+                                        _vm.deletedClasses
+                                      ) == ""
+                                        ? ""
+                                        : "Cette classe a été envoyé dans la corbeille",
                                     to: {
                                       name: "classesProfil",
                                       params: { id: pupil.classe_id }
@@ -48351,6 +48569,178 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=template&id=3f679c7c&":
+/*!******************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=template&id=3f679c7c& ***!
+  \******************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "w-100" }, [
+    _c(
+      "div",
+      {
+        staticClass:
+          "w-100 p-1 mx-auto bg-linear-official-50 border border-white"
+      },
+      [
+        _c("div", { staticClass: "d-flex p-1" }, [
+          _c(
+            "span",
+            { staticClass: "mx-1" },
+            [
+              _c(
+                "router-link",
+                {
+                  attrs: {
+                    to: "/admin/director/master/dashboards/emplois-du-temps"
+                  }
+                },
+                [
+                  _c(
+                    "span",
+                    {
+                      staticClass:
+                        "btn btn-secondary py-2 px-2 w-100 border border-white"
+                    },
+                    [_vm._v("Les emplois du temps")]
+                  )
+                ]
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _vm._m(0)
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass:
+          "w-100 mt-2 bg-linear-official-50 border border-white mx-auto p-1"
+      },
+      [
+        _c("h5", { staticClass: "w-100 text-center" }, [
+          _vm._v("Emploi du temps")
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "mx-auto w-100 mt-2" }, [
+          _c(
+            "table",
+            { staticClass: "w-100 table-table table-striped table-plan" },
+            [
+              _c(
+                "thead",
+                [
+                  _c("th", { staticClass: "border border-right" }, [
+                    _vm._v("Gpes Pque")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                    return _c(
+                      "th",
+                      {
+                        staticClass: "h5-title border border-right",
+                        staticStyle: { width: "12.5%" }
+                      },
+                      [
+                        _c("table", { staticClass: "w-100 text-center" }, [
+                          _c("thead", { staticClass: "w-100" }, [
+                            _c(
+                              "th",
+                              {
+                                staticClass: "w-100 p-0 m-0",
+                                attrs: { colspan: "5" }
+                              },
+                              [
+                                _c("span", {}, [
+                                  _vm._v(
+                                    "\n\t\t\t\t\t\t\t\t\t\t" +
+                                      _vm._s(classe.name)
+                                  ),
+                                  _c("sup", [_vm._v(_vm._s(classe.sup))]),
+                                  _vm._v(
+                                    " " +
+                                      _vm._s(classe.idc) +
+                                      " \n\t\t\t\t\t\t\t\t\t"
+                                  )
+                                ])
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(1, true)
+                        ])
+                      ]
+                    )
+                  })
+                ],
+                2
+              ),
+              _vm._v(" "),
+              _vm._m(2)
+            ]
+          )
+        ])
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c(
+        "span",
+        { staticClass: "btn btn-info py-2 px-2 w-100 border border-white" },
+        [_vm._v("Les tableaux synoptiques")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tbody", { staticClass: "td-days" }, [
+      _c("td", [_vm._v("L")]),
+      _vm._v(" "),
+      _c("td", [_vm._v("M")]),
+      _vm._v(" "),
+      _c("td", [_vm._v("M")]),
+      _vm._v(" "),
+      _c("td", [_vm._v("J")]),
+      _vm._v(" "),
+      _c("td", [_vm._v("V")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tbody", { staticClass: "text-center w-100" }, [
+      _c("tr", {}, [_c("td", [_vm._v("08h - 09h")])])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/HomeComponent.vue?vue&type=template&id=171290da&":
 /*!************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/HomeComponent.vue?vue&type=template&id=171290da& ***!
@@ -48366,7 +48756,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return !_vm.errors.status ? _c("div", [_c("router-view")], 1) : _vm._e()
+  return _c("div", [_c("router-view")], 1)
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -49009,7 +49399,7 @@ var render = function() {
                                           },
                                           on: {
                                             click: function($event) {
-                                              return _vm.destroy(classe)
+                                              return _vm.destroy(classe.id)
                                             }
                                           }
                                         },
@@ -58888,6 +59278,7 @@ var render = function() {
                     attrs: {
                       isProfil: false,
                       thePupils: _vm.pupils,
+                      deletedClasses: _vm.classesBlockedsAll,
                       redList: false
                     }
                   })
@@ -80236,11 +80627,17 @@ var teachers_profil = Vue.component('profil-component-teachers', __webpack_requi
 var teachers_profil_main = Vue.component('teacher-profil-main', __webpack_require__(/*! ./components/teachers/ProfilLayouts/MainProfilComponent.vue */ "./resources/js/components/teachers/ProfilLayouts/MainProfilComponent.vue")["default"]);
 var teachers_perso_data = Vue.component('teacher-perso-data', __webpack_require__(/*! ./components/teachers/ProfilLayouts/PersonalBoxComponent.vue */ "./resources/js/components/teachers/ProfilLayouts/PersonalBoxComponent.vue")["default"]);
 var teachers_profil_box = Vue.component('profil-teacher-box', __webpack_require__(/*! ./components/teachers/ProfilLayouts/ProfilBoxComponent.vue */ "./resources/js/components/teachers/ProfilLayouts/ProfilBoxComponent.vue")["default"]);
-var teachers_classes_box = Vue.component('profil-teacher-classes-box', __webpack_require__(/*! ./components/teachers/ProfilLayouts/TeacherClassesBoxComponent.vue */ "./resources/js/components/teachers/ProfilLayouts/TeacherClassesBoxComponent.vue")["default"]);
+var teachers_classes_box = Vue.component('profil-teacher-classes-box', __webpack_require__(/*! ./components/teachers/ProfilLayouts/TeacherClassesBoxComponent.vue */ "./resources/js/components/teachers/ProfilLayouts/TeacherClassesBoxComponent.vue")["default"]); //DASHBOARDS COMPONENENTS
+
+var dashboard_plan = Vue.component('dashboard-plan', __webpack_require__(/*! ./components/admin/layouts/dashboards/PlansComponent.vue */ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue")["default"]);
 var routes = [{
   path: '/admin/director/master',
   component: admin_defaultDashboard,
   name: 'adminHome'
+}, {
+  path: '/admin/director/master/dashboards/emplois-du-temps',
+  component: dashboard_plan,
+  name: 'dashboard_plan'
 }, {
   path: '/admin/director/pupilsm',
   component: pupils_home,
@@ -80761,6 +81158,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingPupilsComponent_vue_vue_type_template_id_7e81b585___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingPupilsComponent_vue_vue_type_template_id_7e81b585___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/admin/layouts/dashboards/PlansComponent.vue ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PlansComponent_vue_vue_type_template_id_3f679c7c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PlansComponent.vue?vue&type=template&id=3f679c7c& */ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=template&id=3f679c7c&");
+/* harmony import */ var _PlansComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PlansComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _PlansComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./PlansComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _PlansComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PlansComponent_vue_vue_type_template_id_3f679c7c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PlansComponent_vue_vue_type_template_id_3f679c7c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/layouts/dashboards/PlansComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlansComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css&":
+/*!**************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \**************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/style-loader!../../../../../../node_modules/css-loader??ref--6-1!../../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlansComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=template&id=3f679c7c&":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=template&id=3f679c7c& ***!
+  \************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_template_id_3f679c7c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../node_modules/vue-loader/lib??vue-loader-options!./PlansComponent.vue?vue&type=template&id=3f679c7c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/layouts/dashboards/PlansComponent.vue?vue&type=template&id=3f679c7c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_template_id_3f679c7c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlansComponent_vue_vue_type_template_id_3f679c7c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -84413,6 +84897,11 @@ var classes_actions = {
     })["catch"](function (e) {
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });
+  },
+  lazyDeleteClasse: function lazyDeleteClasse(store, classe) {
+    axios["delete"]('/admin/director/classesm/' + classe.id + '-' + classe.forced).then(function (response) {
+      store.commit('GET_CLASSES_DATA', response.data);
+    });
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (classes_actions);
@@ -84943,6 +85432,10 @@ var classes_mutations = {
     state.targetedClasse = data.targetedClasse;
     state.targetedClasseSubject = data.targetedClasse.targetedSubject.id;
   },
+  RESET_BLOCKED_CLASSSES: function RESET_BLOCKED_CLASSSES(state, data) {
+    console.log(data);
+    state.classesBlockedsAll = data;
+  },
   RESET_TARGETED_CLASSE_SUBJECT_TARGETED: function RESET_TARGETED_CLASSE_SUBJECT_TARGETED(state, subject) {
     state.targetedClasseSubject = subject.id;
   },
@@ -85025,6 +85518,7 @@ var default_mutations = {
     state.pupilsBlockedsLength = data.pupilsblockedLength;
     state.PBPLength = data.PBPLength;
     state.PBSLength = data.PBSLength;
+    state.classesBlockedsAll = data.classesBlockeds;
   },
   GET_TOOLS: function GET_TOOLS(state, data) {
     state.token = data.token;
@@ -85032,6 +85526,7 @@ var default_mutations = {
     state.months = data.months;
     state.subjects = data.subjects;
     state.primaryClasses = data.primaryClasses;
+    state.secondaryClassesFormatted = data.secondaryClassesFormatted;
     state.secondaryClasses = data.secondaryClasses;
     state.allClasses = _objectSpread({}, data.primaryClasses, {}, data.secondaryClasses);
     state.primarySubjects = data.primarySubjects;
@@ -85184,7 +85679,6 @@ var pupils_mutations = {
     state.PBSLength = data.PBSLength;
   },
   GET_A_PUPIL_DATA: function GET_A_PUPIL_DATA(state, data) {
-    console.log(data);
     state.targetPupilParents = data.pupilParents;
     state.editedPupil = data.p;
     state.targetPupil = data.p;
@@ -85695,6 +86189,7 @@ var default_states = {
   message: "",
   primaryClasses: {},
   secondaryClasses: {},
+  secondaryClassesFormatted: {},
   allClasses: {},
   primarySubjects: {},
   subjects: {},

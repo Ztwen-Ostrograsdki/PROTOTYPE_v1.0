@@ -1,5 +1,5 @@
 <template>
-	<div v-if="!errors.status">
+	<div>
 		<router-view></router-view>
 	</div>
 </template>

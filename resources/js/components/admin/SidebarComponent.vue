@@ -125,7 +125,6 @@
         created(){
             this.$store.dispatch('getCounter')
             this.$store.dispatch('getTOOLS')
-            
         },
 
  
@@ -144,7 +143,7 @@
         },
 
         computed: mapState([
-            'editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'user', 'admin', 'errors', 'subjects'
+            'editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'user', 'admin', 'errors', 'subjects', 'classesBlockeds', 'classesBlockedsAll'
         ])
         
 	}

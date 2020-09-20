@@ -72,7 +72,13 @@ const classes_actions = {
             .catch(e => {
                store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
-    }
+    },
+    lazyDeleteClasse: (store, classe) => {
+        axios.delete('/admin/director/classesm/' + classe.id + '-' + classe.forced)
+        .then(response => {
+            store.commit('GET_CLASSES_DATA', response.data)
+        })
+    },
 
 }
 

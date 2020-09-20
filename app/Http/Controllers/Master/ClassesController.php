@@ -48,16 +48,13 @@ class ClassesController extends Controller
         }
 
         
-        $classes = Classe::withTrashed('deleted_at')->orderBy('level', 'asc')->get();
+        $classes = Classe::where('id', '>', 0)->orderBy('level', 'asc')->get();
         $u = User::all()->count();
         $t = Teacher::all()->count();
         $ts = Teacher::whereLevel('secondary')->count();
         $tp = Teacher::whereLevel('primary')->count();
 
         $classeWithHeads = [];
-
-        // $blockeds = Classe::getBlockeds();
-
 
         $classesSecondary = Classe::whereLevel('secondary')->orderBy('name', 'asc')->get();
         $classesPrimary = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
@@ -263,8 +260,51 @@ class ClassesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($target)
     {
-        //
+        if (preg_match_all('/-/', $target)) {
+            $id = (int)(explode('-', $target))[0];
+            $forced = (explode('-', $target))[1] == 'true' ? true : false;
+        }
+        else{
+            $id = (int)$target;
+            $forced = false;
+        }
+        $classe = Classe::find($id);
+
+        $pupils = $classe->pupils;
+        $teachers = $classe->teachers;
+        $subjects = $classe->subjects;
+
+        if ($forced) {
+            if (count($pupils) > 0) {
+                foreach ($pupils as $pupil) {
+                    $pupil->classe_id = null;
+                    $pupil->save();
+                }
+            }
+
+            if (count($teachers) > 0) {
+                foreach ($teachers as $teacher) {
+                    $teacher->classes->detach($classe->id);
+                }
+            }
+
+            if (count($subjects) > 0) {
+                foreach ($subjects as $subject) {
+                    $subject->classes->detach($classe->id);
+                }
+            }
+
+            $classe->teacher_id = null;
+            $classe->forceDelete();
+
+            
+        }
+        else{
+            $classe->delete();
+            return $this->classesDataSender();
+        }
+
     }
 }

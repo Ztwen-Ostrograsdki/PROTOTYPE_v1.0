@@ -1,5 +1,6 @@
 <template>
-	<div class="first-div d-flex justify-content-around py-1 w-100 border float-right mx-0 bg-linear-official-50" style="z-index: 100" v-if="!errors.status">
+	<div class="w-100" style="z-index: 100" v-if="!errors.status">
+		<div class="first-div mb-2 d-flex justify-content-around py-1 bg-linear-official-50 w-100 border float-right mx-0 ">
 			<div class="d-flex row justify-content-around" style="width: 98.5%">
 				<div class="border py-2 col-4">
 					<div class="w-100 d-flex justify-content-between">
@@ -115,8 +116,20 @@
 			<div>
 				<span class="fa fa-chevron-up"></span>
 			</div>
-			<!-- <pdf></pdf> -->
 		</div>
+		<div class="w-100 d-flex justify-content-end bg-linear-official-50 border border-white">
+			<div class="d-flex p-1">
+				<span class="mx-1">
+					<router-link to="/admin/director/master/dashboards/emplois-du-temps">
+						<span class="btn btn-secondary py-2 px-2 w-100 border border-white">Les emplois du temps</span>
+	                </router-link>
+				</span>
+				<span>
+					<span class="btn btn-info py-2 px-2 w-100 border border-white">Les tableaux synoptiques</span>
+				</span>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>

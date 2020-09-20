@@ -53,7 +53,7 @@ class PupilsController extends Controller
         $AllpupilsWithClasses = [];
         $PSBlockeds = [];
         $PPBlockeds = [];
-        $pupils = Pupil::withTrashed(!'deleted_at')->orderBy('name', 'asc')->get();
+        $pupils = Pupil::all();
         $u = User::all()->count();
         $t = Teacher::all()->count();
         $ts = Teacher::whereLevel('secondary')->count();
@@ -71,9 +71,14 @@ class PupilsController extends Controller
            }
         }
 
-
-        foreach (Pupil::withTrashed('deleted_at')->get() as $pupil) {
-            $AllpupilsWithClasses[$pupil->id] = $pupil->classe->getFormattedClasseName();
+        foreach (Pupil::all() as $pupil) {
+            if ($pupil->classe) {
+                $AllpupilsWithClasses[$pupil->id] = $pupil->classe->getFormattedClasseName();
+            }
+            else{
+                $classe = Classe::withTrashed('deleted_at')->whereId($pupil->classe_id)->first();
+                $AllpupilsWithClasses[$pupil->id] = $classe->getFormattedClasseName();
+            }
         }
 
         $pupilsSecondary = Pupil::whereLevel('secondary')->orderBy('name', 'asc')->get();
@@ -155,7 +160,13 @@ class PupilsController extends Controller
         $token = csrf_token();
         $pupil = Pupil::withTrashed('deleted_at')->whereId($id)->firstOrFail();
 
-        $subjects = $pupil->classe->subjects;
+
+        if ($pupil->classe !== null) {
+            $subjects = $pupil->classe->subjects;
+        }
+        else{
+            $subjects = Subject::whereLevel('secondary')->get();
+        }
         if ($pupil->level === "primary") {
            $subjects = Subject::whereLevel('primary')->get();
         }
@@ -176,7 +187,12 @@ class PupilsController extends Controller
         $lastName = $helper->getLastName();
         $firstName = $helper->getFirstName();
 
-        $classeName = $pupil->classe->name;
+        if ($pupil->classe !== null) {
+            $classeName = $pupil->classe->name;
+        }
+        else{
+            $classeName = '';
+        }
 
         $parents = $pupil->parentors();
 

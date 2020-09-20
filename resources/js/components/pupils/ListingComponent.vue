@@ -157,7 +157,7 @@
                             </div>
                         </div>
                     </div>
-                    <listing-pupils :isProfil="false" :thePupils="pupils" :redList="false" v-if="pupils.length > 0"></listing-pupils>
+                    <listing-pupils :isProfil="false" :thePupils="pupils" :deletedClasses="classesBlockedsAll" :redList="false" v-if="pupils.length> 0"></listing-pupils>
                     <div class="mx-auto my-2 d-flex justify-content-center w-100" v-if="pupils.length == 0">
                         <h3 class="cursive text-info text-center d-flex flex-column">
                             <span class="fa fa-child"></span>
@@ -246,7 +246,7 @@
         },
 
         computed: mapState([
-           'pupilsArray', 'pupils', 'secondaryPupils', 'primaryPupils', 'pupilsAll', 'pl', 'tl', 'ul', 'psl', 'ppl', 'tpl', 'tsl', 'alertPupilsSearch', 'alert', 'message', 'editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'successed', 'invalidInputs', 'errors'
+           'pupilsArray', 'pupils', 'secondaryPupils', 'primaryPupils', 'pupilsAll', 'pl', 'tl', 'ul', 'psl', 'ppl', 'tpl', 'tsl', 'alertPupilsSearch', 'alert', 'message', 'editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'successed', 'invalidInputs', 'errors', 'classesBlockedsAll'
         ])
     }
 

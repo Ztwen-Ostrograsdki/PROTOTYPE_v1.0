@@ -86,6 +86,10 @@ let teachers_profil_box = Vue.component('profil-teacher-box', require('./compone
 let teachers_classes_box = Vue.component('profil-teacher-classes-box', require('./components/teachers/ProfilLayouts/TeacherClassesBoxComponent.vue').default)
 
 
+//DASHBOARDS COMPONENENTS
+let dashboard_plan = Vue.component('dashboard-plan', require('./components/admin/layouts/dashboards/PlansComponent.vue').default)
+
+
 const routes = [
 	
 	{
@@ -93,6 +97,12 @@ const routes = [
 		component: admin_defaultDashboard,
 		name: 'adminHome'
 	},
+	{
+		path: '/admin/director/master/dashboards/emplois-du-temps',
+		component: dashboard_plan,
+		name: 'dashboard_plan',
+	},
+
 	{
 		path: '/admin/director/pupilsm',
 		component: pupils_home,

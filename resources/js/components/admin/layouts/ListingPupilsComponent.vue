@@ -39,7 +39,7 @@
                                 {{pupil.month + ' ' + pupil.year}}
                             </td>
                             <td v-if="!isProfil">
-                            	<router-link class="card-link w-100 d-inline-block" :to="{name: 'classesProfil', params: {id: pupil.classe_id}}">
+                            	<router-link :title="hisClasseWasBlocked(pupil.classe_id, deletedClasses) == '' ? '' : 'Cette classe a été envoyé dans la corbeille'" class="card-link w-100 d-inline-block" :to="{name: 'classesProfil', params: {id: pupil.classe_id}}" :class="hisClasseWasBlocked(pupil.classe_id, deletedClasses)">
                                     <span>{{pupilsArray[pupil.id].name}}<sup>{{pupilsArray[pupil.id].sup}}</sup> {{ pupilsArray[pupil.id].idc}}</span>
                                 </router-link>
                             </td>
@@ -77,7 +77,7 @@
 	import { mapState } from 'vuex'
 
 	export default{
-		props: ['isProfil', 'thePupils', 'redList'],
+		props: ['isProfil', 'thePupils', 'redList', 'deletedClasses'],
 
 		data() {
             return {
@@ -107,7 +107,9 @@
             gender(sexe){
                 return sexe == "male" ? 'M' : 'F'
             },
-            
+            hisClasseWasBlocked(pupilClasse, deletedClasses){
+                return deletedClasses[pupilClasse] == undefined ? '' : 'text-muted'
+            },
             birthday(user)
             {
                 let date = user.birth
@@ -178,6 +180,9 @@
 
             resetAlert(){
                 this.$store.commit('ALERT_RESET')
+            },
+            restore(pupil){
+                this.$store.dispatch('restorePupils', pupil)
             }
         },
 
