@@ -2862,8 +2862,62 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      hours: ["08h - 09h", "09h - 10h", "10h - 11h", "11h - 12h", "12h - 13h", "13h - 14h"]
+    };
+  },
   created: function created() {
     this.$store.dispatch('getTOOLS');
   },
@@ -13284,7 +13338,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n.table-plan th{\n\tpadding: 0 !important;\n\tpadding-bottom: 1px !important;\n\tpadding-top: 1px !important;\n}\n.td-days td{\n\tborder-right: thin solid white;\n}\n", ""]);
+exports.push([module.i, "\n.table-plan th{\n\tpadding: 0 !important;\n\tpadding-bottom: 1px !important;\n\tpadding-top: 1px !important;\n}\n.td-days td{\n\tborder-right: thin solid white;\n}\n.t-contents tbody tr td{\n\twidth: 20%;\n}\n", ""]);
 
 // exports
 
@@ -48678,9 +48732,7 @@ var render = function() {
                                 ])
                               ]
                             )
-                          ]),
-                          _vm._v(" "),
-                          _vm._m(1, true)
+                          ])
                         ])
                       ]
                     )
@@ -48689,7 +48741,40 @@ var render = function() {
                 2
               ),
               _vm._v(" "),
-              _vm._m(2)
+              _c(
+                "tbody",
+                { staticClass: "text-center w-100 t-contents h5-title" },
+                [
+                  _c(
+                    "tr",
+                    {},
+                    [
+                      _c("td", [_vm._v("Jours")]),
+                      _vm._v(" "),
+                      _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                        return _c("td", [_vm._m(1, true)])
+                      })
+                    ],
+                    2
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.hours, function(hour) {
+                    return _c(
+                      "tr",
+                      { staticClass: "t-contents w-100" },
+                      [
+                        _c("td", [_vm._v(_vm._s(hour))]),
+                        _vm._v(" "),
+                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                          return _c("td", [_vm._m(2, true)])
+                        })
+                      ],
+                      2
+                    )
+                  })
+                ],
+                2
+              )
             ]
           )
         ])
@@ -48714,24 +48799,38 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tbody", { staticClass: "td-days" }, [
-      _c("td", [_vm._v("L")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("M")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("M")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("J")]),
-      _vm._v(" "),
-      _c("td", [_vm._v("V")])
+    return _c("table", { staticClass: "w-100" }, [
+      _c("thead", { staticClass: "w-100" }, [
+        _c("th", [_vm._v("L")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("M")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("M")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("J")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("V")])
+      ])
     ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("tbody", { staticClass: "text-center w-100" }, [
-      _c("tr", {}, [_c("td", [_vm._v("08h - 09h")])])
+    return _c("table", { staticClass: "w-100" }, [
+      _c("tbody", { staticClass: "w-100" }, [
+        _c("tr", { staticClass: "w-100" }, [
+          _c("td", [_vm._v("svt")]),
+          _vm._v(" "),
+          _c("td", [_vm._v("svt")]),
+          _vm._v(" "),
+          _c("td", [_vm._v("svt")]),
+          _vm._v(" "),
+          _c("td", [_vm._v("svt")]),
+          _vm._v(" "),
+          _c("td", [_vm._v("svt")])
+        ])
+      ])
     ])
   }
 ]

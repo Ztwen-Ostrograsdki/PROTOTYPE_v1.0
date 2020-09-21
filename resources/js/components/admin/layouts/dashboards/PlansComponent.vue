@@ -27,21 +27,70 @@
 										</span>
 									</th>
 								</thead>
-								<tbody class="td-days">
-									<td>L</td>
-									<td>M</td>
-									<td>M</td>
-									<td>J</td>
-									<td>V</td>
-								</tbody>
+								<!-- <tbody class="td-days">
+									<tr class="w-100">
+										<table class="w-100">
+											<thead class="w-100">
+												<th>L</th>
+												<th>M</th>
+												<th>M</th>
+												<th>J</th>
+												<th>V</th>
+											</thead>
+											<tbody>
+												<tr>
+													<td>svt</td>
+													<td>maths</td>
+													<td>maths</td>
+													<td>pct</td>
+													<td>pct</td>
+												</tr>
+												<tr>
+													<td>svt</td>
+													<td>maths</td>
+													<td>maths</td>
+													<td>pct</td>
+													<td>pct</td>
+												</tr>
+											</tbody>
+										</table>
+									</tr>
+								</tbody> -->
 							</table>
 						</th>
 					</thead>
-					<tbody class="text-center w-100">
+					<tbody class="text-center w-100 t-contents h5-title">
 						<tr class="">
-							<td>08h - 09h</td>
+							<td>Jours</td>
+							<td v-for="classe in secondaryClassesFormatted">
+								<table class="w-100">
+									<thead class="w-100">
+										<th>L</th>
+										<th>M</th>
+										<th>M</th>
+										<th>J</th>
+										<th>V</th>
+									</thead>
+								</table>
+							</td>
 						</tr>
-
+						<tr v-for="hour in hours" class="t-contents w-100">
+							<td>{{ hour }}</td>
+							<td v-for="classe in secondaryClassesFormatted">
+								<table class="w-100">
+									<tbody class="w-100">
+										<tr class="w-100">
+											<td>svt</td>
+											<td>svt</td>
+											<td>svt</td>
+											<td>svt</td>
+											<td>svt</td>
+										</tr>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						
 					</tbody>
 
 				</table>
@@ -55,7 +104,18 @@
 
 	export default {
 
-
+		data() {
+            return {
+            	hours : [
+                    "08h - 09h",
+                    "09h - 10h",
+                    "10h - 11h",
+                    "11h - 12h",
+                    "12h - 13h",
+                    "13h - 14h",
+                ],
+            }   
+        },
 		created(){
 			this.$store.dispatch('getTOOLS')
         },
@@ -78,5 +138,9 @@
 
 	.td-days td{
 		border-right: thin solid white;
+	}
+
+	.t-contents tbody tr td{
+		width: 20%;
 	}
 	</style>
