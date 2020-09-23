@@ -2938,6 +2938,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2997,19 +3008,37 @@ __webpack_require__.r(__webpack_exports__);
     subjectFormattor: function subjectFormattor(subject) {
       if (subject !== null && subject !== undefined) {
         if (subject == "Physique-Chimie-Technologie") {
-          return 'PCT';
+          return {
+            name: 'PCT',
+            color: 'aqua'
+          };
         } else if (subject == "Histoire-Géographie") {
-          return 'HG';
+          return {
+            name: 'HG',
+            color: 'white'
+          };
         } else if (subject == "Français") {
-          return 'Fra';
+          return {
+            name: 'Fra',
+            color: 'rgb(200, 100, 100)'
+          };
         } else if (subject == "Mathématiques") {
-          return 'Math';
+          return {
+            name: 'Math',
+            color: 'orange'
+          };
         } else {
-          return substring(0, 3);
+          return {
+            name: subject.substring(0, 3),
+            color: 'black'
+          };
         }
       }
 
-      return '?';
+      return {
+        name: '?',
+        color: 'red'
+      };
     }
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'admin', 'secondaryClasses', 'secondaryClassesFormatted', 'horaires'])
@@ -48768,12 +48797,10 @@ var render = function() {
       "div",
       {
         staticClass:
-          "w-100 mt-2 bg-linear-official-50 border border-white mx-auto p-1"
+          "w-100 mt-2 bg-linear-official-180 border border-white mx-auto p-1"
       },
       [
-        _c("h5", { staticClass: "w-100 text-center py-2" }, [
-          _vm._v("Emploi du temps")
-        ]),
+        _vm._m(1),
         _vm._v(" "),
         _c("div", { staticClass: "mx-auto w-100 mt-2" }, [
           _c(
@@ -48838,7 +48865,7 @@ var render = function() {
                       _c("td", [_vm._v("Jours")]),
                       _vm._v(" "),
                       _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                        return _c("td", [_vm._m(1, true)])
+                        return _c("td", [_vm._m(2, true)])
                       })
                     ],
                     2
@@ -48862,20 +48889,33 @@ var render = function() {
                                     "Lundi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Lundi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Lundi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Lundi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -48897,20 +48937,33 @@ var render = function() {
                                     "Mardi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Mardi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Mardi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Mardi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -48932,20 +48985,33 @@ var render = function() {
                                     "Mercredi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Mercredi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Mercredi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Mercredi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -48967,20 +49033,33 @@ var render = function() {
                                     "Jeudi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Jeudi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Jeudi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Jeudi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -49002,218 +49081,33 @@ var render = function() {
                                     "Vendredi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Vendredi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) == "x"
                                     ? _c(
                                         "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Vendredi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Vendredi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
                                       )
-                                    : _vm._e()
-                                ])
-                              ])
-                            ])
-                          ])
-                        })
-                      ],
-                      2
-                    )
-                  }),
-                  _vm._v(" "),
-                  _vm._m(2),
-                  _vm._v(" "),
-                  _vm._l(_vm.second_mornings, function(hour) {
-                    return _c(
-                      "tr",
-                      { staticClass: "t-contents w-100" },
-                      [
-                        _c("td", [_vm._v(_vm._s(hour))]),
-                        _vm._v(" "),
-                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                          return _c("td", [
-                            _c("table", { staticClass: "w-100" }, [
-                              _c("tbody", { staticClass: "w-100" }, [
-                                _c("tr", { staticClass: "w-100" }, [
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Lundi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Mardi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Mercredi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Jeudi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Vendredi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -49240,7 +49134,7 @@ var render = function() {
                   _vm._v(" "),
                   _vm._m(3),
                   _vm._v(" "),
-                  _vm._l(_vm.afternoon, function(hour) {
+                  _vm._l(_vm.second_mornings, function(hour) {
                     return _c(
                       "tr",
                       { staticClass: "t-contents w-100" },
@@ -49258,20 +49152,33 @@ var render = function() {
                                     "Lundi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Lundi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Lundi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Lundi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -49293,20 +49200,33 @@ var render = function() {
                                     "Mardi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Mardi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Mardi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Mardi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -49328,20 +49248,33 @@ var render = function() {
                                     "Mercredi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Mercredi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Mercredi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Mercredi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -49363,20 +49296,33 @@ var render = function() {
                                     "Jeudi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Jeudi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Jeudi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Jeudi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -49398,20 +49344,296 @@ var render = function() {
                                     "Vendredi",
                                     _vm.horaires
                                   ) !== "x"
-                                    ? _c("td", [
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.getSubject(
-                                                classe["id"],
-                                                hour,
-                                                "Vendredi",
-                                                _vm.horaires
-                                              )
-                                            ) +
-                                            " "
-                                        )
-                                      ])
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Vendredi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Vendredi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e()
+                                ])
+                              ])
+                            ])
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  }),
+                  _vm._v(" "),
+                  _vm._m(4),
+                  _vm._v(" "),
+                  _vm._l(_vm.afternoon, function(hour) {
+                    return _c(
+                      "tr",
+                      { staticClass: "t-contents w-100" },
+                      [
+                        _c("td", [_vm._v(_vm._s(hour))]),
+                        _vm._v(" "),
+                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                          return _c("td", [
+                            _c("table", { staticClass: "w-100" }, [
+                              _c("tbody", { staticClass: "w-100" }, [
+                                _c("tr", { staticClass: "w-100" }, [
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Lundi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Lundi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Mardi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Mardi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Mercredi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Mercredi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Jeudi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Jeudi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c(
+                                        "td",
+                                        {
+                                          style:
+                                            "color:" +
+                                            _vm.getSubject(
+                                              classe["id"],
+                                              hour,
+                                              "Vendredi",
+                                              _vm.horaires
+                                            ).color
+                                        },
+                                        [
+                                          _vm._v(
+                                            " " +
+                                              _vm._s(
+                                                _vm.getSubject(
+                                                  classe["id"],
+                                                  hour,
+                                                  "Vendredi",
+                                                  _vm.horaires
+                                                ).name
+                                              ) +
+                                              " "
+                                          )
+                                        ]
+                                      )
                                     : _vm._e(),
                                   _vm._v(" "),
                                   _vm.getSubject(
@@ -49457,6 +49679,37 @@ var staticRenderFns = [
         [_vm._v("Les tableaux synoptiques")]
       )
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "h3",
+      { staticClass: "w-100 pt-2 d-flex justify-content-between" },
+      [
+        _c("span", { staticClass: "ml-1" }, [
+          _vm._v("\n\t\t\t\tEmploi du temps\n\t\t\t")
+        ]),
+        _vm._v(" "),
+        _c("span", { staticClass: "cursive text-white-50" }, [
+          _vm._v('CEPG "LA PRUNELLE DE DIEU"')
+        ]),
+        _vm._v(" "),
+        _c("span", [
+          _c(
+            "span",
+            { staticClass: "float-right btn btn-news p-1 px-2 mx-2" },
+            [_vm._v("Inserer une horaire")]
+          ),
+          _vm._v(" "),
+          _c("span", {
+            staticClass: "float-right fa fa-recycle mx-2 text-danger",
+            attrs: { title: "Nettoyer le tableau de bord des emplois du temps" }
+          })
+        ])
+      ]
+    )
   },
   function() {
     var _vm = this

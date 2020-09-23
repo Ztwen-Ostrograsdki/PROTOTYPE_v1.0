@@ -12,8 +12,17 @@
 				</span>
 			</div>
 		</div>
-		<div class="w-100 mt-2 bg-linear-official-50 border border-white mx-auto p-1">
-			<h5 class="w-100 text-center py-2">Emploi du temps</h5>
+		<div class="w-100 mt-2 bg-linear-official-180 border border-white mx-auto p-1">
+			<h3 class="w-100 pt-2 d-flex justify-content-between">
+				<span class="ml-1">
+					Emploi du temps
+				</span>
+				<span class="cursive text-white-50">CEPG "LA PRUNELLE DE DIEU"</span>
+				<span>
+					<span class="float-right btn btn-news p-1 px-2 mx-2">Inserer une horaire</span>
+					<span class="float-right fa fa-recycle mx-2 text-danger" title="Nettoyer le tableau de bord des emplois du temps"></span>
+				</span>
+			</h3>
 			<div class="mx-auto w-100 mt-2">
 				<table class="w-100 table-table table-striped table-plan">
 					<thead>
@@ -51,15 +60,15 @@
 								<table class="w-100">
 									<tbody class="w-100">
 										<tr class="w-100">
-											<td v-if="getSubject(classe['id'], hour, 'Lundi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Lundi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Lundi', horaires).color" v-if="getSubject(classe['id'], hour, 'Lundi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Lundi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Lundi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Mardi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mardi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Mardi', horaires).color" v-if="getSubject(classe['id'], hour, 'Mardi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mardi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Mardi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mercredi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Mercredi', horaires).color" v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mercredi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Jeudi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Jeudi', horaires).color" v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Jeudi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Vendredi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Vendredi', horaires).color" v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Vendredi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) == 'x'" class="text-white-50"> x </td>
 										</tr>
 									</tbody>
@@ -77,21 +86,22 @@
 								<table class="w-100">
 									<tbody class="w-100">
 										<tr class="w-100">
-											<td v-if="getSubject(classe['id'], hour, 'Lundi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Lundi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Lundi', horaires).color" v-if="getSubject(classe['id'], hour, 'Lundi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Lundi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Lundi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Mardi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mardi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Mardi', horaires).color" v-if="getSubject(classe['id'], hour, 'Mardi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mardi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Mardi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mercredi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Mercredi', horaires).color" v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mercredi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Jeudi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Jeudi', horaires).color" v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Jeudi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Vendredi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Vendredi', horaires).color" v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Vendredi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) == 'x'" class="text-white-50"> x </td>
 										</tr>
 									</tbody>
 								</table>
 							</td>
 						</tr>
+
 						<tr class="t-contents w-100 py-2">
 							<td colspan="8" class="py-2 cursive bg-linear-official-180 border border-success"> APRES-MIDI </td>
 						</tr>
@@ -102,22 +112,23 @@
 								<table class="w-100">
 									<tbody class="w-100">
 										<tr class="w-100">
-											<td v-if="getSubject(classe['id'], hour, 'Lundi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Lundi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Lundi', horaires).color" v-if="getSubject(classe['id'], hour, 'Lundi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Lundi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Lundi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Mardi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mardi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Mardi', horaires).color" v-if="getSubject(classe['id'], hour, 'Mardi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mardi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Mardi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mercredi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Mercredi', horaires).color" v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Mercredi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Mercredi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Jeudi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Jeudi', horaires).color" v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Jeudi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Jeudi', horaires) == 'x'" class="text-white-50"> x </td>
-											<td v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Vendredi', horaires) }} </td>
+											<td :style="'color:' + getSubject(classe['id'], hour, 'Vendredi', horaires).color" v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) !== 'x'"> {{ getSubject(classe['id'], hour, 'Vendredi', horaires).name }} </td>
 											<td v-if="getSubject(classe['id'], hour, 'Vendredi', horaires) == 'x'" class="text-white-50"> x </td>
 										</tr>
 									</tbody>
 								</table>
 							</td>
 						</tr>
-						
+
+
 					</tbody>
 
 				</table>
@@ -210,24 +221,24 @@
         	subjectFormattor(subject){
         		if(subject !== null && subject !== undefined){
         			if(subject == "Physique-Chimie-Technologie"){
-        				return 'PCT'
+        				return {name: 'PCT', color: 'aqua'}
         			}
         			else if (subject == "Histoire-Géographie") {
-        				return 'HG'
+        				return {name: 'HG', color: 'white'}
         			}
         			else if (subject == "Français") {
-        				return 'Fra'
+        				return {name: 'Fra', color: 'rgb(200, 100, 100)'}
         			}
         			else if(subject == "Mathématiques"){
-        				return 'Math'
+        				return {name: 'Math', color: 'orange'}
         			}
         			else{
-        				return substring(0, 3)
+        				return {name: subject.substring(0, 3), color: 'black'}
         			}
         			
         			
         		}
-        		return '?'
+        		return {name: '?', color: 'red'}
         		
         	}
 
