@@ -73,6 +73,11 @@ const default_mutations = {
 		state.invalidInputs = undefined
 		state.successed.status = true
 		state.successed.message = message
+	},
+
+	GET_HORAIRES: (state, data) =>{
+		console.log(data)
+		state.horaires = data
 	}
     
 

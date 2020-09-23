@@ -31,7 +31,8 @@ const default_states = {
     pupilsBlockedsLength: 0,
     invalidInputs: undefined,
     errors: {status: false, message: ''},
-    successed: {status: false, message: ''}
+    successed: {status: false, message: ''},
+    horaires: []
 
 }
 

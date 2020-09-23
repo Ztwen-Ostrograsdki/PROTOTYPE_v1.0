@@ -112,12 +112,7 @@
                     <div class="col-3 row pr-2 p-0 mt-1 mb-0">
                         
                     </div>
-                    <div class="float-right d-flex justify-content-around pr-2 mt-4 mb-0 border py-2" v-if="alert">
-                        <p class="h5-title m-0 px-2">
-                            <span class="mx-2 fa fa-envelope-open"></span>{{ message }}
-                        </p>
-                        <span class="mx-1 fa fa-close text-danger" @click="resetAlert()"></span>
-                    </div>
+                    
                     <div class="offset-7 col-2 mb-0" v-if="!alert">
                         <span class="btn btn-primary m-0 px-3 float-right mt-1" title="Ajouter une nouvelle classe..." data-toggle="modal" data-target="#newClasseModal" @click="addNew()">
                             <i class="fa fa-plus"></i>

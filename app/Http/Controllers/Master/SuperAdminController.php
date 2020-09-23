@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Helpers\Tools\Tools;
 use App\Http\Controllers\Controller;
 use App\Models\Classe;
+use App\Models\Horaire;
 use App\Models\Pupil;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -42,6 +43,33 @@ class SuperAdminController extends Controller
     {
         return view('directors.index');
     }
+
+
+    public function dashboarder()
+    {
+        // dd(Horaire::where('year', $year)->get());
+        // Horaire::create(['subject_id' => 18, 'classe_id' => 10, 'day' => 'Vendredi', 'year' => '2020', 'start' => '10', 'end' => '13']);
+        // Horaire::create(['subject_id' => 10, 'classe_id' => 10, 'day' => 'Jeudi', 'year' => '2020', 'start' => '10', 'end' => '12']);
+        return view('directors.dashboards.index');
+    }
+
+    public function getHoraires(int $year)
+    {
+        $horairesTables = [];
+        $classes = Classe::whereLevel('secondary')->get();
+
+        foreach ($classes as $c) {
+            $h = Horaire::where('year', $year)->where('classe_id', $c->id)->with('subject')->get();
+            if (count($h) > 0) {
+                $horairesTables[$c->id] = $h;
+            }
+            else{
+                $horairesTables[$c->id] = null;
+            }
+        }
+        return response()->json($horairesTables);
+    }
+
 
     public function dataSender()
     {
@@ -228,9 +256,5 @@ class SuperAdminController extends Controller
     }
 
 
-    public function dashboarder()
-    {
-        return view('directors.dashboards.index');
-    }
 
 }

@@ -18,6 +18,12 @@ const default_actions = {
 			.then(response => {
 				state.commit('GET_TOOLS', response.data)
 			})      
+	},
+	getHoraires: (state, year) => {
+        axios.get('/admin/director/master/dashbords/data&emploi&du&temps/all&data/year=' + year)
+			.then(response => {
+				state.commit('GET_HORAIRES', response.data)
+			})      
 	}
 
 }

@@ -76,6 +76,7 @@ class Classe extends Model
 
         if ($this->level === "secondary") {
             $card = [];
+            $card['id'] = $this->id;
             if ($serie == "serie-65" || $serie == "serie-43") {
                 $card['sup'] = "ème";
                 if (preg_match_all('/-/', $name)) {

@@ -40,6 +40,7 @@ Route::group(['prefix' => 'admin'], function(){
 
 	Route::group(['prefix' => 'director'], function(){
 		Route::get('master/dashboards/{target?}', 'Master\SuperAdminController@dashboarder');
+		Route::get('/master/dashbords/data&emploi&du&temps/all&data/year={year}', 'Master\SuperAdminController@getHoraires');
 		Route::get('master/get&counter&for&all&data&with&authorization', 'Master\SuperAdminController@dataSender');
 		Route::get('master/get&all&data&tools&with&authorization', 'Master\SuperAdminController@getTOOLS');
 		Route::post('master/getCurrentUser&auth', 'AuthController@auth');

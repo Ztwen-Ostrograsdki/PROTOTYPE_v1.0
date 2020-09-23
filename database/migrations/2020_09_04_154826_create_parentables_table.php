@@ -31,6 +31,7 @@ class CreateParentablesTable extends Migration
                   ->on('pupils')
                   ->onDelete('cascade')
                   ->onUpdate('cascade');
+            $table->timestamps();
         });
     }
 

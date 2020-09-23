@@ -2911,17 +2911,108 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      hours: ["08h - 09h", "09h - 10h", "10h - 11h", "11h - 12h", "12h - 13h", "13h - 14h"]
+      first_mornings: ["08h - 09h", "09h - 10h"],
+      second_mornings: ["10h - 11h", "11h - 12h", "12h - 13h"],
+      afternoon: ["13h - 14h", "14h - 15h", "15h - 16h", "16h - 17h", "17h - 18h", "18h - 19h"]
     };
   },
   created: function created() {
     this.$store.dispatch('getTOOLS');
+    this.$store.dispatch('getHoraires', 2020);
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'admin', 'secondaryClasses', 'secondaryClassesFormatted'])
+  methods: {
+    getSubject: function getSubject(classe, horaire, day, horaires) {
+      var validHoraires = [];
+
+      if (horaires !== undefined && classe !== undefined) {
+        var emploi = horaires[classe];
+
+        if (emploi !== null && emploi !== undefined) {
+          for (var i = 0; i < emploi.length; i++) {
+            if (emploi[i].day == day) {
+              validHoraires.push(emploi[i]);
+            }
+          }
+
+          if (validHoraires.length !== 0) {
+            var the_valid_horaire = null;
+            var parts = horaire.split("-");
+            var debut = parseInt(parts[0].substring(0, 2), 10);
+            var fin = parseInt(parts[1].substring(1, 3), 10);
+
+            for (var i = 0; i < validHoraires.length; i++) {
+              var v_h = validHoraires[i];
+              var start = parseInt(v_h.start, 10);
+              var end = parseInt(v_h.end, 10);
+
+              if (debut >= start && debut <= end && fin <= end) {
+                the_valid_horaire = v_h;
+              }
+            }
+
+            if (the_valid_horaire !== null) {
+              return this.subjectFormattor(the_valid_horaire.subject.name);
+            } else {
+              return 'x';
+            }
+          } else {
+            return 'x';
+          }
+        } else {
+          return 'x';
+        }
+      }
+    },
+    subjectFormattor: function subjectFormattor(subject) {
+      if (subject !== null && subject !== undefined) {
+        if (subject == "Physique-Chimie-Technologie") {
+          return 'PCT';
+        } else if (subject == "Histoire-Géographie") {
+          return 'HG';
+        } else if (subject == "Français") {
+          return 'Fra';
+        } else if (subject == "Mathématiques") {
+          return 'Math';
+        } else {
+          return substring(0, 3);
+        }
+      }
+
+      return '?';
+    }
+  },
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['user', 'admin', 'secondaryClasses', 'secondaryClassesFormatted', 'horaires'])
 });
 
 /***/ }),
@@ -2959,11 +3050,6 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-//
-//
-//
-//
-//
 //
 //
 //
@@ -48685,7 +48771,7 @@ var render = function() {
           "w-100 mt-2 bg-linear-official-50 border border-white mx-auto p-1"
       },
       [
-        _c("h5", { staticClass: "w-100 text-center" }, [
+        _c("h5", { staticClass: "w-100 text-center py-2" }, [
           _vm._v("Emploi du temps")
         ]),
         _vm._v(" "),
@@ -48758,7 +48844,7 @@ var render = function() {
                     2
                   ),
                   _vm._v(" "),
-                  _vm._l(_vm.hours, function(hour) {
+                  _vm._l(_vm.first_mornings, function(hour) {
                     return _c(
                       "tr",
                       { staticClass: "t-contents w-100" },
@@ -48766,7 +48852,584 @@ var render = function() {
                         _c("td", [_vm._v(_vm._s(hour))]),
                         _vm._v(" "),
                         _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                          return _c("td", [_vm._m(2, true)])
+                          return _c("td", [
+                            _c("table", { staticClass: "w-100" }, [
+                              _c("tbody", { staticClass: "w-100" }, [
+                                _c("tr", { staticClass: "w-100" }, [
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Lundi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mardi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mercredi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Jeudi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Vendredi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e()
+                                ])
+                              ])
+                            ])
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  }),
+                  _vm._v(" "),
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _vm._l(_vm.second_mornings, function(hour) {
+                    return _c(
+                      "tr",
+                      { staticClass: "t-contents w-100" },
+                      [
+                        _c("td", [_vm._v(_vm._s(hour))]),
+                        _vm._v(" "),
+                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                          return _c("td", [
+                            _c("table", { staticClass: "w-100" }, [
+                              _c("tbody", { staticClass: "w-100" }, [
+                                _c("tr", { staticClass: "w-100" }, [
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Lundi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mardi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mercredi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Jeudi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Vendredi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e()
+                                ])
+                              ])
+                            ])
+                          ])
+                        })
+                      ],
+                      2
+                    )
+                  }),
+                  _vm._v(" "),
+                  _vm._m(3),
+                  _vm._v(" "),
+                  _vm._l(_vm.afternoon, function(hour) {
+                    return _c(
+                      "tr",
+                      { staticClass: "t-contents w-100" },
+                      [
+                        _c("td", [_vm._v(_vm._s(hour))]),
+                        _vm._v(" "),
+                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                          return _c("td", [
+                            _c("table", { staticClass: "w-100" }, [
+                              _c("tbody", { staticClass: "w-100" }, [
+                                _c("tr", { staticClass: "w-100" }, [
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Lundi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Lundi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mardi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mardi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mercredi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Mercredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Jeudi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Jeudi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) !== "x"
+                                    ? _c("td", [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Vendredi",
+                                                _vm.horaires
+                                              )
+                                            ) +
+                                            " "
+                                        )
+                                      ])
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.getSubject(
+                                    classe["id"],
+                                    hour,
+                                    "Vendredi",
+                                    _vm.horaires
+                                  ) == "x"
+                                    ? _c(
+                                        "td",
+                                        { staticClass: "text-white-50" },
+                                        [_vm._v(" x ")]
+                                      )
+                                    : _vm._e()
+                                ])
+                              ])
+                            ])
+                          ])
                         })
                       ],
                       2
@@ -48817,20 +49480,32 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("table", { staticClass: "w-100" }, [
-      _c("tbody", { staticClass: "w-100" }, [
-        _c("tr", { staticClass: "w-100" }, [
-          _c("td", [_vm._v("svt")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("svt")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("svt")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("svt")]),
-          _vm._v(" "),
-          _c("td", [_vm._v("svt")])
-        ])
-      ])
+    return _c("tr", { staticClass: "t-contents w-100 py-2" }, [
+      _c(
+        "td",
+        {
+          staticClass:
+            "py-2 cursive bg-linear-official-180 border border-primary",
+          attrs: { colspan: "8" }
+        },
+        [_vm._v(" RECREATION ")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", { staticClass: "t-contents w-100 py-2" }, [
+      _c(
+        "td",
+        {
+          staticClass:
+            "py-2 cursive bg-linear-official-180 border border-success",
+          attrs: { colspan: "8" }
+        },
+        [_vm._v(" APRES-MIDI ")]
+      )
     ])
   }
 ]
@@ -49212,31 +49887,6 @@ var render = function() {
         _c("div", { staticClass: "w-100 my-1 m-0 p-1" }, [
           _c("div", { staticClass: "w-100 row m-0 p-0 pl-lg-4" }, [
             _c("div", { staticClass: "col-3 row pr-2 p-0 mt-1 mb-0" }),
-            _vm._v(" "),
-            _vm.alert
-              ? _c(
-                  "div",
-                  {
-                    staticClass:
-                      "float-right d-flex justify-content-around pr-2 mt-4 mb-0 border py-2"
-                  },
-                  [
-                    _c("p", { staticClass: "h5-title m-0 px-2" }, [
-                      _c("span", { staticClass: "mx-2 fa fa-envelope-open" }),
-                      _vm._v(_vm._s(_vm.message) + "\n                    ")
-                    ]),
-                    _vm._v(" "),
-                    _c("span", {
-                      staticClass: "mx-1 fa fa-close text-danger",
-                      on: {
-                        click: function($event) {
-                          return _vm.resetAlert()
-                        }
-                      }
-                    })
-                  ]
-                )
-              : _vm._e(),
             _vm._v(" "),
             !_vm.alert
               ? _c("div", { staticClass: "offset-7 col-2 mb-0" }, [
@@ -84876,6 +85526,11 @@ var default_actions = {
     axios.get('/admin/director/master/get&all&data&tools&with&authorization').then(function (response) {
       state.commit('GET_TOOLS', response.data);
     });
+  },
+  getHoraires: function getHoraires(state, year) {
+    axios.get('/admin/director/master/dashbords/data&emploi&du&temps/all&data/year=' + year).then(function (response) {
+      state.commit('GET_HORAIRES', response.data);
+    });
   }
 };
 
@@ -85655,6 +86310,10 @@ var default_mutations = {
     state.invalidInputs = undefined;
     state.successed.status = true;
     state.successed.message = message;
+  },
+  GET_HORAIRES: function GET_HORAIRES(state, data) {
+    console.log(data);
+    state.horaires = data;
   }
 };
 
@@ -86308,7 +86967,8 @@ var default_states = {
   successed: {
     status: false,
     message: ''
-  }
+  },
+  horaires: []
 };
 
 var states = _objectSpread({}, _authStates_js__WEBPACK_IMPORTED_MODULE_0__["default"], {}, _parentsStates_js__WEBPACK_IMPORTED_MODULE_5__["default"], {}, _teachersStates_js__WEBPACK_IMPORTED_MODULE_2__["default"], {}, _classesStates_js__WEBPACK_IMPORTED_MODULE_3__["default"], {}, _pupilsStates_js__WEBPACK_IMPORTED_MODULE_1__["default"], {}, _notificationsStates_js__WEBPACK_IMPORTED_MODULE_4__["default"], {}, default_states);
