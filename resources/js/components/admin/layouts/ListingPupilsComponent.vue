@@ -21,7 +21,7 @@
                             <td>
                                 {{k+1}}
                             </td>
-                            <td class="text-left px-1">
+                            <td class="text-left px-2">
                                 <router-link :to="{name: 'pupilsProfil', params: {id: pupil.id}}"   class="card-link d-inline-block" >
                                     <span  class="w-100 d-inline-block link-profiler"  @click="setEdited(pupil)">
                                         {{pupil.name}}

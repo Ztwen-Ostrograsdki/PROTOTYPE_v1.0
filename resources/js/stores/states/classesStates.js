@@ -56,6 +56,7 @@ const classes_states = {
     editedClasseSubjects: [],
     classesSecondary : [],
     classesPrimary : [],
+    classesWithSubjects : [],
     classes: [],
     classesAll: [], 
     classesBlockedsAll: [],

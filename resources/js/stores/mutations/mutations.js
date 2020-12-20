@@ -3,6 +3,7 @@ import teachers_mutations from './teachersMutations.js'
 import classes_mutations from './classesMutations.js'
 import auth_mutations from './authMutations.js'
 import parents_mutations from './parentsMutations.js'
+import dashboards_mutations from './dashboardsMutations.js'
 
 const default_mutations = {
 
@@ -37,6 +38,9 @@ const default_mutations = {
 		state.months = data.months
 		state.subjects = data.subjects
 		state.primaryClasses = data.primaryClasses
+		state.allPrimaryClasses = data.allPrimaryClasses
+		state.allSecondaryClasses = data.allSecondaryClasses
+		state.classesWithSubjects = data.classesWithSubjects
 		state.secondaryClassesFormatted = data.secondaryClassesFormatted
 		state.secondaryClasses = data.secondaryClasses
 		state.allClasses = {...data.primaryClasses, ...data.secondaryClasses}
@@ -75,20 +79,11 @@ const default_mutations = {
 		state.successed.message = message
 	},
 
-	GET_HORAIRES: (state, data) =>{
-		console.log(data)
-		state.horaires = data
-	}
-    
-
-
-
-
 
 }
 
 const mutations = {
-	...pupils_mutations, ...parents_mutations, ...teachers_mutations, ...classes_mutations, ...auth_mutations, ...default_mutations
+	...pupils_mutations, ...parents_mutations, ...dashboards_mutations, ...teachers_mutations, ...classes_mutations, ...auth_mutations, ...default_mutations
 }
 
 export default mutations

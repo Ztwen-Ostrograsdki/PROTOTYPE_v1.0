@@ -58,6 +58,7 @@ class ClassesController extends Controller
 
         $classesSecondary = Classe::whereLevel('secondary')->orderBy('name', 'asc')->get();
         $classesPrimary = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
+        $blockeds = Classe::getBlockeds();
 
         $data = [
             'user' => $user,
@@ -66,7 +67,8 @@ class ClassesController extends Controller
             'classesAll' => $classes,
             'cSec' => $classesSecondary, 
             'cPrim' => $classesPrimary, 
-            'u' => $u, 
+            'u' => $u,
+            'classesBlockeds' => $blockeds,
         ];
         if ($errors !== []) {
             $data['errors'] = $errors;
@@ -226,7 +228,7 @@ class ClassesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(int $id)
+    public function show($id)
     {
         return view('directors.classes.profil');
     }
@@ -306,5 +308,11 @@ class ClassesController extends Controller
             return $this->classesDataSender();
         }
 
+    }
+
+    public function restore(int $id) 
+    {   
+        Classe::withTrashed('deleted_at')->whereId((int)$id)->firstOrFail()->restore();
+        return $this->classesDataSender();
     }
 }

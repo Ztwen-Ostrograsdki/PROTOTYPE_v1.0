@@ -137,7 +137,7 @@
                             </div>
                         </div>
                     </div>
-                    <listing-classes :isProfil="false" :theClasses="classes" :redList="false" v-if="classes.length> 0"></listing-classes>
+                    <listing-classes :isProfil="false" :theClasses="classesBlockeds" :redList="true" v-if="classesBlockeds.length> 0"></listing-classes>
                     
                 </div>
             </div>
@@ -252,7 +252,7 @@
         },
 
         computed: mapState([
-           'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors'
+           'classesBlockeds', 'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors'
         ])
     }
 

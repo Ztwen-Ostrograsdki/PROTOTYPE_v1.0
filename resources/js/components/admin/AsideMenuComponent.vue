@@ -74,6 +74,10 @@
 	                <li class="subitem1"><a href="#">Primaires <i class="float-right mr-3">({{ pcl }})</i></a></li>
 	                <li class="subitem2"><a href="#">Secondaires <i class="float-right mr-3">({{ scl }})</i></a></li>
 	                <li class="subitem3"><a href="#">Supérieur</a></li>
+	                <li class="subitem3">
+	                	<router-link to="/admin/director/classesm/redList">Corbeille<i class="float-right mr-3">({{ CBLength }})</i>
+	                    </router-link>
+	                </li>
 	            </ul>
 	        </li>
 	        <li class="item5">

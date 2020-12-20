@@ -55,6 +55,7 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::get('classesm/{id}/marks/index', 'Master\ClassesController@show');
 		Route::post('classesm/c={id}/marks/s={subject}/trimestre/t={trimestre}/index', 'Master\ClassesController@getClasseMarks');
 		Route::get('classesm/c={id}/marks&with&order/s={subject}/trimestre/t={trimestre}/ordering', 'Master\ClassesController@orderPupilsOfThisClasse');
+		Route::put('classesm/restore/id={id}', 'Master\ClassesController@restore');
 		Route::resource('classesm', 'Master\ClassesController')->middleware('onlySuperAdmin');
 
 		//PUPILS
@@ -77,6 +78,9 @@ Route::group(['prefix' => 'admin'], function(){
 
 		//Marks
 		Route::put('pupilsm/update/marks/update&marks/p={id}&s={s}&c={c}', 'Master\PupilsController@updateAPupilMarks');
+
+		//DASHBOARDS
+		Route::delete('master/dashbords/reset&horaires/reset&now/reset', 'Master\HorairesController@reset');
 		
 		
 

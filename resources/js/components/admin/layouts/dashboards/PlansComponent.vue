@@ -19,8 +19,8 @@
 				</span>
 				<span class="cursive text-white-50">CEPG "LA PRUNELLE DE DIEU"</span>
 				<span>
-					<span class="float-right btn btn-news p-1 px-2 mx-2">Inserer une horaire</span>
-					<span class="float-right fa fa-recycle mx-2 text-danger" title="Nettoyer le tableau de bord des emplois du temps"></span>
+					<span class="float-right btn btn-news p-1 px-2 mx-2" data-toggle="modal" data-target="#newHoraireModal">Inserer une horaire</span>
+					<span class="float-right fa fa-recycle mx-2 text-danger" title="Nettoyer le tableau de bord des emplois du temps" @click="resetHoraires({classe: null, year: 2020})"></span>
 				</span>
 			</h3>
 			<div class="mx-auto w-100 mt-2">
@@ -240,6 +240,10 @@
         		}
         		return {name: '?', color: 'red'}
         		
+        	},
+
+        	resetHoraires(data){
+        		this.$store.dispatch('resetHoraires', data)
         	}
 
         },

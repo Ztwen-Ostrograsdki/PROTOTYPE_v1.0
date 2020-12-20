@@ -79,6 +79,16 @@ const classes_actions = {
             store.commit('GET_CLASSES_DATA', response.data)
         })
     },
+    restoreClasses: (store, classe) => {
+        axios.put('/admin/director/classesm/restore/id=' + classe.id)
+            .then(response => {
+                store.commit('GET_CLASSES_DATA', response.data)
+                store.commit('ALERT_MAKER', "La classe " + classe.name + " a été restauré avec succès!")
+            })
+            .catch(e => {
+               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+            })
+    }
 
 }
 

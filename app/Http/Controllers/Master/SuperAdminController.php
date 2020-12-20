@@ -96,11 +96,8 @@ class SuperAdminController extends Controller
         $classesPrimaryBlockeds = [];
         $classesSecondaryBlockeds = [];
 
-        $classesB = Classe::withTrashed('deleted_at')->where('deleted_at', '!=', null)->get();
-        foreach ($classesB as $cl) {
-            $classesBlockeds[$cl->id] = $cl;
-        }
-
+        $classesBlockeds = Classe::getBlockeds();
+        
         $p = Pupil::all()->count();
         $ps = Pupil::whereLevel('secondary')->count();
         $pp = Pupil::whereLevel('primary')->count();
@@ -139,26 +136,36 @@ class SuperAdminController extends Controller
     public function getTOOLS()
     {   
         $secondaryClassesFormatted = [];
+        $classesWithSubjects = [];
 
         $token = csrf_token();
         $secondarySubjects = Subject::whereLevel('secondary')->get();
         $primarySubjects = Subject::whereLevel('primary')->get();
+        $allPrimaryClasses = Classe::withTrashed('deleted_at')->whereLevel('primary')->get();
+        $allSecondaryClasses = Classe::withTrashed('deleted_at')->whereLevel('secondary')->get();
         $primaryClasses = Classe::whereLevel('primary')->get();
         $secondaryClasses = Classe::whereLevel('secondary')->get();
         $months = Tools::months();
         $roles = Tools::roles();
 
         if (count($secondaryClasses) > 0) {
-           foreach ($secondaryClasses as $classe) {
+            foreach ($secondaryClasses as $classe) {
                 $secondaryClassesFormatted[$classe->id] = $classe->getFormattedClasseName();
+                $classesWithSubjects[$classe->id] = $classe->subjects;
            }
         }
+
+        $classesWithSubjects[0] = $secondarySubjects;
         $data = [
             'secondaryClasses' => $secondaryClasses, 
+            'allSecondaryClasses' => $allSecondaryClasses,
             'secondaryClassesFormatted' => $secondaryClassesFormatted, 
             'primaryClasses' => $primaryClasses, 
+            'allPrimaryClasses' => $allPrimaryClasses,
+
             'primarySubjects' => $primarySubjects, 
             'secondarySubjects' => $secondarySubjects,
+            'classesWithSubjects' => $classesWithSubjects,
             'subjects' => $secondarySubjects,
             'months' => $months,
             'roles' => $roles,

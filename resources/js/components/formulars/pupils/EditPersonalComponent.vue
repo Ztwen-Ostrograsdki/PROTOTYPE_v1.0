@@ -26,8 +26,8 @@
                             <label for="ed_p_classe" class="mb-0">La classe</label>
                             <select name="classe_id" id="ed_p_classe" class="custom-select" :class="getInvalids('classe_id', invalidInputs)" v-model="editedPupil.classe_id">
                                 <option value="">Choisissez la classe</option>
-                                <option :value="classe.id" v-for="classe in secondaryClasses" v-if="editedPupil.level == 'secondary'">{{classe.name}}</option>
-                                <option :value="classe.id" v-for="classe in primaryClasses" v-if="editedPupil.level == 'primary'">{{classe.name}}</option>
+                                <option :value="classe.id" v-for="classe in allSecondaryClasses" v-if="editedPupil.level == 'secondary'">{{classe.name}}</option>
+                                <option :value="classe.id" v-for="classe in allPrimaryClasses" v-if="editedPupil.level == 'primary'">{{classe.name}}</option>
                             </select>
                             <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.classe_id !== undefined"> La classe choisie est invalide </i>
                         </div>
@@ -135,7 +135,7 @@
 		},
 
 		computed: mapState([
-            'editedPupil', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'classeDomain'
+            'editedPupil', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'classeDomain', 'allPrimaryClasses', 'allSecondaryClasses'
         ]),
 
 

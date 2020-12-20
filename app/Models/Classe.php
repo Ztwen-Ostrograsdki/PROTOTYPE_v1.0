@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\ClasseAndSubjectJoiner;
+use App\Models\Classe;
 use App\Models\Pupil;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -160,6 +161,21 @@ class Classe extends Model
             }
         }
 
+    }
+
+    public static function getBlockeds()
+    {
+        $classes = Classe::withTrashed('deleted_at')->get();
+
+        $blockeds = [];
+
+        foreach ($classes as $classe) {
+            if ($classe->deleted_at !== null) {
+                $blockeds[] = $classe;
+            }
+        }
+
+        return $blockeds;
     }
 
 }

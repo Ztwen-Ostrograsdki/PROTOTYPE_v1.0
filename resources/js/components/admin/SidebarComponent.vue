@@ -107,6 +107,8 @@
         <teacher-perso></teacher-perso>
         <teacher-classes></teacher-classes>
 
+        <new-horaire></new-horaire>
+
 	</div>
 </template>
 

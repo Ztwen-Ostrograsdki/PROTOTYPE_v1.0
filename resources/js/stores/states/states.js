@@ -4,6 +4,7 @@ import teachers_states from './teachersStates.js'
 import classes_states from './classesStates.js'
 import notifications_states from './notificationsStates.js'
 import parents_states from './parentsStates.js'
+import dashboards_states from './dashboardsStates.js'
 
 const default_states = {
 	pl: 0,
@@ -17,6 +18,8 @@ const default_states = {
 	message: "",
 	primaryClasses: {},
 	secondaryClasses: {},
+	allPrimaryClasses: {},
+	allSecondaryClasses: {},
 	secondaryClassesFormatted: {},
 	allClasses: {},
 	primarySubjects: {},
@@ -32,12 +35,12 @@ const default_states = {
     invalidInputs: undefined,
     errors: {status: false, message: ''},
     successed: {status: false, message: ''},
-    horaires: []
+    
 
 }
 
 const states = {
-	...auth_states, ...parents_states, ...teachers_states, ...classes_states, ...pupils_states, ...notifications_states, ...default_states
+	...auth_states, ...parents_states, ...dashboards_states, ...teachers_states, ...classes_states, ...pupils_states, ...notifications_states, ...default_states
 }
 
 export default states

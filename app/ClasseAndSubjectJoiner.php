@@ -28,6 +28,12 @@ class ClasseAndSubjectJoiner extends Model
     	elseif (preg_match_all('/-D/', $identify)) {
     		$this->serie = 'serie-D';
     	}
+        elseif (preg_match_all('/-A1/', $identify)) {
+            $this->serie = 'serie-A1';
+        }
+        elseif (preg_match_all('/-A2/', $identify)) {
+            $this->serie = 'serie-A2';
+        }
     	elseif (preg_match_all('/-A/', $identify)) {
     		$this->serie = 'serie-A';
     	}
@@ -46,6 +52,9 @@ class ClasseAndSubjectJoiner extends Model
     	elseif (preg_match_all('/-B/', $identify)) {
     		$this->serie = 'serie-B';
     	}
+        elseif (preg_match_all('/Seconde/', $identify) && !preg_match_all('/-/', $identify)) {
+            $this->serie = 'serie-ABCD';
+        }
     }
 
     public function getSerie()
@@ -62,11 +71,15 @@ class ClasseAndSubjectJoiner extends Model
 
     		'serie-65' => ['Français', 'Anglais', 'Histoire-Géographie', 'Mathématiques', 'Physique-Chimie-Technologie', 'Biologie', 'Informatique', 'Sport'],
 
-    		'serie-43' => ['Français', 'Anglais', 'Espagnol', 'Allemand', 'Histoire-Géographie', 'Mathématiques', 'Physique-Chimie-Technologie', 'Biologie', 'Informatique', 'Sport'],
+    		'serie-43' => ['Français', 'Anglais', 'LV-2', 'Histoire-Géographie', 'Mathématiques', 'Physique-Chimie-Technologie', 'Biologie', 'Informatique', 'Sport'],
 
-    		'serie-A' => ['Français', 'Anglais', 'Espagnol', 'Allemand', 'Histoire-Géographie', 'Philosophie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport'],
+            'serie-A' => ['Français', 'Anglais', 'LV-2', 'Histoire-Géographie', 'Philosophie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport'],
 
-    		'serie-AB' => ['Français', 'Anglais', 'Espagnol', 'Allemand', 'Histoire-Géographie', 'Philosophie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport'],
+            'serie-A1' => ['Français', 'Anglais', 'LV-2', 'Histoire-Géographie', 'Philosophie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport', 'Economie'],
+
+    		'serie-A2' => ['Français', 'Anglais', 'LV-2', 'Histoire-Géographie', 'Philosophie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport', 'Economie'],
+
+    		'serie-AB' => ['Français', 'Anglais', 'LV-2', 'Histoire-Géographie', 'Philosophie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport', 'Economie'],
 
     		'serie-B' => ['Français', 'Anglais', 'Histoire-Géographie', 'Philosophie', 'Mathématiques', 'Economie', 'Biologie', 'Informatique', 'Sport'],
 
@@ -74,7 +87,9 @@ class ClasseAndSubjectJoiner extends Model
 
     		'serie-C' => ['Français', 'Anglais', 'Histoire-Géographie', 'Philosophie', 'Physique-Chimie-Technologie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport'],
 
-    		'serie-D' => ['Français', 'Anglais', 'Histoire-Géographie', 'Philosophie', 'Physique-Chimie-Technologie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport']
+    		'serie-D' => ['Français', 'Anglais', 'Histoire-Géographie', 'Philosophie', 'Physique-Chimie-Technologie', 'Mathématiques', 'Biologie', 'Informatique', 'Sport'],
+
+            'serie-ABCD' => ['Français', 'Anglais', 'Histoire-Géographie', 'Philosophie', 'Physique-Chimie-Technologie', 'LV-2']
 
     	];
     	return $depedences[$serie];

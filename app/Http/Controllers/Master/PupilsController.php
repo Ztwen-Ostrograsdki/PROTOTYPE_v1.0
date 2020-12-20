@@ -160,9 +160,13 @@ class PupilsController extends Controller
         $token = csrf_token();
         $pupil = Pupil::withTrashed('deleted_at')->whereId($id)->firstOrFail();
 
+        $classe_id = $pupil->classe_id;
 
-        if ($pupil->classe !== null) {
-            $subjects = $pupil->classe->subjects;
+        if ($classe_id !== null) {
+
+            $classe = Classe::withTrashed('deleted_at')->where('id', $classe_id)->first();
+
+            $subjects = $classe->subjects;
         }
         else{
             $subjects = Subject::whereLevel('secondary')->get();
@@ -172,13 +176,14 @@ class PupilsController extends Controller
         }
 
         $coefTables = [];
-        $joiner = new ClasseAndSubjectJoiner($pupil->classe);
+
+        $joiner = new ClasseAndSubjectJoiner(Classe::withTrashed('deleted_at')->where('id', $classe_id)->first());
         foreach ($subjects as $subject) {
             $coef = $joiner->getCoefiscientOfSubject($subject);
             $coefTables[$subject->id] = $coef;
         }
 
-        $classeFMT = $pupil->classe->getFormattedClasseName();
+        $classeFMT = $classe->getFormattedClasseName();
         $birthday = ModelHelper::birthFormattor($pupil, 0);
 
         $helper = new ModelHelper($pupil);
@@ -187,8 +192,8 @@ class PupilsController extends Controller
         $lastName = $helper->getLastName();
         $firstName = $helper->getFirstName();
 
-        if ($pupil->classe !== null) {
-            $classeName = $pupil->classe->name;
+        if ($classe !== null) {
+            $classeName = $classe->name;
         }
         else{
             $classeName = '';

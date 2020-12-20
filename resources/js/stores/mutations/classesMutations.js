@@ -6,6 +6,8 @@ const classes_mutations = {
         state.classes = data.classes
         state.classesAll = data.classesAll
 
+        state.classesBlockeds = data.classesBlockeds
+
         state.classesSecondary = data.cSec
         state.classesPrimary = data.cPrim
         state.admin = data.admin
@@ -19,7 +21,6 @@ const classes_mutations = {
     },
 
     RESET_BLOCKED_CLASSSES: (state, data) => {
-        console.log(data)
         state.classesBlockedsAll = data
     },
     RESET_TARGETED_CLASSE_SUBJECT_TARGETED: (state, subject) =>{

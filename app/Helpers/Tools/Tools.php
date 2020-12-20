@@ -8,14 +8,13 @@ class Tools{
 
 	public static function subjects($level = null):?array
 	{
-		$allSubjects = ['Français', 'Anglais', 'Histoire-Géographie', 'Allemand', 'Espagnol', 'Philosophie', 'Sociologie', 'Histoire-Géographie', 'Poésie', 'Contes', 'EST', 'Droit', 'Mathématiques', 'Physique-Chimie-Technologie', 'Biologie', 'Informatique', 'Comptabilité', 'Sport'];
+		$allSubjects = ['Français', 'Anglais', 'Histoire-Géographie', 'LV-2', 'Philosophie', 'Sociologie', 'Histoire-Géographie', 'Poésie', 'Contes', 'EST', 'Droit', 'Mathématiques', 'Physique-Chimie-Technologie', 'Biologie', 'Informatique', 'Comptabilité', 'Sport'];
 
 		$primarySubjects = ['Français', 'Anglais', 'Histoire-Géographie', 'Poésie', 'Contes', 'EST', 'Mathématiques', 'Informatique', 'Sport'];
 
-		$secondarySubjects = ['Français', 'Anglais', 'Histoire-Géographie', 'Allemand', 'Espagnol', 'Philosophie', 'Sociologie', 'Droit', 'Mathématiques', 'Physique-Chimie-Technologie', 'Biologie', 'Informatique', 'Comptabilité', 'Economie', 'Sport'];
+		$secondarySubjects = ['Français', 'Anglais', 'Histoire-Géographie', 'LV-2', 'Philosophie', 'Sociologie', 'Droit', 'Mathématiques', 'Physique-Chimie-Technologie', 'Biologie', 'Informatique', 'Comptabilité', 'Economie', 'Sport'];
 
 		if ($level === null) {
-			
 			return $allSubjects;
 		}
 		else{
@@ -31,7 +30,7 @@ class Tools{
 
 	public static function classes($level = null):?array
 	{
-		$secondaryClasses = ['Sixième', 'Cinquième', 'Troisième', 'Seconde-A', 'Seconde-AB', 'Seconde-G1', 'Seconde-G2', 'Seconde-C', 'Seconde-D', 'Première-AB', 'Première-A', 'Première-G1', 'Première-G2', 'Première-D', 'Première-C', 'Terminale-AB', 'Terminale-A', 'Terminale-C', 'Terminale-D', 'Terminale-G1', 'Terminale-G2'];
+		$secondaryClasses = ['Sixième', 'Cinquième', 'Quatrième', 'Troisième', 'Seconde'];
 		$primaryClasses = ['Maternelle', 'CI', 'CP', 'CE1', 'CE2', 'CM1', 'CM2'];
 
 		if ($level !== null) {

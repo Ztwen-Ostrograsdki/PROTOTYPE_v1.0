@@ -20,6 +20,7 @@ let admin_defaultDashboard = Vue.component('admin-dashboard-default', require('.
 //PUPILS COMPONENTS
 let pdf = Vue.component('pdf', require('./components/pupils/ExampleComponent.vue').default)
 let pupils_home = Vue.component('pupils-home', require('./components/pupils/HomeComponent.vue').default)
+let listing_pupils_component = Vue.component('listing-pupils', require('./components/admin/layouts/ListingPupilsComponent.vue').default)
 let listing_pupils = Vue.component('listing-component-pupils', require('./components/pupils/ListingComponent.vue').default)
 let pupils_redList = Vue.component('pupils-redList', require('./components/pupils/RedListComponent.vue').default)
 
@@ -42,7 +43,8 @@ let listing_classes = Vue.component('listing-component-classes', require('./comp
 let classe_marks = Vue.component('classe-marks', require('./components/classes/layouts/MarksComponent.vue').default)
 let classe_profil = Vue.component('profil-classe', require('./components/classes/ProfilComponent.vue').default)
 let classe_listing = Vue.component('listing-classe', require('./components/classes/layouts/ListingForAClasseComponent.vue').default)
-let listing_pupils_component = Vue.component('listing-pupils', require('./components/admin/layouts/ListingPupilsComponent.vue').default)
+let listing_classes_component = Vue.component('listing-classes', require('./components/admin/layouts/ListingClassesComponent.vue').default)
+let classes_redList = Vue.component('classes-redList', require('./components/classes/RedListComponent.vue').default)
 
 
 //HOMES
@@ -67,11 +69,10 @@ let teachers_perso_edit = Vue.component('teacher-perso', require('./components/f
 let teachers_classes_edit = Vue.component('teacher-classes', require('./components/formulars/teachers/EditClassesComponent.vue').default)
 
 let parents_add = Vue.component('parent-add', require('./components/formulars/parents/AddNewComponent.vue').default)
-
-
 let classes_add = Vue.component('classe-add', require('./components/formulars/classes/AddNewComponent.vue').default)
 
 let default_success = Vue.component('default-success', require('./components/success/SuccessComponent.vue').default)
+let add_new_horaire = Vue.component('new-horaire', require('./components/formulars/dashboards/NewHoraireComponent.vue').default)
 
 
 //TEACHERS COMPONENTS
@@ -180,6 +181,12 @@ const routes = [
 			{
 				path: '/admin/director/classesm',
 				component: listing_classes,
+			},
+			{
+				path: '/admin/director/classesm/redList',
+				component: classes_redList,
+				name: 'classesRedList'
+
 			},
 			{
 				path: '/admin/director/classesm/:id',
