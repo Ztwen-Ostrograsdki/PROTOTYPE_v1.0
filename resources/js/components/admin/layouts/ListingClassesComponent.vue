@@ -25,7 +25,7 @@
                                         {{classe.name}}
                                     </span>
                                 </router-link>
-                                <a href="#" title="card-link Editer les informations de" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClassePersoModal" @click="getEdited(classe)" @mouseout="closeProfiler()"></a>
+                                <a href="#" title="Editer les informations de" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClassePersoModal" @click="getEdited(classe)" @mouseout="closeProfiler()"></a>
                             </td>
                             <td>
                                 {{classe.month + ' ' + classe.year}}
@@ -134,20 +134,20 @@
                 this.$store.dispatch('getAClasseData', classe.id)
 
                 
-                $('#editClassePersoModal .div-success').hide('slide', 'up')
-                $('#editClassePersoModal .div-success h4').text('')
-                $('#editClassePersoModal').animate({
+                $('#editClasseModal .div-success').hide('slide', 'up')
+                $('#editClasseModal .div-success h4').text('')
+                $('#editClasseModal').animate({
                     top: '100'
                 })
                 
-                $('#editClassePersoModal form').show('slide', {direction: 'up'}, 1, function(){
-                    $('#editClassePersoModal form').animate({
+                $('#editClasseModal form').show('slide', {direction: 'up'}, 1, function(){
+                    $('#editClasseModal form').animate({
                         opacity: '0'
                     }, function(){
-                        $('#editClassePersoModal form').animate({
+                        $('#editClasseModal form').animate({
                             opacity: '1'
                         }, 800)
-                        $('#editClassePersoModal .buttons-div').show('fade')
+                        $('#editClasseModal .buttons-div').show('fade')
                     })
                 })
             },

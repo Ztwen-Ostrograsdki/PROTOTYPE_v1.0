@@ -1,5 +1,5 @@
 <template>
-	<div class="modal fade" id="newClasseModal" tabindex="-1" role="dialog" aria-labelledby="newClasseModalLabel" aria-hidden="true" v-show="!errors.status">
+	<div class="modal fade" id="editClasseModal" tabindex="-1" role="dialog" aria-labelledby="editClasseModalLabel" aria-hidden="true" v-show="!errors.status">
   		<div class="modal-dialog modal-lg" role="document" style="background-image: url(/media/silouhette.jpg) !important; width: 100%; background-position: -200px -400px; padding: 0px;">
 	    	<div class="bg-linear-official-50 modal-content" :class="(invalids.status || invalidInputs !== undefined)? 'border-danger' : ''" style="border-style: solid; border-radius: 0;">
 		    	<span class="d-inline-block text-white close py-2 px-3 align-self-end modalCloser" data-dismiss="modal" aria-label="Close" @click="resetNewClasse()">x</span>
