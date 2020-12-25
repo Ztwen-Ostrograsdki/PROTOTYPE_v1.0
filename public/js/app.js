@@ -2819,8 +2819,8 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
 
-      if (tag == 'teacher') {
-        this.$store.dispatch('getAClasseDataOnTeachers', classe.id);
+      if (tag == 'teacher' || tag == 'respo1' || tag == 'respo2') {
+        this.$store.dispatch('getAClasseTeachersAndPupils', classe.id);
       }
 
       this.$store.commit('RESET_EDITING_CLASSE', {
@@ -5026,6 +5026,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -5081,6 +5101,14 @@ __webpack_require__.r(__webpack_exports__);
           data = this.editingClasse.classe_name;
         }
 
+        if (tag == 'respo1') {
+          data = this.editingClasse.respo1;
+        }
+
+        if (tag == 'respo2') {
+          data = this.editingClasse.respo2;
+        }
+
         this.$store.dispatch('editAClasseByPart', {
           tag: tag,
           classe: classe,
@@ -5102,7 +5130,7 @@ __webpack_require__.r(__webpack_exports__);
       return $tab;
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['newClasse', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'editingClasse', 'targetedClasseTeachers'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['newClasse', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'editingClasse', 'targetedClasseTeachers', 'targetedClassePupils'])
 });
 
 /***/ }),
@@ -55188,6 +55216,214 @@ var render = function() {
                             ])
                           ]
                         )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.editingClasse.tag == "respo1"
+                      ? _c(
+                          "div",
+                          {
+                            staticClass:
+                              " mx-auto mt-2 d-flex justify-content-start",
+                            staticStyle: { width: "93%" }
+                          },
+                          [
+                            _c("div", { staticStyle: { width: "90%" } }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "m-0 p-0",
+                                  attrs: { for: "edit_c_respo1" }
+                                },
+                                [_vm._v("Le Premier Responsable")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.editingClasse.respo1,
+                                      expression: "editingClasse.respo1"
+                                    }
+                                  ],
+                                  staticClass: "custom-select",
+                                  attrs: {
+                                    name: "respo1",
+                                    id: "edit_c_respo1"
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.editingClasse,
+                                        "respo1",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "option",
+                                    {
+                                      attrs: { value: "null" },
+                                      domProps: {
+                                        selected: _vm.wasSelected(
+                                          _vm.editingClasse.respo1,
+                                          null
+                                        )
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "Choisissez le Premier Pesponsable"
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.targetedClassePupils, function(
+                                    pupil
+                                  ) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        domProps: {
+                                          selected: _vm.wasSelected(
+                                            _vm.editingClasse.respo1,
+                                            pupil.id
+                                          ),
+                                          value: pupil.id
+                                        }
+                                      },
+                                      [_vm._v(" " + _vm._s(pupil.name) + " ")]
+                                    )
+                                  })
+                                ],
+                                2
+                              ),
+                              _vm._v(" "),
+                              _c("i", { staticClass: "h5-title" }, [
+                                _vm._v(" " + _vm._s() + " ")
+                              ])
+                            ])
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.editingClasse.tag == "respo2"
+                      ? _c(
+                          "div",
+                          {
+                            staticClass:
+                              " mx-auto mt-2 d-flex justify-content-start",
+                            staticStyle: { width: "93%" }
+                          },
+                          [
+                            _c("div", { staticStyle: { width: "90%" } }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "m-0 p-0",
+                                  attrs: { for: "edit_c_respo2" }
+                                },
+                                [_vm._v("Le Second Responsable")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.editingClasse.respo2,
+                                      expression: "editingClasse.respo2"
+                                    }
+                                  ],
+                                  staticClass: "custom-select",
+                                  attrs: {
+                                    name: "respo2",
+                                    id: "edit_c_respo2"
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.editingClasse,
+                                        "respo2",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "option",
+                                    {
+                                      attrs: { value: "null" },
+                                      domProps: {
+                                        selected: _vm.wasSelected(
+                                          _vm.editingClasse.respo2,
+                                          null
+                                        )
+                                      }
+                                    },
+                                    [_vm._v("Choisissez le Second Responsable")]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.targetedClassePupils, function(
+                                    pupil
+                                  ) {
+                                    return _c(
+                                      "option",
+                                      {
+                                        domProps: {
+                                          selected: _vm.wasSelected(
+                                            _vm.editingClasse.respo2,
+                                            pupil.id
+                                          ),
+                                          value: pupil.id
+                                        }
+                                      },
+                                      [_vm._v(" " + _vm._s(pupil.name) + " ")]
+                                    )
+                                  })
+                                ],
+                                2
+                              ),
+                              _vm._v(" "),
+                              _c("i", { staticClass: "h5-title" }, [
+                                _vm._v(" " + _vm._s() + " ")
+                              ])
+                            ])
+                          ]
+                        )
                       : _vm._e()
                   ]
                 )
@@ -89092,9 +89328,10 @@ var classes_actions = {
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });
   },
-  getAClasseDataOnTeachers: function getAClasseDataOnTeachers(store, id) {
-    axios.get('/admin/director/classesm/get&classe&data&on&teachers/id=' + id).then(function (response) {
-      store.commit('GET_A_CLASSE_DATA_ON_TEACHERS', response.data);
+  getAClasseTeachersAndPupils: function getAClasseTeachersAndPupils(store, id) {
+    axios.get('/admin/director/classesm/get&classe&data&on&teachers&pupils/id=' + id).then(function (response) {
+      store.commit('GET_A_CLASSE_TEACHERS', response.data.teachers);
+      store.commit('GET_A_CLASSE_PUPILS', response.data.pupils);
     })["catch"](function (e) {
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });
@@ -89137,11 +89374,20 @@ var classes_actions = {
     });
   },
   editAClasseByPart: function editAClasseByPart(store, data) {
+    var name = null;
+
+    if (data.tag == 'name') {
+      name = data.inputs;
+    }
+
     axios.put('/admin/director/classesm/' + data.id, {
       token: data.token,
       tag: data.tag,
-      inputs: data.inputs
+      inputs: data.inputs,
+      name: name
     }).then(function (response) {
+      console.log(response.data);
+
       if (response.data.invalidInputs == undefined) {
         store.commit('RESET_INVALID_INPUTS');
         store.commit('GET_CLASSES_DATA', response.data);
@@ -89777,12 +90023,17 @@ var classes_mutations = {
     state.targetedClasse = data.targetedClasse;
     state.targetedClasseSubject = data.targetedClasse.targetedSubject.id;
   },
-  GET_A_CLASSE_DATA_ON_TEACHERS: function GET_A_CLASSE_DATA_ON_TEACHERS(state, data) {
-    state.targetedClasseTeachers = data.targetedClasseTeachers;
+  GET_A_CLASSE_TEACHERS: function GET_A_CLASSE_TEACHERS(state, data) {
+    state.targetedClasseTeachers = data;
+  },
+  GET_A_CLASSE_PUPILS: function GET_A_CLASSE_PUPILS(state, data) {
+    state.targetedClassePupils = data;
   },
   RESET_EDITING_CLASSE: function RESET_EDITING_CLASSE(state, data) {
     state.editingClasse = {
       classe: data.classe,
+      respo1: data.classe.respo1,
+      respo2: data.classe.respo2,
       classe_name: data.classe.name,
       teacher_id: data.classe.teacher_id,
       tag: data.tag
@@ -90394,6 +90645,7 @@ var classes_states = {
     tag: null
   },
   targetedClasseTeachers: [],
+  targetedClassePupils: [],
   teachers: [],
   targetedClasse: {
     classe: {},

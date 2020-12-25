@@ -30,6 +30,7 @@ const classes_states = {
         tag: null
     },
     targetedClasseTeachers: [],
+    targetedClassePupils: [],
     teachers: [],
 
     targetedClasse : {

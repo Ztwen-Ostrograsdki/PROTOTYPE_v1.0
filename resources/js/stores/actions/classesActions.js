@@ -14,10 +14,11 @@ const classes_actions = {
                store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
-    getAClasseDataOnTeachers: (store, id) => {
-        axios.get('/admin/director/classesm/get&classe&data&on&teachers/id=' + id)
+    getAClasseTeachersAndPupils: (store, id) => {
+        axios.get('/admin/director/classesm/get&classe&data&on&teachers&pupils/id=' + id)
             .then(response => {
-                store.commit('GET_A_CLASSE_DATA_ON_TEACHERS', response.data)
+                store.commit('GET_A_CLASSE_TEACHERS', response.data.teachers)
+                store.commit('GET_A_CLASSE_PUPILS', response.data.pupils)
             })
             .catch(e => {
                store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
@@ -75,12 +76,18 @@ const classes_actions = {
     },
 
     editAClasseByPart: (store, data) => {
+        let name = null
+        if(data.tag == 'name'){
+            name = data.inputs
+        }
         axios.put('/admin/director/classesm/' + data.id , {
             token: data.token,
             tag: data.tag,
-            inputs: data.inputs
+            inputs: data.inputs,
+            name: name
         })
         .then(response => {
+            console.log(response.data)
             if(response.data.invalidInputs == undefined){
                 store.commit('RESET_INVALID_INPUTS')
                 store.commit('GET_CLASSES_DATA', response.data)

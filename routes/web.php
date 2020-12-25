@@ -52,7 +52,7 @@ Route::group(['prefix' => 'admin'], function(){
 		//CLASSES
 		Route::get('classesm/DATA&for&classes', 'Master\ClassesController@classesDataSender');
 		Route::get('classesm/get&classe&data&credentials/id={id}', 'Master\ClassesController@getAClasseData');
-		Route::get('classesm/get&classe&data&on&teachers/id={id}', 'Master\ClassesController@getAClasseDataOnTeachers');
+		Route::get('classesm/get&classe&data&on&teachers&pupils/id={id}', 'Master\ClassesController@getAClasseTeachersAndPupils');
 		Route::get('classesm/{id}/marks/index', 'Master\ClassesController@show');
 		Route::post('classesm/c={id}/marks/s={subject}/trimestre/t={trimestre}/index', 'Master\ClassesController@getClasseMarks');
 		Route::get('classesm/c={id}/marks&with&order/s={subject}/trimestre/t={trimestre}/ordering', 'Master\ClassesController@orderPupilsOfThisClasse');

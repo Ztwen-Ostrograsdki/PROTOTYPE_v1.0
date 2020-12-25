@@ -195,8 +195,8 @@
                     })
                 })
 
-                if(tag == 'teacher'){
-                    this.$store.dispatch('getAClasseDataOnTeachers', classe.id)
+                if(tag == 'teacher' || tag == 'respo1' || tag == 'respo2'){
+                    this.$store.dispatch('getAClasseTeachersAndPupils', classe.id)
                 }
                 
                 this.$store.commit('RESET_EDITING_CLASSE', {classe: classe, tag: tag}) 

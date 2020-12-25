@@ -132,14 +132,15 @@ class ClassesController extends Controller
         return response()->json($data);
     }
 
-    public function getAClasseDataOnTeachers(int $id, $year = null)
+    public function getAClasseTeachersAndPupils(int $id, $year = null)
     {
         $data = [];
         $targetedClasseTeachers = [];
+        $targetedClassePupils = [];
         $classe = Classe::find($id);
+
         if ($classe->level == 'secondary') {
             $teachers = (Classe::find($id))->teachers;
-    
             if ($teachers->toArray() !== []) {
                 foreach ($teachers as $t) {
                     $targetedClasseTeachers[$t->id] = $t;
@@ -156,7 +157,15 @@ class ClassesController extends Controller
             }
         }
 
-        $data['targetedClasseTeachers'] = $targetedClasseTeachers;
+        $pupils = (Classe::find($id))->pupils;
+        if ($pupils->toArray() !== []) {
+            foreach ($pupils as $p) {
+                $targetedClassePupils[$p->id] = $p;
+            }
+        }
+
+        $data['teachers'] = $targetedClasseTeachers;
+        $data['pupils'] = $targetedClassePupils;
 
         return response()->json($data);
     }

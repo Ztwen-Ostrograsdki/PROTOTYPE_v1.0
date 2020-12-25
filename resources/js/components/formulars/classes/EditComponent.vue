@@ -51,6 +51,26 @@
                             <i class="h5-title"> {{  }} </i>
                         </div>
                     </div>
+                    <div v-if="editingClasse.tag == 'respo1'" class=" mx-auto mt-2 d-flex justify-content-start" style="width: 93%">
+                        <div style="width: 90%;">
+                            <label for="edit_c_respo1" class="m-0 p-0">Le Premier Responsable</label>
+                            <select v-model="editingClasse.respo1" name="respo1" id="edit_c_respo1" class="custom-select">
+                                <option value="null" :selected="wasSelected(editingClasse.respo1, null)" >Choisissez le Premier Pesponsable</option>
+                                <option :selected="wasSelected(editingClasse.respo1, pupil.id)" :value="pupil.id" v-for="pupil in targetedClassePupils" > {{ pupil.name }} </option>
+                            </select>
+                            <i class="h5-title"> {{  }} </i>
+                        </div>
+                    </div>
+                    <div v-if="editingClasse.tag == 'respo2'" class=" mx-auto mt-2 d-flex justify-content-start" style="width: 93%">
+                        <div style="width: 90%;">
+                            <label for="edit_c_respo2" class="m-0 p-0">Le Second Responsable</label>
+                            <select v-model="editingClasse.respo2" name="respo2" id="edit_c_respo2" class="custom-select">
+                                <option value="null" :selected="wasSelected(editingClasse.respo2, null)" >Choisissez le Second Responsable</option>
+                                <option :selected="wasSelected(editingClasse.respo2, pupil.id)" :value="pupil.id" v-for="pupil in targetedClassePupils" > {{ pupil.name }} </option>
+                            </select>
+                            <i class="h5-title"> {{  }} </i>
+                        </div>
+                    </div>
                     
 			    </form>
 	      		</div>
@@ -122,7 +142,14 @@
 						data = this.editingClasse.classe_name
 
 					}
+					if(tag == 'respo1'){
+						data = this.editingClasse.respo1
 
+					}
+					if(tag == 'respo2'){
+						data = this.editingClasse.respo2
+
+					}
 					this.$store.dispatch('editAClasseByPart', {tag, classe, id: classe.id, inputs: data, token, route})
 				}
 				
@@ -138,7 +165,7 @@
 		},
 
 		computed: mapState([
-            'newClasse', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'editingClasse', 'targetedClasseTeachers'
+            'newClasse', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'editingClasse', 'targetedClasseTeachers', 'targetedClassePupils'
         ]),
 
 

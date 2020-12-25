@@ -20,12 +20,17 @@ const classes_mutations = {
         state.targetedClasse = data.targetedClasse
         state.targetedClasseSubject = data.targetedClasse.targetedSubject.id
     },
-    GET_A_CLASSE_DATA_ON_TEACHERS: (state, data) => {
-        state.targetedClasseTeachers = data.targetedClasseTeachers
+    GET_A_CLASSE_TEACHERS: (state, data) => {
+        state.targetedClasseTeachers = data
+    },
+    GET_A_CLASSE_PUPILS: (state, data) => {
+        state.targetedClassePupils = data
     },
     RESET_EDITING_CLASSE: (state, data) =>{
         state.editingClasse = {
             classe : data.classe,
+            respo1 : data.classe.respo1,
+            respo2 : data.classe.respo2,
             classe_name: data.classe.name,
             teacher_id: data.classe.teacher_id,
             tag : data.tag

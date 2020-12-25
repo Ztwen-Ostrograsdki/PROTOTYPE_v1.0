@@ -4,6 +4,7 @@ namespace App\Http\ValidatorsSpaces;
 
 use App\Http\Controllers\Master\ClassesController;
 use App\Models\Classe;
+use App\Models\Pupil;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,16 +27,23 @@ trait ClassesValidators {
             'year' => ['required', 'numeric', 'bail', 'max:'.date('Y')]
         ]);
     }
-    public function valiadteClasseName(array $data, $except = null)
+    public function validateClasseName(array $data, $except = null)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255', 'min:7', 'bail', 'unique:classes'],
+            'name' => ['required', 'string', 'max:255', 'min:2', 'bail', 'unique:classes'],
         ]);
     }
 
-
+    /**
+     * Use to edit a classe step or part by part
+     * @param  [type] $tag     the specific target of a classe that will be change or modify
+     * @param  [type] $request the data to change the old classe data
+     * @param  [type] $id      the classe id
+     * @return [type]          a json response with a data to fetch to a client
+     */
     public function classeEditor($tag, $request, $id)
     {
+        $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
         if ($tag == 'teacher') {
             $teacher = Teacher::withTrashed('deleted_at')->whereId($request['inputs'])->get()[0];
             $is_pp = Classe::withTrashed('deleted_at')->where('teacher_id', $teacher->id)->get();
@@ -43,8 +51,6 @@ trait ClassesValidators {
             if (count($is_pp) > 0) {
                 abort(403, "Requete non autorisée");
             }
-
-            $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
 
             if ($classe->teacher_id !== null) {
                 if ($classe->level == "primary") {
@@ -64,22 +70,47 @@ trait ClassesValidators {
             $targets = Classe::withTrashed('deleted_at')->where('name', $request['inputs'])->get();
             if (count($targets) > 0) {
                 if ($targets[0]->id == $id) {
-                    $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
                     $classe->name = $request['inputs'];
                     $classe->save();
                 }
                 else{
-                    $validator = $this->valiadteClasseName($request);
+                    $validator = $this->validateClasseName($request);
                     if ($validator->fails()) {
                         return response()->json(['invalidInputs' => $validator->errors()]);
                     }
                 }
             }
             else{
-                $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
                 $classe->name = $request['inputs'];
                 $classe->save();
             }
+        }
+        if ($tag == "respo1") {
+            $respo1 = $request['inputs'];
+            $pupil = Pupil::withTrashed('deleted_at')->whereId($respo1)->first();
+            $pupils = [];
+
+            foreach ($classe->pupils as $p) {
+                $pupils[] = $p->id;
+            }
+
+            if ($pupil) {
+                if (in_array($pupil->id, $pupils)) {
+                    $r1 = $classe->respo1;
+                    $r2 = $classe->respo2;
+                    if ($r1 == null && $r2 == null) {
+                        return response()->json([$r1, $r2, $pupils]);
+                    }
+                }
+                else{
+                    abort(404, "Requete inconnue");
+                }
+                
+            }
+            else{
+                abort(404, "Requete inconnue");
+            }
+            
         }
         return (new ClassesController())->classesDataSender();
     }
