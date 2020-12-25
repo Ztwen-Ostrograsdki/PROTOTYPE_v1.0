@@ -58,7 +58,7 @@
 			openEdited(){
 				axios.get('/admin/director/teachersm/get&classes&of&teacher&with&data&credentials/id=' + this.$route.params.id)
 	                .then(response => {
-	                    this.preEdited = response.data.p
+	                    this.preEdited = response.data.teacher
 	                    this.$store.commit('SET_TOKEN', response.data.token)
 	                    this.$store.commit('SET_EDITED_TEACHER', this.preEdited)
 	                })

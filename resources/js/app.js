@@ -70,6 +70,7 @@ let teachers_classes_edit = Vue.component('teacher-classes', require('./componen
 
 let parents_add = Vue.component('parent-add', require('./components/formulars/parents/AddNewComponent.vue').default)
 let classes_add = Vue.component('classe-add', require('./components/formulars/classes/AddNewComponent.vue').default)
+let classes_edit = Vue.component('classe-edit', require('./components/formulars/classes/EditComponent.vue').default)
 
 let default_success = Vue.component('default-success', require('./components/success/SuccessComponent.vue').default)
 let add_new_horaire = Vue.component('new-horaire', require('./components/formulars/dashboards/NewHoraireComponent.vue').default)

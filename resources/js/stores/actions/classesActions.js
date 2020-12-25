@@ -14,6 +14,16 @@ const classes_actions = {
                store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
+    getAClasseDataOnTeachers: (store, id) => {
+        axios.get('/admin/director/classesm/get&classe&data&on&teachers/id=' + id)
+            .then(response => {
+                store.commit('GET_A_CLASSE_DATA_ON_TEACHERS', response.data)
+            })
+            .catch(e => {
+               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+            })
+    },
+
 
     getAClasseMarks: (store, target) => {
         axios.post('/admin/director/classesm/c=' + target.classe + '/marks/s=' + target.subject + '/trimestre/t=' + target.trimestre + '/index')
@@ -47,6 +57,42 @@ const classes_actions = {
                         }, function(){
                             $('#newClasseModal .div-success').show('fade', 200)
                             $('#newClasseModal .div-success h4').text('Création de classe reussie')
+                        })
+                        
+                    })
+                    
+                })
+                
+            }
+            else{
+                store.commit('INVALID_INPUTS', response.data.invalidInputs)
+            }
+            
+        })
+        .catch(e => {
+           store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+        })
+    },
+
+    editAClasseByPart: (store, data) => {
+        axios.put('/admin/director/classesm/' + data.id , {
+            token: data.token,
+            tag: data.tag,
+            inputs: data.inputs
+        })
+        .then(response => {
+            if(response.data.invalidInputs == undefined){
+                store.commit('RESET_INVALID_INPUTS')
+                store.commit('GET_CLASSES_DATA', response.data)
+                store.commit('SUCCESSED', 'Mise à jour des données réussie')
+                
+                $('#editClasseModal .buttons-div').hide('size', function(){
+                    $('#editClasseModal form').hide('fade', function(){
+                        $('#editClasseModal').animate({
+                            top: '90'
+                        }, function(){
+                            $('#editClasseModal .div-success').show('fade', 200)
+                            $('#editClasseModal .div-success h4').text('Mise à jour de la classe reussie')
                         })
                         
                     })

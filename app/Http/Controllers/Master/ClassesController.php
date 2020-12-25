@@ -54,6 +54,13 @@ class ClassesController extends Controller
         $ts = Teacher::whereLevel('secondary')->count();
         $tp = Teacher::whereLevel('primary')->count();
 
+        $teachersAll = [];
+        $teachers = Teacher::withTrashed('deleted_at')->get();
+
+        foreach ($teachers as $teacher) {
+            $teachersAll[$teacher->id] = $teacher;
+        }
+
         $classeWithHeads = [];
 
         $classesSecondary = Classe::whereLevel('secondary')->orderBy('name', 'asc')->get();
@@ -69,6 +76,7 @@ class ClassesController extends Controller
             'cPrim' => $classesPrimary, 
             'u' => $u,
             'classesBlockeds' => $blockeds,
+            'teachers' => $teachersAll
         ];
         if ($errors !== []) {
             $data['errors'] = $errors;
@@ -121,6 +129,35 @@ class ClassesController extends Controller
             ], 
             'token' => $token
         ];
+        return response()->json($data);
+    }
+
+    public function getAClasseDataOnTeachers(int $id, $year = null)
+    {
+        $data = [];
+        $targetedClasseTeachers = [];
+        $classe = Classe::find($id);
+        if ($classe->level == 'secondary') {
+            $teachers = (Classe::find($id))->teachers;
+    
+            if ($teachers->toArray() !== []) {
+                foreach ($teachers as $t) {
+                    $targetedClasseTeachers[$t->id] = $t;
+                }
+            }
+        }
+        elseif ($classe->level == 'primary') {
+            $teachers = Teacher::whereLevel('primary')->get();
+
+            foreach ($teachers as $t) {
+                if (count($t->classes->toArray()) == 0) {
+                    $targetedClasseTeachers[$t->id] = $t;
+                }
+            }
+        }
+
+        $data['targetedClasseTeachers'] = $targetedClasseTeachers;
+
         return response()->json($data);
     }
 
@@ -241,7 +278,7 @@ class ClassesController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**
@@ -253,7 +290,15 @@ class ClassesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tag = $request['tag'];
+        $tok = $request['token'];
+        $token = csrf_token();
+
+        if ($tok !== $token) {
+            abort(403, "Requete non autorisée");
+        }
+
+        return $this->classeEditor($tag, $request->all(), $id);
     }
 
     /**

@@ -85,7 +85,6 @@ const pupils_mutations = {
 	}, 
 
     GET_A_PUPIL_DATA: (state, data) => {
-        console.log(data)
         state.targetPupilParents = data.pupilParents
         state.editedPupil = data.p
         state.targetPupil = data.p

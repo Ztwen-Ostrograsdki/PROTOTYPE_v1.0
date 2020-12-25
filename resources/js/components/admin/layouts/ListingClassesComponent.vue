@@ -5,7 +5,7 @@
                 <transition name="fadelow" appear>
                     <thead>
                         <th>No</th>
-                        <th>Name</th>
+                        <th>Classe</th>
                         <th>Crée depuis</th>
                         <th>Principal</th>
                         <th>Respo 1</th>
@@ -21,23 +21,34 @@
                             </td>
                             <td class="px-2 text-left">
                                 <router-link :to="{name: 'classesProfil', params: {id: classe.id}}"   class="card-link d-inline-block">
-                                    <span  class="w-100 d-inline-block link-profiler"  @click="setEdited(classe)">
+                                    <span  class="w-100 d-inline-block link-profiler">
                                         {{classe.name}}
                                     </span>
                                 </router-link>
-                                <a href="#" title="Editer les informations de" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClassePersoModal" @click="getEdited(classe)" @mouseout="closeProfiler()"></a>
+                                <a href="#" title="Editer le nom de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'name')"></a>
                             </td>
-                            <td>
+                            <td class="px-2">
                                 {{classe.month + ' ' + classe.year}}
+                                <a href="#" title="Editer les dates de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'year')"></a>
                             </td>
-                            <td>
-                               {{ getValue(classe.teacher_id)}}
+                            <td class="px-2">
+                                <router-link v-if="classe.teacher_id !== null" :to="{name: 'teachersProfil', params: {id: classe.teacher_id}}"   class="card-link d-inline-block">
+                                    <span>
+                                        {{ getValue(classe.teacher_id)}}
+                                    </span>
+                                </router-link>
+                                <span v-if="classe.teacher_id == null">
+                                    {{ getValue(classe.teacher_id)}}
+                                </span>
+                               <a href="#" title="Editer le prof principal de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'teacher')"></a>
                             </td>
-                            <td>
+                            <td class="px-2">
                                {{ getValue(classe.respo1) }}
+                               <a href="#" title="Editer le premier responsable de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'respo1')"></a>
                             </td>
-                            <td>
+                            <td class="px-2">
                                {{ getValue(classe.respo2)}}
+                               <a href="#" title="Editer le second responsables de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'respo2')"></a>
                             </td>
                             
                             <td v-if="!redList">
@@ -97,7 +108,7 @@
 
         methods :{
             getValue(value){
-                return value == null ? '-' : value
+                return value == null ? '-' : this.teachers[value].name
             },
             gender(sexe){
                 return sexe == "male" ? 'M' : 'F'
@@ -164,8 +175,31 @@
                 })
             },
 
-            setEdited(pupil){
+            setEdited(classe, tag){
+                this.$store.commit('RESET_INVALID_INPUTS')
                 
+                $('#editClasseModal .div-success').hide('slide', 'up')
+                $('#editClasseModal .div-success h4').text('')
+                $('#editClasseModal').animate({
+                    top: '100'
+                })
+                
+                $('#editClasseModal form').show('slide', {direction: 'up'}, 1, function(){
+                    $('#editClasseModal form').animate({
+                        opacity: '0'
+                    }, function(){
+                        $('#editClasseModal form').animate({
+                            opacity: '1'
+                        }, 800)
+                        $('#editClasseModal .buttons-div').show('fade')
+                    })
+                })
+
+                if(tag == 'teacher'){
+                    this.$store.dispatch('getAClasseDataOnTeachers', classe.id)
+                }
+                
+                this.$store.commit('RESET_EDITING_CLASSE', {classe: classe, tag: tag}) 
             },
 
             resetAlert(){
@@ -174,7 +208,7 @@
         },
 
         computed: mapState([
-           'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors'
+           'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors', 'teachers'
         ])
     }
 

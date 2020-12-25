@@ -23,6 +23,15 @@ const classes_states = {
         year: (new Date).getFullYear(),
     },
 
+    editingClasse:{
+        classe: {},
+        classe_name: '',
+        teacher_id: '',
+        tag: null
+    },
+    targetedClasseTeachers: [],
+    teachers: [],
+
     targetedClasse : {
         classe: {},
         classeFMT: {

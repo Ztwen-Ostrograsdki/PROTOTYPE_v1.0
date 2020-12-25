@@ -103,6 +103,7 @@
         
         <parent-add></parent-add>
         <classe-add></classe-add>
+        <classe-edit></classe-edit>
 
         <teacher-perso></teacher-perso>
         <teacher-classes></teacher-classes>

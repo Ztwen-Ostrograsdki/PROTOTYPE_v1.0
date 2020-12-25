@@ -162,7 +162,7 @@
                                         <td>
                                             {{k+1}}
                                         </td>
-                                        <td class="text-left">
+                                        <td class="text-left px-2">
                                             <router-link :to="{name: 'teachersProfil', params: {id: teacher.id}}"   class="card-link d-inline-block" >
                                                 <span  class="w-100 d-inline-block link-profiler"  @click="setEdited(teacher)">
                                                     {{teacher.name}}
@@ -180,7 +180,7 @@
                                             {{teacher.month + ' ' + teacher.year}}
                                         </td>
                                         <td class="" v-if="hasClasses(teacher.id)">
-                                            <i class="float-left fa fa-chevron-left mt-1 " @click="prevClasses(AllTeachersWithClasses[teacher.id])" title="Voir les classes precedentes" v-if="AllTeachersWithClasses[teacher.id].length > 2 && index !== 0"></i>
+                                            <i class="float-left fa fa-chevron-left mt-1 " @click="prevClasses(AllTeachersWithClasses[teacher.id], teacher)" title="Voir les classes precedentes" v-if="AllTeachersWithClasses[teacher.id].length > 2 && index !== 0"></i>
                                                 <span data-toggle="modal" data-target="#editTeacherClassesModal" class="fa" :title="'Cliquer pour editer les classes de ' + teacher.name" @click="editClasses(teacher)">
                                                     <span class="h5-title" v-for="(classe, k) in AllTeachersWithClasses[teacher.id]">
                                                         <span v-if="k >= index && k <= index + 1">
@@ -188,10 +188,10 @@
                                                         </span>
                                                     </span>
                                                 </span>
-                                            <i class="float-right fa fa-chevron-right mt-1" @click="nextClasses(AllTeachersWithClasses[teacher.id])" title="Voir les classes suivantes" v-if="AllTeachersWithClasses[teacher.id].length > 2 && index + 1 < AllTeachersWithClasses[teacher.id].length"></i>
+                                            <i class="float-right fa fa-chevron-right mt-1" @click="nextClasses(AllTeachersWithClasses[teacher.id], teacher)" title="Voir les classes suivantes" v-if="AllTeachersWithClasses[teacher.id].length > 2 && index + 1 < AllTeachersWithClasses[teacher.id].length"></i>
                                         </td>
                                         <td v-if="!hasClasses(teacher.id)">
-                                            <span data-toggle="modal" data-target="#editTeacherClassesModal" class="fa fa-plus text-white-50" :title="'Attribuer des classes maintenant à ' + teacher.name" @click="editClasses(teacher)"></span>
+                                            <span data-toggle="modal" data-target="#editTeacherClassesModal" class="fa fa-plus text-white-50" :title="'Attribuer maintenant des classes à ' + teacher.name" @click="editClasses(teacher)"></span>
                                         </td>
                                         
                                         <td>
@@ -238,6 +238,7 @@
                 ],
                 profiler: false,
                 index: 0,
+                target: '',
             }   
         },
         created(){
@@ -297,11 +298,18 @@
                 
             },
 
-            prevClasses(tab) {
-                return this.index < 2 ? this.index = tab.length - 1 : this.index -= 2
+            prevClasses(tab, teacher) {
+                this.target = teacher.id
+                if(teacher.id == this.target){
+                    return this.index < 2 ? this.index = tab.length - 1 : this.index -= 2
+                }
+                
             },
-            nextClasses(tab) {
-                return this.index + 1 >= tab.length ? this.index = 0 : this.index += 2
+            nextClasses(tab, teacher) {
+                this.target = teacher.id
+                if(teacher.id == this.target){
+                    return this.index + 1 >= tab.length ? this.index = 0 : this.index += 2
+                }
             },
             
 

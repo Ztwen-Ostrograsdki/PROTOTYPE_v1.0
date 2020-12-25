@@ -5,6 +5,7 @@ const classes_mutations = {
         state.user = data.user
         state.classes = data.classes
         state.classesAll = data.classesAll
+        state.teachers = data.teachers
 
         state.classesBlockeds = data.classesBlockeds
 
@@ -18,6 +19,17 @@ const classes_mutations = {
         state.token = data.token
         state.targetedClasse = data.targetedClasse
         state.targetedClasseSubject = data.targetedClasse.targetedSubject.id
+    },
+    GET_A_CLASSE_DATA_ON_TEACHERS: (state, data) => {
+        state.targetedClasseTeachers = data.targetedClasseTeachers
+    },
+    RESET_EDITING_CLASSE: (state, data) =>{
+        state.editingClasse = {
+            classe : data.classe,
+            classe_name: data.classe.name,
+            teacher_id: data.classe.teacher_id,
+            tag : data.tag
+        }
     },
 
     RESET_BLOCKED_CLASSSES: (state, data) => {
