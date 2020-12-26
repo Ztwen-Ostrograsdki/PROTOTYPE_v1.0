@@ -55,10 +55,16 @@ class ClassesController extends Controller
         $tp = Teacher::whereLevel('primary')->count();
 
         $teachersAll = [];
+        $pupilsAll = [];
         $teachers = Teacher::withTrashed('deleted_at')->get();
+        $pupils = Pupil::withTrashed('deleted_at')->get();
 
         foreach ($teachers as $teacher) {
             $teachersAll[$teacher->id] = $teacher;
+        }
+
+        foreach ($pupils as $pupil) {
+            $pupilsAll[$pupil->id] = $pupil;
         }
 
         $classeWithHeads = [];
@@ -76,7 +82,8 @@ class ClassesController extends Controller
             'cPrim' => $classesPrimary, 
             'u' => $u,
             'classesBlockeds' => $blockeds,
-            'teachers' => $teachersAll
+            'teachers' => $teachersAll,
+            'pupils' => $pupilsAll,
         ];
         if ($errors !== []) {
             $data['errors'] = $errors;

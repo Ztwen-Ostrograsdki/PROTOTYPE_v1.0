@@ -1,6 +1,6 @@
 <template>
 	<div class="w-100" style="z-index: 100" v-if="!errors.status">
-		<div class="first-div mb-2 d-flex justify-content-around py-1 bg-linear-official-50 w-100 border float-right mx-0 ">
+		<div class="first-div mb-2 d-flex justify-content-around py-1 bg-linear-official-180 w-100 border float-right mx-0 ">
 			<div class="d-flex row justify-content-around" style="width: 98.5%">
 				<div class="border py-2 col-4">
 					<div class="w-100 d-flex justify-content-between">

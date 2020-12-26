@@ -87,7 +87,6 @@ const classes_actions = {
             name: name
         })
         .then(response => {
-            console.log(response.data)
             if(response.data.invalidInputs == undefined){
                 store.commit('RESET_INVALID_INPUTS')
                 store.commit('GET_CLASSES_DATA', response.data)

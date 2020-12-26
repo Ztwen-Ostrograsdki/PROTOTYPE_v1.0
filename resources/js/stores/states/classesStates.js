@@ -32,6 +32,7 @@ const classes_states = {
     targetedClasseTeachers: [],
     targetedClassePupils: [],
     teachers: [],
+    pupils: [],
 
     targetedClasse : {
         classe: {},

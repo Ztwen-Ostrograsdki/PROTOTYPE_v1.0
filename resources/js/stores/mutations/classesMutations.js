@@ -6,6 +6,7 @@ const classes_mutations = {
         state.classes = data.classes
         state.classesAll = data.classesAll
         state.teachers = data.teachers
+        state.pupils = data.pupils
 
         state.classesBlockeds = data.classesBlockeds
 

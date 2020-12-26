@@ -34,21 +34,35 @@
                             <td class="px-2">
                                 <router-link v-if="classe.teacher_id !== null" :to="{name: 'teachersProfil', params: {id: classe.teacher_id}}"   class="card-link d-inline-block">
                                     <span>
-                                        {{ getValue(classe.teacher_id)}}
+                                        {{ getValue(classe.teacher_id, teachers)}}
                                     </span>
                                 </router-link>
                                 <span v-if="classe.teacher_id == null">
-                                    {{ getValue(classe.teacher_id)}}
+                                    {{ "-" }}
                                 </span>
                                <a href="#" title="Editer le prof principal de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'teacher')"></a>
                             </td>
                             <td class="px-2">
-                               {{ getValue(classe.respo1) }}
+                                <router-link v-if="classe.respo1 !== null" :to="{name: 'pupilsProfil', params: {id: classe.respo1}}"   class="card-link d-inline-block">
+                                    <span>
+                                        {{ getValue(classe.respo1, pupils)}}
+                                    </span>
+                                </router-link>
                                <a href="#" title="Editer le premier responsable de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'respo1')"></a>
+                               <span v-if="classe.respo1 == null">
+                                    {{ "-" }}
+                                </span>
                             </td>
                             <td class="px-2">
-                               {{ getValue(classe.respo2)}}
+                                <router-link v-if="classe.respo2 !== null" :to="{name: 'pupilsProfil', params: {id: classe.respo2}}"   class="card-link d-inline-block">
+                                    <span>
+                                        {{ getValue(classe.respo2, pupils)}}
+                                    </span>
+                                </router-link>
                                <a href="#" title="Editer le second responsables de cette classe" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(classe, 'respo2')"></a>
+                               <span v-if="classe.respo2 == null">
+                                    {{ "-" }}
+                                </span>
                             </td>
                             
                             <td v-if="!redList">
@@ -107,8 +121,8 @@
         },
 
         methods :{
-            getValue(value){
-                return value == null ? '-' : this.teachers[value].name
+            getValue(value, tables){
+                return value == null ? '-' : tables[value].name
             },
             gender(sexe){
                 return sexe == "male" ? 'M' : 'F'
@@ -208,7 +222,7 @@
         },
 
         computed: mapState([
-           'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors', 'teachers'
+           'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors', 'teachers', 'pupils'
         ])
     }
 

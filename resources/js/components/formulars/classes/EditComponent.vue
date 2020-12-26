@@ -46,9 +46,10 @@
                             <label for="edit_c_teacher" class="m-0 p-0">Le professeur principal</label>
                             <select v-model="editingClasse.teacher_id" name="teacher_id" id="edit_c_teacher" class="custom-select">
                                 <option value="null" :selected="wasSelected(editingClasse.teacher_id, null)" >Choisissez le prof</option>
+                                <option value="destroy">Réinitialiser</option>
                                 <option :selected="wasSelected(editingClasse.teacher_id, teacher.id)" :value="teacher.id" v-for="teacher in targetedClasseTeachers" > {{ teacher.name }} </option>
                             </select>
-                            <i class="h5-title"> {{  }} </i>
+                           <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.teacher !== undefined"> {{ invalidInputs.teacher[0] }} </i>
                         </div>
                     </div>
                     <div v-if="editingClasse.tag == 'respo1'" class=" mx-auto mt-2 d-flex justify-content-start" style="width: 93%">
@@ -56,9 +57,10 @@
                             <label for="edit_c_respo1" class="m-0 p-0">Le Premier Responsable</label>
                             <select v-model="editingClasse.respo1" name="respo1" id="edit_c_respo1" class="custom-select">
                                 <option value="null" :selected="wasSelected(editingClasse.respo1, null)" >Choisissez le Premier Pesponsable</option>
+                                <option value="destroy">Réinitialiser</option>
                                 <option :selected="wasSelected(editingClasse.respo1, pupil.id)" :value="pupil.id" v-for="pupil in targetedClassePupils" > {{ pupil.name }} </option>
                             </select>
-                            <i class="h5-title"> {{  }} </i>
+                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.respo1 !== undefined"> {{ invalidInputs.respo1[0] }} </i>
                         </div>
                     </div>
                     <div v-if="editingClasse.tag == 'respo2'" class=" mx-auto mt-2 d-flex justify-content-start" style="width: 93%">
@@ -66,9 +68,10 @@
                             <label for="edit_c_respo2" class="m-0 p-0">Le Second Responsable</label>
                             <select v-model="editingClasse.respo2" name="respo2" id="edit_c_respo2" class="custom-select">
                                 <option value="null" :selected="wasSelected(editingClasse.respo2, null)" >Choisissez le Second Responsable</option>
+                                <option value="destroy">Réinitialiser</option>
                                 <option :selected="wasSelected(editingClasse.respo2, pupil.id)" :value="pupil.id" v-for="pupil in targetedClassePupils" > {{ pupil.name }} </option>
                             </select>
-                            <i class="h5-title"> {{  }} </i>
+                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.respo2 !== undefined"> {{ invalidInputs.respo2[0] }} </i>
                         </div>
                     </div>
                     

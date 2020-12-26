@@ -2723,6 +2723,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['isProfil', 'theClasses', 'redList', 'deletedClasses'],
@@ -2737,8 +2751,8 @@ __webpack_require__.r(__webpack_exports__);
     this.$store.dispatch('getClassesData');
   },
   methods: {
-    getValue: function getValue(value) {
-      return value == null ? '-' : this.teachers[value].name;
+    getValue: function getValue(value, tables) {
+      return value == null ? '-' : tables[value].name;
     },
     gender: function gender(sexe) {
       return sexe == "male" ? 'M' : 'F';
@@ -2832,7 +2846,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('ALERT_RESET');
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors', 'teachers'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'editedClasse', 'classesSecondary', 'classesPrimary', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'months', 'successed', 'invalidInputs', 'errors', 'teachers', 'pupils'])
 });
 $(function () {
   var sup_tag = $('#sup-tag');
@@ -4047,6 +4061,50 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: [],
@@ -4953,6 +5011,9 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+//
+//
+//
 //
 //
 //
@@ -8618,7 +8679,6 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-//
 //
 //
 //
@@ -47847,7 +47907,7 @@ var render = function() {
           "div",
           {
             staticClass:
-              "first-div mb-2 d-flex justify-content-around py-1 bg-linear-official-50 w-100 border float-right mx-0 "
+              "first-div mb-2 d-flex justify-content-around py-1 bg-linear-official-180 w-100 border float-right mx-0 "
           },
           [
             _c(
@@ -49549,7 +49609,10 @@ var render = function() {
                                     _vm._v(
                                       "\n                                    " +
                                         _vm._s(
-                                          _vm.getValue(classe.teacher_id)
+                                          _vm.getValue(
+                                            classe.teacher_id,
+                                            _vm.teachers
+                                          )
                                         ) +
                                         "\n                                "
                                     )
@@ -49562,7 +49625,7 @@ var render = function() {
                             ? _c("span", [
                                 _vm._v(
                                   "\n                                " +
-                                    _vm._s(_vm.getValue(classe.teacher_id)) +
+                                    _vm._s("-") +
                                     "\n                            "
                                 )
                               ])
@@ -49590,59 +49653,137 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _c("td", { staticClass: "px-2" }, [
-                        _vm._v(
-                          "\n                           " +
-                            _vm._s(_vm.getValue(classe.respo1)) +
-                            "\n                           "
-                        ),
-                        _c("a", {
-                          staticClass: "fa fa-edit text-white-50 float-right",
-                          staticStyle: {
-                            "font-size": "10px!important",
-                            "font-weight": "200!important"
-                          },
-                          attrs: {
-                            href: "#",
-                            title:
-                              "Editer le premier responsable de cette classe",
-                            "data-toggle": "modal",
-                            "data-target": "#editClasseModal"
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.setEdited(classe, "respo1")
+                      _c(
+                        "td",
+                        { staticClass: "px-2" },
+                        [
+                          classe.respo1 !== null
+                            ? _c(
+                                "router-link",
+                                {
+                                  staticClass: "card-link d-inline-block",
+                                  attrs: {
+                                    to: {
+                                      name: "pupilsProfil",
+                                      params: { id: classe.respo1 }
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("span", [
+                                    _vm._v(
+                                      "\n                                    " +
+                                        _vm._s(
+                                          _vm.getValue(
+                                            classe.respo1,
+                                            _vm.pupils
+                                          )
+                                        ) +
+                                        "\n                                "
+                                    )
+                                  ])
+                                ]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("a", {
+                            staticClass: "fa fa-edit text-white-50 float-right",
+                            staticStyle: {
+                              "font-size": "10px!important",
+                              "font-weight": "200!important"
+                            },
+                            attrs: {
+                              href: "#",
+                              title:
+                                "Editer le premier responsable de cette classe",
+                              "data-toggle": "modal",
+                              "data-target": "#editClasseModal"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.setEdited(classe, "respo1")
+                              }
                             }
-                          }
-                        })
-                      ]),
+                          }),
+                          _vm._v(" "),
+                          classe.respo1 == null
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s("-") +
+                                    "\n                            "
+                                )
+                              ])
+                            : _vm._e()
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
-                      _c("td", { staticClass: "px-2" }, [
-                        _vm._v(
-                          "\n                           " +
-                            _vm._s(_vm.getValue(classe.respo2)) +
-                            "\n                           "
-                        ),
-                        _c("a", {
-                          staticClass: "fa fa-edit text-white-50 float-right",
-                          staticStyle: {
-                            "font-size": "10px!important",
-                            "font-weight": "200!important"
-                          },
-                          attrs: {
-                            href: "#",
-                            title:
-                              "Editer le second responsables de cette classe",
-                            "data-toggle": "modal",
-                            "data-target": "#editClasseModal"
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.setEdited(classe, "respo2")
+                      _c(
+                        "td",
+                        { staticClass: "px-2" },
+                        [
+                          classe.respo2 !== null
+                            ? _c(
+                                "router-link",
+                                {
+                                  staticClass: "card-link d-inline-block",
+                                  attrs: {
+                                    to: {
+                                      name: "pupilsProfil",
+                                      params: { id: classe.respo2 }
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("span", [
+                                    _vm._v(
+                                      "\n                                    " +
+                                        _vm._s(
+                                          _vm.getValue(
+                                            classe.respo2,
+                                            _vm.pupils
+                                          )
+                                        ) +
+                                        "\n                                "
+                                    )
+                                  ])
+                                ]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("a", {
+                            staticClass: "fa fa-edit text-white-50 float-right",
+                            staticStyle: {
+                              "font-size": "10px!important",
+                              "font-weight": "200!important"
+                            },
+                            attrs: {
+                              href: "#",
+                              title:
+                                "Editer le second responsables de cette classe",
+                              "data-toggle": "modal",
+                              "data-target": "#editClasseModal"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.setEdited(classe, "respo2")
+                              }
                             }
-                          }
-                        })
-                      ]),
+                          }),
+                          _vm._v(" "),
+                          classe.respo2 == null
+                            ? _c("span", [
+                                _vm._v(
+                                  "\n                                " +
+                                    _vm._s("-") +
+                                    "\n                            "
+                                )
+                              ])
+                            : _vm._e()
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
                       !_vm.redList
                         ? _c("td", [
@@ -52184,12 +52325,58 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "ml-2" }, [
-                            _c("span", [
-                              _c("span", { staticClass: "text-white-50" }, [
-                                _vm._v("Principal: ")
-                              ]),
-                              _vm._v(_vm._s("Mr TOGAN Martin"))
-                            ])
+                            _c(
+                              "span",
+                              [
+                                _c("span", { staticClass: "text-white-50" }, [
+                                  _vm._v("Principal: ")
+                                ]),
+                                _vm._v(" "),
+                                _vm.targetedClasse.heads.teacher !== null
+                                  ? _c(
+                                      "router-link",
+                                      {
+                                        staticClass:
+                                          "d-inline-block text-white card-link",
+                                        staticStyle: {
+                                          "font-size": "1em !important"
+                                        },
+                                        attrs: {
+                                          to: {
+                                            name: "teachersProfil",
+                                            params: {
+                                              id:
+                                                _vm.targetedClasse.classe
+                                                  .teacher_id
+                                            }
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n\t\t                \t\t\t\t" +
+                                            _vm._s(
+                                              _vm.targetedClasse.heads.teacher
+                                                .name
+                                            ) +
+                                            "\n\t\t                \t\t\t"
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.targetedClasse.heads.teacher == null
+                                  ? _c("span", { staticClass: "text-muted" }, [
+                                      _vm._v(
+                                        "\n\t\t                \t\t\t\t" +
+                                          _vm._s("Non défini") +
+                                          "\n\t\t                \t\t\t"
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ],
+                              1
+                            )
                           ])
                         ]
                       ),
@@ -52550,9 +52737,128 @@ var render = function() {
                     "div",
                     {
                       staticClass:
-                        "d-flex w-100 my-1 py-1 justify-content-end border"
+                        "d-flex w-100 my-1 py-1 justify-content-between border"
                     },
                     [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "mx-1 d-flex flex-column font-italic border border-dark "
+                        },
+                        [
+                          _c("div", { staticClass: "mx-2" }, [
+                            _c(
+                              "h5",
+                              { staticClass: "text-white-50 h5-title" },
+                              [
+                                _vm._v("1"),
+                                _c("sup", [_vm._v("er")]),
+                                _vm._v(
+                                  " Responsable: \n                \t\t\t"
+                                ),
+                                _vm.targetedClasse.heads.respo1 !== null
+                                  ? _c(
+                                      "router-link",
+                                      {
+                                        staticClass:
+                                          "d-inline-block text-white card-link",
+                                        staticStyle: {
+                                          "font-size": "1em !important"
+                                        },
+                                        attrs: {
+                                          to: {
+                                            name: "pupilsProfil",
+                                            params: {
+                                              id:
+                                                _vm.targetedClasse.classe.respo1
+                                            }
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                \t\t\t\t" +
+                                            _vm._s(
+                                              _vm.targetedClasse.heads.respo1
+                                                .name
+                                            ) +
+                                            "\n                \t\t\t"
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.targetedClasse.heads.respo1 == null
+                                  ? _c("span", { staticClass: "text-muted" }, [
+                                      _vm._v(
+                                        "\n                \t\t\t\t" +
+                                          _vm._s("Non défini") +
+                                          "\n                \t\t\t"
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ],
+                              1
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", [
+                            _c(
+                              "h5",
+                              { staticClass: "text-white-50 h5-title" },
+                              [
+                                _vm._v("2"),
+                                _c("sup", [_vm._v("ème")]),
+                                _vm._v(" Responsable: \n\t            \t\t\t"),
+                                _vm.targetedClasse.heads.respo2 !== null
+                                  ? _c(
+                                      "router-link",
+                                      {
+                                        staticClass:
+                                          "d-inline-block text-white card-link",
+                                        staticStyle: {
+                                          "font-size": "1em !important"
+                                        },
+                                        attrs: {
+                                          to: {
+                                            name: "pupilsProfil",
+                                            params: {
+                                              id:
+                                                _vm.targetedClasse.classe.respo2
+                                            }
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                \t\t\t\t" +
+                                            _vm._s(
+                                              _vm.targetedClasse.heads.respo2
+                                                .name
+                                            ) +
+                                            "\n                \t\t\t"
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.targetedClasse.heads.respo2 == null
+                                  ? _c("span", { staticClass: "text-muted" }, [
+                                      _vm._v(
+                                        "\n                \t\t\t\t" +
+                                          _vm._s("Non défini") +
+                                          "\n                \t\t\t"
+                                      )
+                                    ])
+                                  : _vm._e()
+                              ],
+                              1
+                            )
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
                       _c(
                         "div",
                         {
@@ -52719,11 +53025,60 @@ var render = function() {
                                           [
                                             _vm._v("1"),
                                             _c("sup", [_vm._v("er")]),
-                                            _vm._v(" Responsable: "),
-                                            _c("span", {}, [
-                                              _vm._v("HOUNGHO Haner")
-                                            ])
-                                          ]
+                                            _vm._v(
+                                              " Responsable: \n\t\t                \t\t\t"
+                                            ),
+                                            _vm.targetedClasse.heads.respo1 !==
+                                            null
+                                              ? _c(
+                                                  "router-link",
+                                                  {
+                                                    staticClass:
+                                                      "d-inline-block text-white card-link",
+                                                    staticStyle: {
+                                                      "font-size":
+                                                        "1em !important"
+                                                    },
+                                                    attrs: {
+                                                      to: {
+                                                        name: "pupilsProfil",
+                                                        params: {
+                                                          id:
+                                                            _vm.targetedClasse
+                                                              .classe.respo1
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n\t\t                \t\t\t\t" +
+                                                        _vm._s(
+                                                          _vm.targetedClasse
+                                                            .heads.respo1.name
+                                                        ) +
+                                                        "\n\t\t                \t\t\t"
+                                                    )
+                                                  ]
+                                                )
+                                              : _vm._e(),
+                                            _vm._v(" "),
+                                            _vm.targetedClasse.heads.respo1 ==
+                                            null
+                                              ? _c(
+                                                  "span",
+                                                  { staticClass: "text-muted" },
+                                                  [
+                                                    _vm._v(
+                                                      "\n\t\t                \t\t\t\t" +
+                                                        _vm._s("Non défini") +
+                                                        "\n\t\t                \t\t\t"
+                                                    )
+                                                  ]
+                                                )
+                                              : _vm._e()
+                                          ],
+                                          1
                                         )
                                       ]),
                                       _vm._v(" "),
@@ -52737,11 +53092,60 @@ var render = function() {
                                           [
                                             _vm._v("2"),
                                             _c("sup", [_vm._v("ème")]),
-                                            _vm._v(" Responsable: "),
-                                            _c("span", {}, [
-                                              _vm._v("GAGA Qoner")
-                                            ])
-                                          ]
+                                            _vm._v(
+                                              " Responsable: \n\t\t\t            \t\t\t"
+                                            ),
+                                            _vm.targetedClasse.heads.respo2 !==
+                                            null
+                                              ? _c(
+                                                  "router-link",
+                                                  {
+                                                    staticClass:
+                                                      "d-inline-block text-white card-link",
+                                                    staticStyle: {
+                                                      "font-size":
+                                                        "1em !important"
+                                                    },
+                                                    attrs: {
+                                                      to: {
+                                                        name: "pupilsProfil",
+                                                        params: {
+                                                          id:
+                                                            _vm.targetedClasse
+                                                              .classe.respo2
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n\t\t                \t\t\t\t" +
+                                                        _vm._s(
+                                                          _vm.targetedClasse
+                                                            .heads.respo2.name
+                                                        ) +
+                                                        "\n\t\t                \t\t\t"
+                                                    )
+                                                  ]
+                                                )
+                                              : _vm._e(),
+                                            _vm._v(" "),
+                                            _vm.targetedClasse.heads.respo2 ==
+                                            null
+                                              ? _c(
+                                                  "span",
+                                                  { staticClass: "text-muted" },
+                                                  [
+                                                    _vm._v(
+                                                      "\n\t\t                \t\t\t\t" +
+                                                        _vm._s("Non défini") +
+                                                        "\n\t\t                \t\t\t"
+                                                    )
+                                                  ]
+                                                )
+                                              : _vm._e()
+                                          ],
+                                          1
                                         )
                                       ])
                                     ]
@@ -55189,6 +55593,12 @@ var render = function() {
                                     [_vm._v("Choisissez le prof")]
                                   ),
                                   _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "destroy" } },
+                                    [_vm._v("Réinitialiser")]
+                                  ),
+                                  _vm._v(" "),
                                   _vm._l(_vm.targetedClasseTeachers, function(
                                     teacher
                                   ) {
@@ -55210,9 +55620,16 @@ var render = function() {
                                 2
                               ),
                               _vm._v(" "),
-                              _c("i", { staticClass: "h5-title" }, [
-                                _vm._v(" " + _vm._s() + " ")
-                              ])
+                              _vm.invalidInputs !== undefined &&
+                              _vm.invalidInputs.teacher !== undefined
+                                ? _c("i", { staticClass: "h5-title" }, [
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(_vm.invalidInputs.teacher[0]) +
+                                        " "
+                                    )
+                                  ])
+                                : _vm._e()
                             ])
                           ]
                         )
@@ -55295,6 +55712,12 @@ var render = function() {
                                     ]
                                   ),
                                   _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "destroy" } },
+                                    [_vm._v("Réinitialiser")]
+                                  ),
+                                  _vm._v(" "),
                                   _vm._l(_vm.targetedClassePupils, function(
                                     pupil
                                   ) {
@@ -55316,9 +55739,16 @@ var render = function() {
                                 2
                               ),
                               _vm._v(" "),
-                              _c("i", { staticClass: "h5-title" }, [
-                                _vm._v(" " + _vm._s() + " ")
-                              ])
+                              _vm.invalidInputs !== undefined &&
+                              _vm.invalidInputs.respo1 !== undefined
+                                ? _c("i", { staticClass: "h5-title" }, [
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(_vm.invalidInputs.respo1[0]) +
+                                        " "
+                                    )
+                                  ])
+                                : _vm._e()
                             ])
                           ]
                         )
@@ -55397,6 +55827,12 @@ var render = function() {
                                     [_vm._v("Choisissez le Second Responsable")]
                                   ),
                                   _vm._v(" "),
+                                  _c(
+                                    "option",
+                                    { attrs: { value: "destroy" } },
+                                    [_vm._v("Réinitialiser")]
+                                  ),
+                                  _vm._v(" "),
                                   _vm._l(_vm.targetedClassePupils, function(
                                     pupil
                                   ) {
@@ -55418,9 +55854,16 @@ var render = function() {
                                 2
                               ),
                               _vm._v(" "),
-                              _c("i", { staticClass: "h5-title" }, [
-                                _vm._v(" " + _vm._s() + " ")
-                              ])
+                              _vm.invalidInputs !== undefined &&
+                              _vm.invalidInputs.respo2 !== undefined
+                                ? _c("i", { staticClass: "h5-title" }, [
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(_vm.invalidInputs.respo2[0]) +
+                                        " "
+                                    )
+                                  ])
+                                : _vm._e()
                             ])
                           ]
                         )
@@ -66279,7 +66722,7 @@ var render = function() {
       _c("div", { staticClass: "w-100" }, [
         _c("div", { staticClass: "w-100 my-1 m-0 p-1" }, [
           _c("div", { staticClass: "w-100 row m-0 p-0 pl-lg-4" }, [
-            _vm._m(0),
+            _c("div", { staticClass: "col-3 row pr-2 p-0 mt-1 mb-0" }),
             _vm._v(" "),
             _vm.alert
               ? _c(
@@ -66392,7 +66835,7 @@ var render = function() {
                   _vm._v(" " + _vm._s(_vm.alertTeachersSearch))
                 ]),
                 _vm._v(" "),
-                _vm._m(1)
+                _vm._m(0)
               ]
             ),
             _vm._v(" "),
@@ -66720,22 +67163,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-3 row pr-2 p-0 mt-1 mb-0" }, [
-      _c("p", { staticClass: "h5-title m-0 mr-3 p-0" }, [
-        _vm._v("Les premiers respo sont en "),
-        _c("span", { staticClass: "text-primary" }, [_vm._v("Bleu")])
-      ]),
-      _vm._v(" "),
-      _c("p", { staticClass: "h5-title m-0 p-0" }, [
-        _vm._v("Les seconds respo sont en "),
-        _c("span", { staticClass: "text-success" }, [_vm._v("Vert")])
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -89386,8 +89813,6 @@ var classes_actions = {
       inputs: data.inputs,
       name: name
     }).then(function (response) {
-      console.log(response.data);
-
       if (response.data.invalidInputs == undefined) {
         store.commit('RESET_INVALID_INPUTS');
         store.commit('GET_CLASSES_DATA', response.data);
@@ -90013,6 +90438,7 @@ var classes_mutations = {
     state.classes = data.classes;
     state.classesAll = data.classesAll;
     state.teachers = data.teachers;
+    state.pupils = data.pupils;
     state.classesBlockeds = data.classesBlockeds;
     state.classesSecondary = data.cSec;
     state.classesPrimary = data.cPrim;
@@ -90647,6 +91073,7 @@ var classes_states = {
   targetedClasseTeachers: [],
   targetedClassePupils: [],
   teachers: [],
+  pupils: [],
   targetedClasse: {
     classe: {},
     classeFMT: {

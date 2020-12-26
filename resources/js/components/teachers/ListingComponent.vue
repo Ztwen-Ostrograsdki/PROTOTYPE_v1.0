@@ -110,8 +110,7 @@
             <div class="w-100 my-1 m-0 p-1">
                 <div class="w-100 row m-0 p-0 pl-lg-4">
                     <div class="col-3 row pr-2 p-0 mt-1 mb-0">
-                        <p class="h5-title m-0 mr-3 p-0">Les premiers respo sont en <span class="text-primary">Bleu</span></p>
-                        <p class="h5-title m-0 p-0">Les seconds respo sont en <span class="text-success">Vert</span></p>
+                        
                     </div>
                     <div class="float-right d-flex justify-content-around pr-2 mt-4 mb-0 border py-2" v-if="alert">
                         <p class="h5-title m-0 px-2">

@@ -13,7 +13,15 @@
 			                		<span class="text-white-50">Classe :</span> {{targetedClasse.classeFMT.name}}<sup>{{ targetedClasse.classeFMT.sup }}</sup> {{ targetedClasse.classeFMT.idc }}
 			                	</div>
 			                	<div class="ml-2">
-			                		<span> <span class="text-white-50">Principal: </span>{{ 'Mr TOGAN Martin' }}</span>
+			                		<span> 
+			                			<span class="text-white-50">Principal: </span>
+			                			<router-link v-if="targetedClasse.heads.teacher !== null" :to="{name: 'teachersProfil', params: {id: targetedClasse.classe.teacher_id}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+			                				{{ targetedClasse.heads.teacher.name }}
+			                			</router-link>
+			                			<span class="text-muted" v-if="targetedClasse.heads.teacher == null">
+			                				{{ 'Non défini'}}
+			                			</span>
+			                		</span>
 			                	</div>
 			                </div>
 			                <span>
@@ -90,7 +98,29 @@
 		        <span class="fa fa-close float-right mb-2 text-right d-inline-block" v-if="!hideGrandPanel" @click="toggleGrandPanel()" title="Masquer le panel"></span>
 		        <span class="fa fa-chevron-down float-right mb-2 text-right d-inline-block" v-if="hideGrandPanel" @click="toggleGrandPanel()" title="Afficher le panel"></span>
 		        <transition name="scale" appear>
-				<div class="d-flex w-100 my-1 py-1 justify-content-end border" v-if="!hideGrandPanel">
+				<div class="d-flex w-100 my-1 py-1 justify-content-between border" v-if="!hideGrandPanel">
+					<div class="mx-1 d-flex flex-column font-italic border border-dark ">
+						<div class="mx-2">
+		            		<h5 class="text-white-50 h5-title">1<sup>er</sup> Responsable: 
+	                			<router-link v-if="targetedClasse.heads.respo1 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo1}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+	                				{{ targetedClasse.heads.respo1.name }}
+	                			</router-link>
+	                			<span class="text-muted" v-if="targetedClasse.heads.respo1 == null">
+	                				{{ 'Non défini'}}
+	                			</span>
+		            		</h5>
+		            	</div>
+		            	<div>
+		            		<h5 class="text-white-50 h5-title">2<sup>ème</sup> Responsable: 
+		            			<router-link v-if="targetedClasse.heads.respo2 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo2}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+	                				{{ targetedClasse.heads.respo2.name }}
+	                			</router-link>
+	                			<span class="text-muted" v-if="targetedClasse.heads.respo2 == null">
+	                				{{ 'Non défini'}}
+	                			</span>
+		            		</h5>
+		            	</div>
+					</div>
 		            <div class="mx-1 d-flex flex-column font-italic border border-dark ">
 		            	<span class="fa fa-close float-right text-right d-inline-block w-100" v-if="!hidePanel" @click="togglePanel()"></span>
 		            	<span class="fa fa-chevron-down float-right text-right d-inline-block w-100" v-if="hidePanel" @click="togglePanel()"></span>
@@ -118,10 +148,24 @@
 		            	<transition name="fadeR" appear>
 			            	<div class="mx-1 d-flex justify-content-between font-italic" v-if="!hidePanel">
 			            		<div class="mx-2">
-				            		<h5 class="text-white-50 h5-title">1<sup>er</sup> Responsable: <span class="">HOUNGHO Haner</span></h5>
+				            		<h5 class="text-white-50 h5-title">1<sup>er</sup> Responsable: 
+			                			<router-link v-if="targetedClasse.heads.respo1 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo1}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+			                				{{ targetedClasse.heads.respo1.name }}
+			                			</router-link>
+			                			<span class="text-muted" v-if="targetedClasse.heads.respo1 == null">
+			                				{{ 'Non défini'}}
+			                			</span>
+				            		</h5>
 				            	</div>
 				            	<div>
-				            		<h5 class="text-white-50 h5-title">2<sup>ème</sup> Responsable: <span class="">GAGA Qoner</span></h5>
+				            		<h5 class="text-white-50 h5-title">2<sup>ème</sup> Responsable: 
+				            			<router-link v-if="targetedClasse.heads.respo2 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo2}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+			                				{{ targetedClasse.heads.respo2.name }}
+			                			</router-link>
+			                			<span class="text-muted" v-if="targetedClasse.heads.respo2 == null">
+			                				{{ 'Non défini'}}
+			                			</span>
+				            		</h5>
 				            	</div>
 			            	</div>
 			            </transition>
