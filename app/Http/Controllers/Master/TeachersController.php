@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Master;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Master\SuperAdminController;
+use App\Http\ManagersAndDrivers\Authenticator;
 use App\Http\ValidatorsSpaces\TeachersValidators;
 use App\ModelHelper;
 use App\Models\Classe;
@@ -85,21 +86,6 @@ class TeachersController extends Controller
             'classesRefused' => $classesRefused,
             'isAE' => $isAE
         ];
-
-        // $data = [
-        //     'targetedClasse' => [
-        //         'classe' => $classe, 
-        //         'classeFMT' => $classeFMT, 
-        //         'subjects' => $subjects, 
-        //         'pupils' => $pupils, 
-        //         'heads' => [
-        //             'teacher' => $teacher, 
-        //             'respo1' => $respo1, 
-        //             'respo2' => $respo2
-        //         ],
-        //     ], 
-        //     'token' => $token
-        // ];
 
         return response()->json($data);
 
@@ -329,8 +315,33 @@ class TeachersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $withUser = false)
+    public function store(Request $request)
     {
+        $token_auth = Authenticator::__AUTH_TOKEN($request->token);
+        if ($token_auth !== []) {
+            return response()->json($token_auth);
+        }
+        else{
+            $validator = $this->validateNewTeachersInputs($request->all());
+            if ($validator->fails()) {
+                return response()->json(['invalidInputs' => $validator->errors()]);
+            }
+            else{
+                $user = Authenticator::__GET_IF_EXISTS_BY_NAME_OR_EMAIL(User::class, $request->name, $request->email);
+                if ($user !== null) {
+                    if ($user->name == $request->name && $user->email == $request->email) {
+                        $teacher = Teacher::create($request->all());
+                        if ($teacher) {
+                            $user->teachers()->attach($teacher->id);
+                        }
+                        return $this->teachersDataSender();
+                    }
+                    else{
+                        return response()->json(['invalidInputs' => ['user' => ["Nous avons détecter un utilisateur utilisant déjà des données similaires, consulter l'administrateur pour avoir plus de détails!"]]]);
+                    }
+                }
+            }
+        }
         
     }
 

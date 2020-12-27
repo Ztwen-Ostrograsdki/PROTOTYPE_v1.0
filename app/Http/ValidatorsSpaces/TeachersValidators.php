@@ -72,6 +72,42 @@ trait TeachersValidators {
     }
 
 
+    public function validateNewTeachersInputs($data)
+    {
+        $level = $data['level'];
+
+        $validator = [
+            'name' => ['required', 'string', 'min:2', 'max:50', 'bail', 'unique:teachers'],
+            'email' => ['required', 'email', 'min:8', 'max:50', 'bail', 'unique:teachers'],
+            'contact' => ['required', 'string', 'min:8', 'max:250', 'bail', 'unique:teachers'],
+            'residence' => ['required', 'string', 'min:5', 'max:250', 'bail'],
+            'sexe' => ['required', 'string', 'bail'],
+            'month' => ['required', 'string', 'bail'],
+            'level' => ['required', 'string', 'bail'],
+            'birth' => ['required', 'date', 'bail'],
+            'year' => ['required', 'numeric', 'bail', 'max:'.date('Y')],
+        ];
+
+        if ($level == 'secondary') {
+            $validator = [
+                'name' => ['required', 'string', 'min:2', 'max:50', 'bail', 'unique:teachers'],
+                'email' => ['required', 'email', 'min:8', 'max:50', 'bail', 'unique:teachers'],
+                'contact' => ['required', 'string', 'min:8', 'max:250', 'bail', 'unique:teachers'],
+                'residence' => ['required', 'string', 'min:5', 'max:250', 'bail'],
+                'sexe' => ['required', 'string', 'bail'],
+                'month' => ['required', 'string', 'bail'],
+                'level' => ['required', 'string', 'bail'],
+                'birth' => ['required', 'date', 'bail'],
+                'subject_id' => ['required', 'numeric', 'bail'],
+                'year' => ['required', 'numeric', 'bail', 'max:'.date('Y')],
+            ];
+        }
+
+        return Validator::make($data, $validator);
+
+    }
+
+
 
 
 }

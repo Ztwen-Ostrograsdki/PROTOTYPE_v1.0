@@ -119,7 +119,7 @@
                         <span class="mx-1 fa fa-close text-danger" @click="resetAlert()"></span>
                     </div>
                     <div class="offset-7 col-2 mb-0" v-if="!alert">
-                        <span class="btn btn-primary m-0 px-3 float-right mt-1" title="Ajouter un nouvel enseignant..." data-toggle="modal" data-target="#newTeacherPersoModal" @click="addNew()">
+                        <span class="btn btn-primary m-0 px-3 float-right mt-1" title="Ajouter un nouvel enseignant..." data-toggle="modal" data-target="#newTeacherModal" @click="addNew()">
                             <i class="fa fa-user-plus"></i>
                         </span>
                     </div>
@@ -311,15 +311,12 @@
                 }
             },
             
-
             getEdited(teacher){
                 this.$store.commit('RESET_EDITED_TEACHER')
                 this.$store.dispatch('getTOOLS')
                 this.$store.commit('RESET_INVALID_INPUTS')
                 this.$store.commit('UNSET_EDITED_TEACHER_CLASSES')
                 this.$store.dispatch('getATeacherData', teacher)
-
-
                 
                 $('#editTeacherPersoModal .div-success').hide('slide', 'up')
                 $('#editTeacherPersoModal .div-success h4').text('')
@@ -371,10 +368,10 @@
                 this.$store.dispatch('getTOOLS')
                 this.$store.commit('RESET_INVALID_INPUTS')
                 
-                $('#newTeacherPersoModal .div-success').hide('slide', 'up')
-                $('#newTeacherPersoModal .div-success h4').text('')
-                $('#newTeacherPersoModal form').show('fade', function(){
-                    $('#newTeacherPersoModal .buttons-div').show('fade')
+                $('#newTeacherModal .div-success').hide('slide', 'up')
+                $('#newTeacherModal .div-success h4').text('')
+                $('#newTeacherModal form').show('fade', function(){
+                    $('#newTeacherModal .buttons-div').show('fade')
                 })
             },
 
@@ -391,47 +388,6 @@
            'AllTeachersWithClasses', 'AllTeachersWithSubject', 'teachers', 'secondaryTeachers', 'primaryTeachers', 'teachersAll', 'pl', 'tl', 'ul', 'psl', 'ppl', 'tpl', 'tsl', 'alertTeachersSearch', 'alert', 'message', 'editedTeacher', 'editedTeacherClasses', 'cl1', 'cl2', 'cl3', 'cl4', 'cl5', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'successed', 'invalidInputs', 'errors'
         ])
     }
-
-    $(function(){
-
-    let sup_tag = $('#sup-tag')
-    let sup_ch = $('#chevron-sup')
-    let sec_tag = $('#sec-tag')
-    let sec_ch = $('#chevron-sec')
-
-
-    sec_ch.click(function(){
-
-        sec_tag.animate({
-            width: '0px',
-            opacity: '0'
-        })
-        sec_tag.hide()
-        sup_tag.animate({
-            width: '100%',
-            opacity: '1'
-        },100 , function(){
-            sup_tag.show('slide', {direction: 'right'})
-        })
-
-    })
-
-    sup_ch.click(function(){
-
-        sup_tag.animate({
-            width: '0px',
-            opacity: '0'
-        })
-        sup_tag.hide()
-        sec_tag.animate({
-            width: '100%',
-            opacity: '1'
-        },100 , function(){
-            sec_tag.show('slide', {direction: 'right'})
-        })
-
-    })
-})
 
 </script>
 <style>

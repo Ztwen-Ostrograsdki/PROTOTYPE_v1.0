@@ -12,7 +12,7 @@
 	      		<h5 class="w-100 mx-auto p-1 h5-title text-danger text-center" v-if="invalidInputs !== undefined">
 	      			Le formulaire est invalid
 	      		</h5>
-		        <form class="opac-form" id="taecher-perso-edit" style="display: none;" method="post">
+		        <form class="opac-form" id="teacher-perso-edit" style="display: none;" method="post">
 		        	<input type="text" name="token" v-model="token" hidden="hidden">
 			        <div class="mx-auto mt-2 d-flex justify-content-between" style="width: 85%">
                         <div class="mx-auto" style="width: 100%">
@@ -37,7 +37,7 @@
                         </div>
                     </div>
 			        <div class="mx-auto mt-2 d-flex justify-content-between" style="width: 85%">
-			        	<div class="mx-auto" style="width: 68%">
+			        	<div style="width: 65.4%">
                             <label for="ed_t_contact" class="m-0 p-0">Contacts de l'enseignant</label>
                             <input v-model.lazy="editedTeacher.contact" type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('contact', invalidInputs)" name="contact" id="ed_t_contact" placeholder="Veuillez renseigner les contacts l'enseignant">
                             <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.contact !== undefined"> {{ invalidInputs.contact[0] }} </i>

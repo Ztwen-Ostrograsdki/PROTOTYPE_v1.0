@@ -18,9 +18,13 @@ const teachers_states = {
 
     newTeacher: {
         name: '',
+        email: '',
+        contact: '',
+        creator: '',
+        residence: '',
         birth: '',
         sexe: '',
-        subject: '',
+        subject_id: null,
         level: 'secondary',
         month: '',
         year: (new Date).getFullYear(),

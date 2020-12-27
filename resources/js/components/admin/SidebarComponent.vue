@@ -106,6 +106,7 @@
         <classe-edit></classe-edit>
 
         <teacher-perso></teacher-perso>
+        <teacher-add></teacher-add>
         <teacher-classes></teacher-classes>
 
         <new-horaire></new-horaire>

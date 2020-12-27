@@ -113,29 +113,36 @@ const teachers_actions = {
     addANewTeacher: (store, inputs) => {
         axios.post('/admin/director/teachersm', {
             token: inputs.token,
-            name: inputs.newPupil.name,
-            birth: inputs.newPupil.birth,
-            level: inputs.newPupil.level,
-            classe_id: inputs.newPupil.classe_id,
-            month: inputs.newPupil.month,
-            year: inputs.newPupil.year,
-            sexe: inputs.newPupil.sexe,
+            name: inputs.newTeacher.name,
+            route: inputs.route,
+            email: inputs.newTeacher.email,
+            contact: inputs.newTeacher.contact,
+            subject_id: inputs.newTeacher.subject_id,
+            birth: inputs.newTeacher.birth,
+            level: inputs.newTeacher.level,
+            month: inputs.newTeacher.month,
+            year: inputs.newTeacher.year,
+            sexe: inputs.newTeacher.sexe,
+            residence: inputs.newTeacher.residence,
+            creator: inputs.newTeacher.creator,
+            authorized: inputs.newTeacher.authorized,
             status: 0
         })
         .then(response => {
+            console.log(response.data)
             if(response.data.invalidInputs == undefined){
                 store.commit('RESET_INVALID_INPUTS')
                 store.commit('GET_TEACHERS_DATA', response.data)
                 store.commit('RESET_NEW_TEACHER')
                 store.commit('SUCCESSED', 'Insertion des données réussie')
                 
-                $('#newTeacherPersoModal .buttons-div').hide('size', function(){
-                    $('#newTeacherPersoModal form').hide('fade', function(){
-                        $('#newTeacherPersoModal').animate({
+                $('#newTeacherModal .buttons-div').hide('size', function(){
+                    $('#newTeacherModal form').hide('fade', function(){
+                        $('#newTeacherModal').animate({
                             top: '150'
                         }, function(){
-                            $('#newTeacherPersoModal .div-success').show('fade', 200)
-                            $('#newTeacherPersoModal .div-success h4').text('Mise à jour reussi')
+                            $('#newTeacherModal .div-success').show('fade', 200)
+                            $('#newTeacherModal .div-success h4').text("Création de l'enseignant réussie!")
                         })
                         
                     })
