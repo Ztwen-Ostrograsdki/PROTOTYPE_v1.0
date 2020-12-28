@@ -24,10 +24,20 @@
 		        <form class="opac-form" id="teacher-perso-new" style="display: none;" method="post">
 		        	<input type="text" name="token" v-model="token" hidden="hidden">
 			        <div class="mx-auto mt-2 d-flex justify-content-between" style="width: 85%">
-                        <div class="mx-auto" style="width: 100%">
+                        <div class="" style="width: 70%">
                             <label for="n_t_name" class="m-0 p-0">Nom et Prénoms de l'enseignant</label>
                             <input v-model.lazy="newTeacher.name" type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('name', invalidInputs)" name="name" id="n_t_name" placeholder="Veuillez renseigner le nom et les prénoms de l'enseignant">
                             <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.name !== undefined"> {{ invalidInputs.name[0] }} </i>
+                        </div>
+                        <div class="" style="width: 28%">
+                            <label for="n_t_level" class="m-0 p-0">Cycle de l'enseignant</label>
+                            <select v-model.lazy="newTeacher.level" name="level" id="n_t_level" class="custom-select" :class="getInvalids('level', invalidInputs)">
+                                <option value="">Choisir le cycle</option>
+                                <option value="primary" >Le Primaire</option>
+                                <option value="secondary">Le Secondaire</option>
+                                <option value="superior">Le Supérieur</option>
+                            </select>
+                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.level !== undefined"> {{ invalidInputs.level[0] }} </i>
                         </div>
                     </div>
                     <div class="mx-auto mt-2 d-flex justify-content-between" style="width: 85%">
@@ -39,7 +49,7 @@
                         <div style="width: 39%;">
                             <label for="n_t_subject" class="m-0 p-0">La spécialité</label>
                             <select v-model="newTeacher.subject_id" name="subject_id" id="n_t_subject" class="custom-select" :class="getInvalids('subject_id', invalidInputs)">
-                                <option :selected="newTeacher.subject_id == null" value="null">Choisissez la spécialité</option>
+                                <option :value="null">Choisissez la spécialité</option>
                                 <option :value="subject.id" v-for="subject in subjects" > {{ subject.name }} </option>
                             </select>
                             <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.subject_id !== undefined"> {{ invalidInputs.subject_id[0] }} </i>

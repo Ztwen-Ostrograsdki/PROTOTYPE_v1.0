@@ -327,21 +327,36 @@ class TeachersController extends Controller
                 return response()->json(['invalidInputs' => $validator->errors()]);
             }
             else{
-                $user = Authenticator::__GET_IF_EXISTS_BY_NAME_OR_EMAIL(User::class, $request->name, $request->email);
+                $user = Authenticator::__GET_MODELS_IF_EXISTS_BY_NAME_OR_EMAIL(User::class, $request->name, $request->email);
                 if ($user !== null) {
                     if ($user->name == $request->name && $user->email == $request->email) {
                         $teacher = Teacher::create($request->all());
                         if ($teacher) {
                             $user->teachers()->attach($teacher->id);
                         }
-                        return $this->teachersDataSender();
                     }
                     else{
                         return response()->json(['invalidInputs' => ['user' => ["Nous avons détecter un utilisateur utilisant déjà des données similaires, consulter l'administrateur pour avoir plus de détails!"]]]);
                     }
                 }
+                else{
+                    $teacher = Teacher::create($request->all());
+                    if ($teacher) {
+                        $data = [
+                            'name' => $request->name,
+                            'email' => $request->email,
+                            'password' => 12345,
+                            'role' => 'teacher',
+                            'authorized' => $request->authorized
+                        ];
+                        $user = AdminController::createUser($teacher, $data, 'teacher');
+                    }
+                }
             }
         }
+
+        return $this->teachersDataSender();
+
         
     }
 

@@ -22,7 +22,7 @@ class Authenticator{
 	}
 
 
-	public static function __GET_IF_EXISTS_BY_NAME_OR_EMAIL($classeMapping, $name = null, $email = null)
+	public static function __GET_MODELS_IF_EXISTS_BY_NAME_OR_EMAIL($classeMapping, $name = null, $email = null)
 	{
 		$targets = null;
 

@@ -6306,6 +6306,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -9104,6 +9114,9 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('RESET_INVALID_INPUTS');
       $('#newTeacherModal .div-success').hide('slide', 'up');
       $('#newTeacherModal .div-success h4').text('');
+      $('#newTeacherModal').animate({
+        top: '20px'
+      });
       $('#newTeacherModal form').show('fade', function () {
         $('#newTeacherModal .buttons-div').show('fade');
       });
@@ -60394,65 +60407,134 @@ var render = function() {
                         staticStyle: { width: "85%" }
                       },
                       [
-                        _c(
-                          "div",
-                          {
-                            staticClass: "mx-auto",
-                            staticStyle: { width: "100%" }
-                          },
-                          [
-                            _c(
-                              "label",
+                        _c("div", { staticStyle: { width: "70%" } }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "m-0 p-0",
+                              attrs: { for: "n_t_name" }
+                            },
+                            [_vm._v("Nom et Prénoms de l'enseignant")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
                               {
-                                staticClass: "m-0 p-0",
-                                attrs: { for: "n_t_name" }
-                              },
-                              [_vm._v("Nom et Prénoms de l'enseignant")]
-                            ),
-                            _vm._v(" "),
-                            _c("input", {
+                                name: "model",
+                                rawName: "v-model.lazy",
+                                value: _vm.newTeacher.name,
+                                expression: "newTeacher.name",
+                                modifiers: { lazy: true }
+                              }
+                            ],
+                            staticClass: "m-0 p-0 form-control p-1",
+                            class: _vm.getInvalids("name", _vm.invalidInputs),
+                            attrs: {
+                              type: "text",
+                              name: "name",
+                              id: "n_t_name",
+                              placeholder:
+                                "Veuillez renseigner le nom et les prénoms de l'enseignant"
+                            },
+                            domProps: { value: _vm.newTeacher.name },
+                            on: {
+                              change: function($event) {
+                                return _vm.$set(
+                                  _vm.newTeacher,
+                                  "name",
+                                  $event.target.value
+                                )
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.invalidInputs !== undefined &&
+                          _vm.invalidInputs.name !== undefined
+                            ? _c("i", { staticClass: "h5-title" }, [
+                                _vm._v(
+                                  " " + _vm._s(_vm.invalidInputs.name[0]) + " "
+                                )
+                              ])
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticStyle: { width: "28%" } }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "m-0 p-0",
+                              attrs: { for: "n_t_level" }
+                            },
+                            [_vm._v("Cycle de l'enseignant")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
                               directives: [
                                 {
                                   name: "model",
                                   rawName: "v-model.lazy",
-                                  value: _vm.newTeacher.name,
-                                  expression: "newTeacher.name",
+                                  value: _vm.newTeacher.level,
+                                  expression: "newTeacher.level",
                                   modifiers: { lazy: true }
                                 }
                               ],
-                              staticClass: "m-0 p-0 form-control p-1",
-                              class: _vm.getInvalids("name", _vm.invalidInputs),
-                              attrs: {
-                                type: "text",
-                                name: "name",
-                                id: "n_t_name",
-                                placeholder:
-                                  "Veuillez renseigner le nom et les prénoms de l'enseignant"
-                              },
-                              domProps: { value: _vm.newTeacher.name },
+                              staticClass: "custom-select",
+                              class: _vm.getInvalids(
+                                "level",
+                                _vm.invalidInputs
+                              ),
+                              attrs: { name: "level", id: "n_t_level" },
                               on: {
                                 change: function($event) {
-                                  return _vm.$set(
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.$set(
                                     _vm.newTeacher,
-                                    "name",
-                                    $event.target.value
+                                    "level",
+                                    $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
                                   )
                                 }
                               }
-                            }),
-                            _vm._v(" "),
-                            _vm.invalidInputs !== undefined &&
-                            _vm.invalidInputs.name !== undefined
-                              ? _c("i", { staticClass: "h5-title" }, [
-                                  _vm._v(
-                                    " " +
-                                      _vm._s(_vm.invalidInputs.name[0]) +
-                                      " "
-                                  )
-                                ])
-                              : _vm._e()
-                          ]
-                        )
+                            },
+                            [
+                              _c("option", { attrs: { value: "" } }, [
+                                _vm._v("Choisir le cycle")
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "primary" } }, [
+                                _vm._v("Le Primaire")
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "secondary" } }, [
+                                _vm._v("Le Secondaire")
+                              ]),
+                              _vm._v(" "),
+                              _c("option", { attrs: { value: "superior" } }, [
+                                _vm._v("Le Supérieur")
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm.invalidInputs !== undefined &&
+                          _vm.invalidInputs.level !== undefined
+                            ? _c("i", { staticClass: "h5-title" }, [
+                                _vm._v(
+                                  " " + _vm._s(_vm.invalidInputs.level[0]) + " "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
                       ]
                     ),
                     _vm._v(" "),
@@ -60564,16 +60646,9 @@ var render = function() {
                               }
                             },
                             [
-                              _c(
-                                "option",
-                                {
-                                  attrs: { value: "null" },
-                                  domProps: {
-                                    selected: _vm.newTeacher.subject_id == null
-                                  }
-                                },
-                                [_vm._v("Choisissez la spécialité")]
-                              ),
+                              _c("option", { domProps: { value: null } }, [
+                                _vm._v("Choisissez la spécialité")
+                              ]),
                               _vm._v(" "),
                               _vm._l(_vm.subjects, function(subject) {
                                 return _c(
@@ -91042,7 +91117,7 @@ var teachers_actions = {
     axios.post('/admin/director/teachersm', {
       token: inputs.token,
       name: inputs.newTeacher.name,
-      route: inputs.route,
+      route: inputs.route.path,
       email: inputs.newTeacher.email,
       contact: inputs.newTeacher.contact,
       subject_id: inputs.newTeacher.subject_id,
@@ -91056,8 +91131,6 @@ var teachers_actions = {
       authorized: inputs.newTeacher.authorized,
       status: 0
     }).then(function (response) {
-      console.log(response.data);
-
       if (response.data.invalidInputs == undefined) {
         store.commit('RESET_INVALID_INPUTS');
         store.commit('GET_TEACHERS_DATA', response.data);
@@ -91077,6 +91150,7 @@ var teachers_actions = {
         store.commit('INVALID_INPUTS', response.data.invalidInputs);
       }
     })["catch"](function (e) {
+      console.log(e);
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });
   },
@@ -91707,8 +91781,13 @@ var teachers_mutations = {
   RESET_NEW_TEACHER: function RESET_NEW_TEACHER(state) {
     state.newTeacher = {
       name: '',
+      email: '',
+      contact: '',
+      creator: '',
+      residence: '',
       birth: '',
       sexe: '',
+      subject_id: null,
       level: 'secondary',
       month: '',
       year: new Date().getFullYear()

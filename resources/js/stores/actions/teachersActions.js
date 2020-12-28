@@ -114,7 +114,7 @@ const teachers_actions = {
         axios.post('/admin/director/teachersm', {
             token: inputs.token,
             name: inputs.newTeacher.name,
-            route: inputs.route,
+            route: inputs.route.path,
             email: inputs.newTeacher.email,
             contact: inputs.newTeacher.contact,
             subject_id: inputs.newTeacher.subject_id,
@@ -129,7 +129,6 @@ const teachers_actions = {
             status: 0
         })
         .then(response => {
-            console.log(response.data)
             if(response.data.invalidInputs == undefined){
                 store.commit('RESET_INVALID_INPUTS')
                 store.commit('GET_TEACHERS_DATA', response.data)
@@ -156,6 +155,7 @@ const teachers_actions = {
             
         })
         .catch(e => {
+            console.log(e)
            store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
         })
     },

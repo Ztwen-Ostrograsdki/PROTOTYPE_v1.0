@@ -370,6 +370,9 @@
                 
                 $('#newTeacherModal .div-success').hide('slide', 'up')
                 $('#newTeacherModal .div-success h4').text('')
+                $('#newTeacherModal').animate({
+                    top: '20px'
+                })
                 $('#newTeacherModal form').show('fade', function(){
                     $('#newTeacherModal .buttons-div').show('fade')
                 })

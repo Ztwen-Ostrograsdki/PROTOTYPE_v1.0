@@ -150,8 +150,13 @@ const teachers_mutations = {
     RESET_NEW_TEACHER: (state) => {
         state.newTeacher = {
             name: '',
+            email: '',
+            contact: '',
+            creator: '',
+            residence: '',
             birth: '',
             sexe: '',
+            subject_id: null,
             level: 'secondary',
             month: '',
             year: (new Date).getFullYear(),
