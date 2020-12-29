@@ -9,7 +9,7 @@
                 </span>
             </div>
         </h5>
-        <div class="m-0 p-0" v-if="targetedTeacherClasses.length > 0">
+        <div class="m-0 p-0" v-if="targetedTeacherClasses.length > 0 && targetedTeacher.level !=='primary'">
             <div class="border w-100 p-1 bg-linear-official-180">
                 <div class="d-flex mb-1 border-bottom" v-for="(classe, k) in targetedTeacherClassesFMT">
                     <div class="border-right p-1 text-center" style="width: 40%;">
@@ -40,7 +40,38 @@
                 </div>
             </div>
         </div>
-        <div class="m-0 p-2 font-italic bg-linear-official-180 border border-white" v-if="targetedTeacherClasses.length <= 0">
+        <div class="m-0 p-0" v-if="targetedTeacher.level == 'primary' && targetedTeacher.classes !== []">
+            <div class="border w-100 p-1 bg-linear-official-180">
+                <div class="d-flex mb-1 border-bottom" v-for="(classe, k) in targetedTeacher.classes">
+                    <div class="border-right p-1 text-center" style="width: 40%;">
+                        <span>
+                            <router-link class="text-white-50 text-decoration-none" :to="{name: 'classesProfil', params: {id: classe.id}}">
+                            {{ classe.name }}
+                            </router-link>
+                        </span>
+                        <div class="d-inline float-right ml-3" title="Retirer cette classe de la gestion de ce prof">
+                            <div class="d-inline m-0 p-0">
+                                <span @click="disjoinedClasses(targetedTeacher, classe.id)">
+                                    <span class="fa fa-remove text-danger"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="float-right" title="Empêcher le prof d'avoir la possiblité de modifier les notes de cette classe" >
+                            <div class="d-inline m-0 p-0" >
+                                <span >
+                                    <span class="fa fa-lock text-warning"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center" style="width: 55%;">
+                        <h6 class="m-0 p-0">Lundi 10h - 12h</h6>
+                        <h6 class="m-0 p-0">Mercredi 10h - 12h</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="m-0 p-2 font-italic bg-linear-official-180 border border-white" v-if="(targetedTeacher.level == 'secondary' && targetedTeacherClasses.length <= 0) || (targetedTeacher.level == 'primary' && targetedTeacher.classes.length < 1)">
         	<h5 class="text-white-50" style="font-size: 9px">Le prof <span class="text-secondary">{{ targetedTeacher.name }}</span> n'a encore aucune salle</h5>
         </div>
         <div class="m-0 p-0 d-flex flex-column">

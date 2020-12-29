@@ -61,6 +61,25 @@ const teachers_actions = {
 	        .then(response => {
 	        	store.commit('RESET_INVALID_INPUTS')
 	            store.commit('GET_TEACHERS_DATA', response.data)
+
+
+                $('#editTeacherClassesModal .buttons-div').hide('size', function(){
+                    $('#editTeacherClassesModal form').hide('fade', function(){
+                        $('#editTeacherClassesModal').animate({
+                            top: '150'
+                        }, function(){
+                            $('#editTeacherClassesModal .div-success').show('fade', 200)
+                            $('#editTeacherClassesModal .div-success h4').text('Mise à jour reussi')
+                        })
+                        
+                    })
+                    
+                })
+
+                if(inputs.route !== undefined && inputs.route.name == "teachersProfil"){
+                    let id = inputs.route.params.id
+                    store.dispatch('getATeacherData', id)
+                }
 	        })
         }
         

@@ -27,7 +27,7 @@
                             <input v-model.lazy="editedTeacher.email" type="email" class="m-0 p-0 form-control p-1" :class="getInvalids('email', invalidInputs)" name="email" id="ed_t_email" placeholder="Veuillez renseigner l'email l'enseignant">
                             <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.email !== undefined"> {{ invalidInputs.email[0] }} </i>
                         </div>
-                        <div style="width: 31.7%;">
+                        <div style="width: 31.7%;" v-if="editedTeacher.level == 'secondary'">
                             <label for="ed_t_subject" class="m-0 p-0">La spécialité</label>
                             <select v-model="editedTeacher.subject_id" name="subject_id" id="ed_t_subject" class="custom-select" :class="getInvalids('subject_id', invalidInputs)">
                                 <option value="">Choisissez la spécialité</option>
@@ -66,7 +66,7 @@
                             <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.year !== undefined"> {{ invalidInputs.year[0] }} </i>
                         </div>
                     </div>
-                    <div class=" mx-auto mt-2 d-flex justify-content-start" style="width: 85%">
+                    <div class=" mx-auto mt-2 d-flex justify-content-start" style="width: 85%" v-if="editedTeacher.level == 'secondary'">
                     	<div style="width: 60%;" class="">
                             <label for="ed_t_ae" class="mb-0">Choisir comme AE de ...</label>
                             <div class="w-75 d-flex justify-content-start border rounded p-1">

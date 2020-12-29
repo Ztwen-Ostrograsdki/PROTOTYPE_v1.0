@@ -90,7 +90,13 @@ class SuperAdminController extends Controller
 
         $classes = Classe::withTrashed('deleted_at')->orderBy('level', 'asc')->get();
         $classesSecondary = Classe::whereLevel('secondary')->orderBy('name', 'asc')->get();
-        $classesPrimary = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
+        
+        $classesPrimary = [];
+
+        $cps = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
+        foreach ($cps as $cp) {
+            $classesPrimary[$cp->id] = $cp;
+        }
 
         $classesBlockeds = [];
         $classesPrimaryBlockeds = [];

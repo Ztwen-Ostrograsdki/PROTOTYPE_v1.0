@@ -26,7 +26,7 @@
 				<tr>
 					<td>Spécialité:</td>
 					<td>
-						{{ targetedTeacher.subject.name}}
+						{{ targetedTeacher.level !== 'primary' ? targetedTeacher.subject.name : 'Maître'}}
 					</td>
 				</tr>
 			</table>

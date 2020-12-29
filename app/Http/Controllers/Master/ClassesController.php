@@ -70,7 +70,12 @@ class ClassesController extends Controller
         $classeWithHeads = [];
 
         $classesSecondary = Classe::whereLevel('secondary')->orderBy('name', 'asc')->get();
-        $classesPrimary = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
+        $classesPrimary = [];
+
+        $cps = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
+        foreach ($cps as $cp) {
+            $classesPrimary[$cp->id] = $cp;
+        }
         $blockeds = Classe::getBlockeds();
 
         $data = [

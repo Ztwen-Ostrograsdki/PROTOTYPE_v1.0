@@ -16,7 +16,7 @@ const default_states = {
 	ul: 0,
 	alert: false,
 	message: "",
-	primaryClasses: {},
+	primaryClasses: [],
 	secondaryClasses: {},
 	allPrimaryClasses: {},
 	allSecondaryClasses: {},

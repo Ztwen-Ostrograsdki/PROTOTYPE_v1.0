@@ -6526,10 +6526,16 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('RESET_EDITED_TEACHER');
     },
     wasSelected: function wasSelected(tag, target) {
-      if (tag == target) {
-        return true;
+      if (this.editedTeacher.level == 'primary') {
+        if (this.editedTeacher.classe !== null && this.editedTeacher.classe !== undefined) {
+          return this.editedTeacher.classe.id == target;
+        }
       } else {
-        return false;
+        if (tag == target) {
+          return true;
+        } else {
+          return false;
+        }
       }
     },
     classesConfirm: function classesConfirm(request) {
@@ -6548,14 +6554,24 @@ __webpack_require__.r(__webpack_exports__);
     },
     getEditedOldClasseName: function getEditedOldClasseName() {
       if (this.editedTeacher.classe !== undefined && this.editedTeacher.level == "primary") {
-        return this.editedTeacher.classe.name;
+        if (this.editedTeacher.classe !== null) {
+          return this.editedTeacher.classe.name;
+        }
       } else {
         return "";
       }
     },
-    getEditedNewClasseName: function getEditedNewClasseName() {
+    getEditedNewClasseName: function getEditedNewClasseName(theClasses) {
       if (this.teacherHasNewClasse !== undefined && this.editedTeacher.level == "primary") {
-        return this.classesConcernedByATeacher[this.teacherHasNewClasse].name;
+        var name = "";
+
+        for (var i = 0; i < theClasses.length; i++) {
+          if (theClasses[i].id == this.teacherHasNewClasse) {
+            name = theClasses[i].name;
+          }
+        }
+
+        return name;
       } else {
         return "";
       }
@@ -6588,7 +6604,7 @@ __webpack_require__.r(__webpack_exports__);
           if (teacher.classe.id == parseInt(classes.classe, 10)) {//Ancienne classe choisie alors on ne fait rien
           } else {
             this.classes = classes;
-            this.isAE = isAE;
+            this.isAE = true;
             this.$store.commit('SET_EDITED_TEACHER_CLASSES1_CONFIRM', parseInt(classes.classe, 10));
             $('#editTeacherClassesModal .div-success').hide('slide', 'up');
             $('#editTeacherClassesModal .div-success h4').text('');
@@ -6603,6 +6619,16 @@ __webpack_require__.r(__webpack_exports__);
               });
             });
           }
+        } else {
+          this.classes = classes;
+          this.isAE = true;
+          this.$store.dispatch('updateTeacherClasses', {
+            teacher: teacher,
+            classes: classes,
+            token: token,
+            isAE: isAE,
+            route: route
+          });
         }
       }
     },
@@ -9033,6 +9059,8 @@ __webpack_require__.r(__webpack_exports__);
 
       if (subject === "Histoire-Géographie") {
         return "Hist-Géo";
+      } else if (subject == null) {
+        return "Maître";
       }
 
       return subject;
@@ -9172,53 +9200,6 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -9405,6 +9386,37 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -61378,10 +61390,6 @@ var render = function() {
                                   "select",
                                   {
                                     staticClass: "custom-select",
-                                    class: _vm.getInvalids(
-                                      "c1",
-                                      _vm.invalidInputs
-                                    ),
                                     attrs: { name: "classe", id: "ed_t_c1" }
                                   },
                                   [
@@ -61403,7 +61411,7 @@ var render = function() {
                                           },
                                           domProps: {
                                             selected: _vm.wasSelected(
-                                              _vm.editedTeacherClasses[0],
+                                              "",
                                               classe.id
                                             ),
                                             value: classe.id
@@ -61971,7 +61979,11 @@ var render = function() {
                             "\n\t\t\t    \t\t\t\tVous êtes sur le point de confier la classe de "
                           ),
                           _c("span", { staticClass: "text-warning" }, [
-                            _vm._v(_vm._s(_vm.getEditedNewClasseName()))
+                            _vm._v(
+                              _vm._s(
+                                _vm.getEditedNewClasseName(_vm.primaryClasses)
+                              )
+                            )
                           ]),
                           _vm._v(" à " + _vm._s(_vm.editedTeacher.name) + " "),
                           _c("br"),
@@ -62361,81 +62373,90 @@ var render = function() {
                             : _vm._e()
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticStyle: { width: "31.7%" } }, [
-                          _c(
-                            "label",
-                            {
-                              staticClass: "m-0 p-0",
-                              attrs: { for: "ed_t_subject" }
-                            },
-                            [_vm._v("La spécialité")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "select",
-                            {
-                              directives: [
+                        _vm.editedTeacher.level == "secondary"
+                          ? _c("div", { staticStyle: { width: "31.7%" } }, [
+                              _c(
+                                "label",
                                 {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.editedTeacher.subject_id,
-                                  expression: "editedTeacher.subject_id"
-                                }
-                              ],
-                              staticClass: "custom-select",
-                              class: _vm.getInvalids(
-                                "subject_id",
-                                _vm.invalidInputs
+                                  staticClass: "m-0 p-0",
+                                  attrs: { for: "ed_t_subject" }
+                                },
+                                [_vm._v("La spécialité")]
                               ),
-                              attrs: { name: "subject_id", id: "ed_t_subject" },
-                              on: {
-                                change: function($event) {
-                                  var $$selectedVal = Array.prototype.filter
-                                    .call($event.target.options, function(o) {
-                                      return o.selected
-                                    })
-                                    .map(function(o) {
-                                      var val =
-                                        "_value" in o ? o._value : o.value
-                                      return val
-                                    })
-                                  _vm.$set(
-                                    _vm.editedTeacher,
-                                    "subject_id",
-                                    $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  )
-                                }
-                              }
-                            },
-                            [
-                              _c("option", { attrs: { value: "" } }, [
-                                _vm._v("Choisissez la spécialité")
-                              ]),
                               _vm._v(" "),
-                              _vm._l(_vm.subjects, function(subject) {
-                                return _c(
-                                  "option",
-                                  { domProps: { value: subject.id } },
-                                  [_vm._v(" " + _vm._s(subject.name) + " ")]
-                                )
-                              })
-                            ],
-                            2
-                          ),
-                          _vm._v(" "),
-                          _vm.invalidInputs !== undefined &&
-                          _vm.invalidInputs.subject_id !== undefined
-                            ? _c("i", { staticClass: "h5-title" }, [
-                                _vm._v(
-                                  " " +
-                                    _vm._s(_vm.invalidInputs.subject_id[0]) +
-                                    " "
-                                )
-                              ])
-                            : _vm._e()
-                        ])
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.editedTeacher.subject_id,
+                                      expression: "editedTeacher.subject_id"
+                                    }
+                                  ],
+                                  staticClass: "custom-select",
+                                  class: _vm.getInvalids(
+                                    "subject_id",
+                                    _vm.invalidInputs
+                                  ),
+                                  attrs: {
+                                    name: "subject_id",
+                                    id: "ed_t_subject"
+                                  },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.editedTeacher,
+                                        "subject_id",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("option", { attrs: { value: "" } }, [
+                                    _vm._v("Choisissez la spécialité")
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.subjects, function(subject) {
+                                    return _c(
+                                      "option",
+                                      { domProps: { value: subject.id } },
+                                      [_vm._v(" " + _vm._s(subject.name) + " ")]
+                                    )
+                                  })
+                                ],
+                                2
+                              ),
+                              _vm._v(" "),
+                              _vm.invalidInputs !== undefined &&
+                              _vm.invalidInputs.subject_id !== undefined
+                                ? _c("i", { staticClass: "h5-title" }, [
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(
+                                          _vm.invalidInputs.subject_id[0]
+                                        ) +
+                                        " "
+                                    )
+                                  ])
+                                : _vm._e()
+                            ])
+                          : _vm._e()
                       ]
                     ),
                     _vm._v(" "),
@@ -62710,173 +62731,189 @@ var render = function() {
                       ]
                     ),
                     _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          " mx-auto mt-2 d-flex justify-content-start",
-                        staticStyle: { width: "85%" }
-                      },
-                      [
-                        _c("div", { staticStyle: { width: "60%" } }, [
-                          _c(
-                            "label",
-                            { staticClass: "mb-0", attrs: { for: "ed_t_ae" } },
-                            [_vm._v("Choisir comme AE de ...")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "w-75 d-flex justify-content-start border rounded p-1"
-                            },
-                            [
-                              _c("div", { staticClass: "mr-3" }, [
-                                _c("label", { attrs: { for: "ed_ae_oui" } }, [
-                                  _vm._v("Authorisé")
-                                ]),
-                                _vm._v(" "),
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.editedTeacherIsAE,
-                                      expression: "editedTeacherIsAE"
-                                    }
-                                  ],
-                                  staticClass: "custom-radio",
-                                  attrs: {
-                                    type: "radio",
-                                    name: "setToAE",
-                                    id: "ed_ae_oui",
-                                    value: "true"
-                                  },
-                                  domProps: {
-                                    checked: _vm._q(
-                                      _vm.editedTeacherIsAE,
-                                      "true"
-                                    )
-                                  },
-                                  on: {
-                                    change: function($event) {
-                                      _vm.editedTeacherIsAE = "true"
-                                    }
-                                  }
-                                })
-                              ]),
-                              _vm._v(" "),
-                              _c("div", [
-                                _c("label", { attrs: { for: "ed_ae_non" } }, [
-                                  _vm._v("Réfusé")
-                                ]),
-                                _vm._v(" "),
-                                _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.editedTeacherIsAE,
-                                      expression: "editedTeacherIsAE"
-                                    }
-                                  ],
-                                  staticClass: "custom-radio",
-                                  attrs: {
-                                    type: "radio",
-                                    name: "setToAE",
-                                    id: "ed_ae_non",
-                                    value: "false"
-                                  },
-                                  domProps: {
-                                    checked: _vm._q(
-                                      _vm.editedTeacherIsAE,
-                                      "false"
-                                    )
-                                  },
-                                  on: {
-                                    change: function($event) {
-                                      _vm.editedTeacherIsAE = "false"
-                                    }
-                                  }
-                                })
-                              ])
-                            ]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticStyle: { width: "29%" } }, [
-                          _c(
-                            "label",
-                            {
-                              staticClass: "m-0 p-0",
-                              attrs: { for: "ed_t_sexe" }
-                            },
-                            [_vm._v("Sexe")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "select",
-                            {
-                              directives: [
+                    _vm.editedTeacher.level == "secondary"
+                      ? _c(
+                          "div",
+                          {
+                            staticClass:
+                              " mx-auto mt-2 d-flex justify-content-start",
+                            staticStyle: { width: "85%" }
+                          },
+                          [
+                            _c("div", { staticStyle: { width: "60%" } }, [
+                              _c(
+                                "label",
                                 {
-                                  name: "model",
-                                  rawName: "v-model.lazy",
-                                  value: _vm.editedTeacher.sexe,
-                                  expression: "editedTeacher.sexe",
-                                  modifiers: { lazy: true }
-                                }
-                              ],
-                              staticClass: "custom-select",
-                              class: _vm.getInvalids("sexe", _vm.invalidInputs),
-                              attrs: { name: "sexe", id: "ed_t_sexe" },
-                              on: {
-                                change: function($event) {
-                                  var $$selectedVal = Array.prototype.filter
-                                    .call($event.target.options, function(o) {
-                                      return o.selected
+                                  staticClass: "mb-0",
+                                  attrs: { for: "ed_t_ae" }
+                                },
+                                [_vm._v("Choisir comme AE de ...")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "w-75 d-flex justify-content-start border rounded p-1"
+                                },
+                                [
+                                  _c("div", { staticClass: "mr-3" }, [
+                                    _c(
+                                      "label",
+                                      { attrs: { for: "ed_ae_oui" } },
+                                      [_vm._v("Authorisé")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.editedTeacherIsAE,
+                                          expression: "editedTeacherIsAE"
+                                        }
+                                      ],
+                                      staticClass: "custom-radio",
+                                      attrs: {
+                                        type: "radio",
+                                        name: "setToAE",
+                                        id: "ed_ae_oui",
+                                        value: "true"
+                                      },
+                                      domProps: {
+                                        checked: _vm._q(
+                                          _vm.editedTeacherIsAE,
+                                          "true"
+                                        )
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          _vm.editedTeacherIsAE = "true"
+                                        }
+                                      }
                                     })
-                                    .map(function(o) {
-                                      var val =
-                                        "_value" in o ? o._value : o.value
-                                      return val
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", [
+                                    _c(
+                                      "label",
+                                      { attrs: { for: "ed_ae_non" } },
+                                      [_vm._v("Réfusé")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.editedTeacherIsAE,
+                                          expression: "editedTeacherIsAE"
+                                        }
+                                      ],
+                                      staticClass: "custom-radio",
+                                      attrs: {
+                                        type: "radio",
+                                        name: "setToAE",
+                                        id: "ed_ae_non",
+                                        value: "false"
+                                      },
+                                      domProps: {
+                                        checked: _vm._q(
+                                          _vm.editedTeacherIsAE,
+                                          "false"
+                                        )
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          _vm.editedTeacherIsAE = "false"
+                                        }
+                                      }
                                     })
-                                  _vm.$set(
-                                    _vm.editedTeacher,
+                                  ])
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticStyle: { width: "29%" } }, [
+                              _c(
+                                "label",
+                                {
+                                  staticClass: "m-0 p-0",
+                                  attrs: { for: "ed_t_sexe" }
+                                },
+                                [_vm._v("Sexe")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model.lazy",
+                                      value: _vm.editedTeacher.sexe,
+                                      expression: "editedTeacher.sexe",
+                                      modifiers: { lazy: true }
+                                    }
+                                  ],
+                                  staticClass: "custom-select",
+                                  class: _vm.getInvalids(
                                     "sexe",
-                                    $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  )
-                                }
-                              }
-                            },
-                            [
-                              _c("option", { attrs: { value: "" } }, [
-                                _vm._v("Choisir le sexe")
-                              ]),
+                                    _vm.invalidInputs
+                                  ),
+                                  attrs: { name: "sexe", id: "ed_t_sexe" },
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.$set(
+                                        _vm.editedTeacher,
+                                        "sexe",
+                                        $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      )
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("option", { attrs: { value: "" } }, [
+                                    _vm._v("Choisir le sexe")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("option", { attrs: { value: "male" } }, [
+                                    _vm._v("Masculin")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("option", { attrs: { value: "female" } }, [
+                                    _vm._v("Féminin")
+                                  ])
+                                ]
+                              ),
                               _vm._v(" "),
-                              _c("option", { attrs: { value: "male" } }, [
-                                _vm._v("Masculin")
-                              ]),
-                              _vm._v(" "),
-                              _c("option", { attrs: { value: "female" } }, [
-                                _vm._v("Féminin")
-                              ])
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _vm.invalidInputs !== undefined &&
-                          _vm.invalidInputs.sexe !== undefined
-                            ? _c("i", { staticClass: "h5-title" }, [
-                                _vm._v(
-                                  " " + _vm._s(_vm.invalidInputs.sexe[0]) + " "
-                                )
-                              ])
-                            : _vm._e()
-                        ])
-                      ]
-                    )
+                              _vm.invalidInputs !== undefined &&
+                              _vm.invalidInputs.sexe !== undefined
+                                ? _c("i", { staticClass: "h5-title" }, [
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(_vm.invalidInputs.sexe[0]) +
+                                        " "
+                                    )
+                                  ])
+                                : _vm._e()
+                            ])
+                          ]
+                        )
+                      : _vm._e()
                   ]
                 )
               ]),
@@ -68077,240 +68114,27 @@ var render = function() {
           },
           [
             _vm._v(
-              "\n\t\t\t\t" + _vm._s(_vm.targetedTeacherSubject) + "\n\t\t\t"
+              "\n\t\t\t" +
+                _vm._s(
+                  _vm.targetedTeacher.level !== "primary"
+                    ? _vm.targetedTeacherSubject
+                    : "Maître"
+                ) +
+                "\n\t\t"
             )
           ]
         )
       ]),
       _vm._v(" "),
-      _vm._m(0)
+      _c("div", {
+        staticClass:
+          "profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around"
+      })
     ],
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass:
-          "profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around"
-      },
-      [
-        _c(
-          "div",
-          { staticClass: "justify-content-center my-0 mt-sm-1 mt-md-1" },
-          [
-            _c(
-              "ul",
-              { staticClass: "btn btn-news d-block list-unstyled p-0 my-0" },
-              [
-                _c("li", { staticClass: "nav-item dropdown mr-1" }, [
-                  _c(
-                    "a",
-                    {
-                      pre: true,
-                      attrs: {
-                        id: "navbarDropdown",
-                        class: "nav-link dropdown-toggle text-dark",
-                        href: "#",
-                        role: "button",
-                        "data-toggle": "dropdown",
-                        "aria-haspopup": "true",
-                        "aria-expanded": "false"
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                            Consulter les notes "
-                      ),
-                      _c("span", { pre: true, attrs: { class: "caret" } })
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "dropdown-menu dropdown-menu-right",
-                      attrs: { "aria-labelledby": "navbarDropdown" }
-                    },
-                    [
-                      _c(
-                        "a",
-                        { staticClass: "dropdown-item", attrs: { href: "#" } },
-                        [_vm._v(" Les notes 1er Trimestre")]
-                      )
-                    ]
-                  )
-                ])
-              ]
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "justify-content-center mt-1 mx-md-1 mx-sm-1 mx-lg-0"
-          },
-          [
-            _c(
-              "ul",
-              { staticClass: "btn btn-news d-block list-unstyled p-0 my-0" },
-              [
-                _c("li", { staticClass: "nav-item dropdown mr-1" }, [
-                  _c(
-                    "a",
-                    {
-                      pre: true,
-                      attrs: {
-                        id: "navbarDropdown",
-                        class: "nav-link dropdown-toggle text-dark",
-                        href: "#",
-                        role: "button",
-                        "data-toggle": "dropdown",
-                        "aria-haspopup": "true",
-                        "aria-expanded": "false"
-                      }
-                    },
-                    [
-                      _c(
-                        "span",
-                        { pre: true, attrs: { class: "mr-2 rotate" } },
-                        [
-                          _c("img", {
-                            pre: true,
-                            attrs: {
-                              src: "/media/icons/menu.ico",
-                              alt: "",
-                              width: "30"
-                            }
-                          })
-                        ]
-                      ),
-                      _vm._v(" Options "),
-                      _c("span", { pre: true, attrs: { class: "caret" } })
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "div",
-                    {
-                      staticClass: "dropdown-menu dropdown-menu-right",
-                      attrs: { "aria-labelledby": "navbarDropdown" }
-                    },
-                    [
-                      _c(
-                        "a",
-                        { staticClass: "dropdown-item", attrs: { href: "#" } },
-                        [_vm._v("Emploi de temps")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "a",
-                        { staticClass: "dropdown-item", attrs: { href: "#" } },
-                        [_vm._v("Comptabilité")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "a",
-                        { staticClass: "dropdown-item", attrs: { href: "#" } },
-                        [_vm._v("Forum de ...")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "a",
-                        { staticClass: "dropdown-item", attrs: { href: "#" } },
-                        [_vm._v("Inserer")]
-                      )
-                    ]
-                  )
-                ])
-              ]
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "justify-content-center mt-1" }, [
-          _c(
-            "ul",
-            { staticClass: "btn btn-news d-block list-unstyled p-0 my-0" },
-            [
-              _c("li", { staticClass: "nav-item dropdown mr-1" }, [
-                _c(
-                  "a",
-                  {
-                    pre: true,
-                    attrs: {
-                      id: "navbarDropdown",
-                      class: "nav-link dropdown-toggle text-dark",
-                      href: "#",
-                      role: "button",
-                      "data-toggle": "dropdown",
-                      "aria-haspopup": "true",
-                      "aria-expanded": "false"
-                    }
-                  },
-                  [
-                    _c("span", { pre: true, attrs: { class: "mr-2 rotate" } }, [
-                      _c("img", {
-                        pre: true,
-                        attrs: {
-                          src: "/media/icons/archives.png",
-                          alt: "",
-                          width: "30"
-                        }
-                      })
-                    ]),
-                    _vm._v("Archives"),
-                    _c("span", { pre: true, attrs: { class: "caret" } })
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "dropdown-menu dropdown-menu-right text-center",
-                    attrs: { "aria-labelledby": "navbarDropdown" }
-                  },
-                  [
-                    _c(
-                      "a",
-                      { staticClass: "dropdown-item", attrs: { href: "#" } },
-                      [_vm._v("2019-2020")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      { staticClass: "dropdown-item", attrs: { href: "#" } },
-                      [_vm._v("2018-2019")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      { staticClass: "dropdown-item", attrs: { href: "#" } },
-                      [_vm._v("2017-2018")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "a",
-                      { staticClass: "dropdown-item", attrs: { href: "#" } },
-                      [_vm._v("2016-2017")]
-                    )
-                  ]
-                )
-              ])
-            ]
-          )
-        ])
-      ]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -68372,7 +68196,11 @@ var render = function() {
             _c("td", [
               _vm._v(
                 "\n\t\t\t\t\t" +
-                  _vm._s(_vm.targetedTeacher.subject.name) +
+                  _vm._s(
+                    _vm.targetedTeacher.level !== "primary"
+                      ? _vm.targetedTeacher.subject.name
+                      : "Maître"
+                  ) +
                   "\n\t\t\t\t"
               )
             ])
@@ -68563,7 +68391,8 @@ var render = function() {
               : _vm._e()
           ]),
           _vm._v(" "),
-          _vm.targetedTeacherClasses.length > 0
+          _vm.targetedTeacherClasses.length > 0 &&
+          _vm.targetedTeacher.level !== "primary"
             ? _c("div", { staticClass: "m-0 p-0" }, [
                 _c(
                   "div",
@@ -68658,7 +68487,101 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.targetedTeacherClasses.length <= 0
+          _vm.targetedTeacher.level == "primary" &&
+          _vm.targetedTeacher.classes !== []
+            ? _c("div", { staticClass: "m-0 p-0" }, [
+                _c(
+                  "div",
+                  { staticClass: "border w-100 p-1 bg-linear-official-180" },
+                  _vm._l(_vm.targetedTeacher.classes, function(classe, k) {
+                    return _c(
+                      "div",
+                      { staticClass: "d-flex mb-1 border-bottom" },
+                      [
+                        _c(
+                          "div",
+                          {
+                            staticClass: "border-right p-1 text-center",
+                            staticStyle: { width: "40%" }
+                          },
+                          [
+                            _c(
+                              "span",
+                              [
+                                _c(
+                                  "router-link",
+                                  {
+                                    staticClass:
+                                      "text-white-50 text-decoration-none",
+                                    attrs: {
+                                      to: {
+                                        name: "classesProfil",
+                                        params: { id: classe.id }
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                            " +
+                                        _vm._s(classe.name) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "div",
+                              {
+                                staticClass: "d-inline float-right ml-3",
+                                attrs: {
+                                  title:
+                                    "Retirer cette classe de la gestion de ce prof"
+                                }
+                              },
+                              [
+                                _c("div", { staticClass: "d-inline m-0 p-0" }, [
+                                  _c(
+                                    "span",
+                                    {
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.disjoinedClasses(
+                                            _vm.targetedTeacher,
+                                            classe.id
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("span", {
+                                        staticClass: "fa fa-remove text-danger"
+                                      })
+                                    ]
+                                  )
+                                ])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _vm._m(2, true)
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _vm._m(3, true)
+                      ]
+                    )
+                  }),
+                  0
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          (_vm.targetedTeacher.level == "secondary" &&
+            _vm.targetedTeacherClasses.length <= 0) ||
+          (_vm.targetedTeacher.level == "primary" &&
+            _vm.targetedTeacher.classes.length < 1)
             ? _c(
                 "div",
                 {
@@ -68742,6 +68665,40 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "float-right",
+        attrs: {
+          title:
+            "Empêcher le prof d'avoir la possiblité de modifier les notes de cette classe"
+        }
+      },
+      [
+        _c("div", { staticClass: "d-inline m-0 p-0" }, [
+          _c("span", [_c("span", { staticClass: "fa fa-lock text-warning" })])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "text-center", staticStyle: { width: "55%" } },
+      [
+        _c("h6", { staticClass: "m-0 p-0" }, [_vm._v("Lundi 10h - 12h")]),
+        _vm._v(" "),
+        _c("h6", { staticClass: "m-0 p-0" }, [_vm._v("Mercredi 10h - 12h")])
+      ]
+    )
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -91075,6 +91032,21 @@ var teachers_actions = {
       }).then(function (response) {
         store.commit('RESET_INVALID_INPUTS');
         store.commit('GET_TEACHERS_DATA', response.data);
+        $('#editTeacherClassesModal .buttons-div').hide('size', function () {
+          $('#editTeacherClassesModal form').hide('fade', function () {
+            $('#editTeacherClassesModal').animate({
+              top: '150'
+            }, function () {
+              $('#editTeacherClassesModal .div-success').show('fade', 200);
+              $('#editTeacherClassesModal .div-success h4').text('Mise à jour reussi');
+            });
+          });
+        });
+
+        if (inputs.route !== undefined && inputs.route.name == "teachersProfil") {
+          var id = inputs.route.params.id;
+          store.dispatch('getATeacherData', id);
+        }
       });
     }
   },
@@ -92110,7 +92082,7 @@ var default_states = {
   ul: 0,
   alert: false,
   message: "",
-  primaryClasses: {},
+  primaryClasses: [],
   secondaryClasses: {},
   allPrimaryClasses: {},
   allSecondaryClasses: {},

@@ -285,6 +285,9 @@
                 if(subject === "Histoire-Géographie"){
                     return "Hist-Géo"
                 }
+                else if (subject == null) {
+                    return "Maître"
+                }
                 return subject
                 
             },

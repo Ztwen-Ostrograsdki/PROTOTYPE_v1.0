@@ -20,9 +20,9 @@
 		        		<div class="mx-auto mt-2 d-flex justify-content-center" style="width: 85%">
 		        			<div style="width: 75%;">
 	                            <label for="ed_t_c" class="m-0 p-0">Classes</label>
-	                            <select name="classe" id="ed_t_c1" class="custom-select" :class="getInvalids('c1', invalidInputs)">
+	                            <select name="classe" id="ed_t_c1" class="custom-select">
 	                                <option value="">Choisissez la classe</option>
-	                                <option :disabled="classeRefused(classesRefused, classe.id)" :selected="wasSelected(editedTeacherClasses[0], classe.id)" :value="classe.id" v-for="classe in primaryClasses" > {{ classe.name }} </option>
+	                                 <option :disabled="classeRefused(classesRefused, classe.id)" :selected="wasSelected('', classe.id)" :value="classe.id" v-for="classe in primaryClasses" > {{ classe.name }} </option>
 	                            </select>
 	                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.classe !== undefined"> {{ invalidInputs.classe[0] }} </i>
 	                        </div>
@@ -108,7 +108,7 @@
 			    		<h4 class="text-center mx-auto text-warning w-75">Procédure de confirmation de classe</h4>
 			    		<div class="mx-auto w-100">
 			    			<p class="w-100 mx-auto text-center text-uppercase">
-			    				Vous êtes sur le point de confier la classe de <span class="text-warning">{{ getEditedNewClasseName() }}</span> à {{ editedTeacher.name }} <br>
+			    				Vous êtes sur le point de confier la classe de <span class="text-warning">{{ getEditedNewClasseName(primaryClasses) }}</span> à {{ editedTeacher.name }} <br>
 								<span class="text-uppercase">
 			    				il était maître de la classe de la classe de <span class="text-danger"> {{ getEditedOldClasseName()}}</span>
 			    				</span>
@@ -137,7 +137,7 @@
 			return {
 				show: true,
 				classes: {},
-				isAE: false
+				isAE: false,
 			}
 		},
 		created(){
@@ -153,11 +153,19 @@
 			},
 
 			wasSelected(tag, target){
-				if(tag == target){
-					return true
+				if(this.editedTeacher.level == 'primary'){
+					if(this.editedTeacher.classe !== null && this.editedTeacher.classe !== undefined){
+						return this.editedTeacher.classe.id == target
+					}
+					
 				}
 				else{
-					return false
+					if(tag == target){
+						return true
+					}
+					else{
+						return false
+					}
 				}
 				
 			},
@@ -175,20 +183,30 @@
 
 			getEditedOldClasseName(){
 				if (this.editedTeacher.classe !== undefined &&  this.editedTeacher.level == "primary") {
-					return this.editedTeacher.classe.name
+					if(this.editedTeacher.classe !== null){
+						return this.editedTeacher.classe.name
+					}
 				}
 				else{
 					return ""
 				}
 			},
-			getEditedNewClasseName(){
+			getEditedNewClasseName(theClasses){
 				if (this.teacherHasNewClasse !== undefined && this.editedTeacher.level == "primary") {
-					return this.classesConcernedByATeacher[this.teacherHasNewClasse].name
+					let name = ""
+					for (var i = 0; i < theClasses.length; i++) {
+						if(theClasses[i].id == this.teacherHasNewClasse){
+							name = theClasses[i].name
+						}
+						
+					}
+					return name
 				}
 				else{
 					return ""
 				} 
 			},
+			
 
 			updateEditedTeacherClasses(teacher, token, isAE){
 				let classes = {}
@@ -204,17 +222,17 @@
 					this.$store.dispatch('updateTeacherClasses', {teacher, classes, token, isAE, route})
 				}
 				else if(teacher.level == "primary"){
+
 					classes = {
 						classe: $('form#teacher-classes-edit select[name=classe]').val()
 					}
-
 					if(teacher.classe !== null){
 						if(teacher.classe.id == parseInt(classes.classe, 10)){
 							//Ancienne classe choisie alors on ne fait rien
 						}
 						else{
 							this.classes = classes
-							this.isAE = isAE
+							this.isAE = true
 							this.$store.commit('SET_EDITED_TEACHER_CLASSES1_CONFIRM', parseInt(classes.classe, 10))
 							$('#editTeacherClassesModal .div-success').hide('slide', 'up')
 			                $('#editTeacherClassesModal .div-success h4').text('')
@@ -230,6 +248,11 @@
 
 						}
 						
+					}
+					else{
+						this.classes = classes
+						this.isAE = true
+						this.$store.dispatch('updateTeacherClasses', {teacher, classes, token, isAE, route})
 					}
 					
 				}

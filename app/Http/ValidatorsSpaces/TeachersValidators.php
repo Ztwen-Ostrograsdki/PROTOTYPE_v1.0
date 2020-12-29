@@ -56,7 +56,7 @@ trait TeachersValidators {
             foreach (array_flip(array_flip($classesConfirmed)) as $cv) {
                 //Suppression des duplicata
                 if (!in_array($cv, $teachersOldClassesOnID)) {
-                    // On selection uniquement par les classes envoyées celles que le prof ne gardait pas
+                    // On selectionne uniquement parmi les classes envoyées celles que le prof ne gardait pas
                     $classesConfirmedNotDuplicate[] = $cv;
                 }
             }

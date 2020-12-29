@@ -220,13 +220,15 @@ class TeachersController extends Controller
             }
             elseif ($teacher->level == "primary") {
 
-                $oldClasse = Classe::find($teacher->classes[0]->id);
+                $oldClasse = Classe::find($teacher->classes);
 
-                $teacher->classes()->detach($oldClasse->id);
-
-                $oldClasse->teacher_id = null;
-                $oldClasse->save();
-
+                if (count($oldClasse) > 0) {
+                    $teacher->classes()->detach($oldClasse[0]->id);
+                    $oldClasse[0]->teacher_id = null;
+                    $oldClasse[0]->save();
+                    
+                }
+                
                 $teacher->classes()->attach($validator[0]);
                 $newClasse = Classe::find($validator[0]);
                 $newClasse->teacher_id = $teacher->id;
@@ -482,7 +484,7 @@ class TeachersController extends Controller
 
             $teacherClasses = $teacher->classes;
 
-            if ($teacher->level == 'secondary') {
+            if ($teacher->level == 'secondary' || $teacher->level == 'primary') {
                 if ($teacher->classes->count() > 0) {
                     foreach ($teacher->classes as $classe) {
                         $classes[] = $classe->id;
@@ -496,6 +498,10 @@ class TeachersController extends Controller
             else{
                 $c = Classe::find($classeID);
                 $teacher->classes()->detach($classeID);
+                if ($c->teacher_id == $teacher->id) {
+                    $c->teacher_id = null;
+                    $c->save();
+                }
                 return response()->json(["success" => "Le prof " .$teacher->name. " ne garde plus la classe de ". $c->name]);
             }
             
@@ -512,6 +518,7 @@ class TeachersController extends Controller
             }
             
         }
+
         return response()->json(["success" => "Le prof " .$teacher->name. " ne garde plus de classe!"]);
 
         // return $this->teachersDataSender($teacher, []);
