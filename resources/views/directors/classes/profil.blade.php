@@ -1,4 +1,6 @@
 @auth
+{{-- {{dd(App\Models\ComputedMarksModalities::all())}} --}}
+
 
 @extends('layouts.director')
 @section('content')

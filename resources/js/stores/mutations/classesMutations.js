@@ -19,6 +19,7 @@ const classes_mutations = {
     GET_A_CLASSE_DATA: (state, data) => {
         state.token = data.token
         state.targetedClasse = data.targetedClasse
+        state.targetedClasseModality = data.ClasseModalities
         state.targetedClasseSubject = data.targetedClasse.targetedSubject.id
     },
     GET_A_CLASSE_TEACHERS: (state, data) => {
@@ -38,15 +39,20 @@ const classes_mutations = {
         }
     },
 
+    RESET_MODALITY_ALERT: (state, data) => {
+        state.alertModality = {status: data.status, message: data.message}
+    },
+
     RESET_BLOCKED_CLASSSES: (state, data) => {
         state.classesBlockedsAll = data
     },
     RESET_TARGETED_CLASSE_SUBJECT_TARGETED: (state, subject) =>{
-        state.targetedClasseSubject = subject.id
+        state.targetedClasseSubject = subject
     },
     RESET_TARGETED_CLASSE_MARKS: (state, data) =>{
         state.targetedClasseMarks = data.classesMarks
         state.targetedClasseSubjectsCoef = data.coefTables
+        state.subjectWithModalities = data.subjectWithModalities
     },
     
 

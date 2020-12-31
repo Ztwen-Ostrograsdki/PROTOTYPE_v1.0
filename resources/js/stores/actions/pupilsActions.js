@@ -47,6 +47,7 @@ const pupils_actions = {
             })
     },
     updateAPupilMarks: (store, inputs) => {
+        console.log(inputs)
         axios.put('/admin/director/pupilsm/update/marks/update&marks/p=' + inputs.pupil.id + '&s=' + inputs.keys.subject + '&c=' + inputs.keys.classe , {
             epe1: inputs.notes.epe1,
             epe2: inputs.notes.epe2,

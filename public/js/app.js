@@ -4183,6 +4183,43 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _helpers_helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../helpers/helpers.js */ "./resources/js/helpers/helpers.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4390,7 +4427,8 @@ __webpack_require__.r(__webpack_exports__);
     return {
       showOptions: false,
       trimestre: 1,
-      range: false
+      range: false,
+      modality: false
     };
   },
   created: function created() {
@@ -4483,6 +4521,7 @@ __webpack_require__.r(__webpack_exports__);
     getAverage: function getAverage(pupil, targetedClasseMarks) {
       var coefs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.targetedClasseSubjectsCoef;
       var subject = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.targetedClasseSubject;
+      var subjectWithModalities = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.subjectWithModalities;
       var marksAll = targetedClasseMarks;
       var type = "epe";
       var interros = [];
@@ -4505,11 +4544,31 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         if (interros.length > 0) {
-          for (var i = 0; i < interros.length; i++) {
-            somEPE += interros[i];
-          }
+          if (subjectWithModalities[subject] !== undefined) {
+            var modality = subjectWithModalities[subject];
 
-          avgEPE = somEPE / interros.length;
+            if (interros.length <= modality) {
+              for (var i = 0; i < interros.length; i++) {
+                somEPE += interros[i];
+              }
+
+              avgEPE = somEPE / interros.length;
+            } else {
+              interros = this.getBest(interros, modality);
+
+              for (var i = 0; i < interros.length; i++) {
+                somEPE += interros[i];
+              }
+
+              avgEPE = somEPE / interros.length;
+            }
+          } else {
+            for (var i = 0; i < interros.length; i++) {
+              somEPE += interros[i];
+            }
+
+            avgEPE = somEPE / interros.length;
+          }
         }
 
         var somDEV = 0;
@@ -4536,8 +4595,9 @@ __webpack_require__.r(__webpack_exports__);
           avg = '-';
         }
 
+        avgEPE !== '-' ? avgEPE = Number.parseFloat(avgEPE).toFixed(2) : avgEPE = '-';
         return {
-          avgEPE: Number.parseFloat(avgEPE).toFixed(2),
+          avgEPE: avgEPE,
           avg: Number.parseFloat(avg).toFixed(2),
           avgCoef: Number.parseFloat(avg * coef).toFixed(2)
         };
@@ -4550,12 +4610,103 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     oderer: function oderer(classe, subject, trimestre) {
+      this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject);
       this.$store.dispatch('getOderer', {
         classe: classe,
         subject: subject,
         trimestre: trimestre
       });
       this.range = true;
+      this.$store.dispatch('getAClasseMarks', {
+        classe: this.$route.params.id,
+        subject: subject,
+        trimestre: this.trimestre
+      });
+    },
+    changeModality: function changeModality() {
+      var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      this.$store.commit('RESET_MODALITY_ALERT', {
+        status: true,
+        message: ''
+      });
+      this.modality = !this.modality;
+    },
+    resetAllModality: function resetAllModality() {
+      var tab = [5, 12, 14, 8, 20];
+    },
+    getBest: function getBest(tab, limit) {
+      var bestMarks = [];
+
+      while (bestMarks.length < limit) {
+        for (var i = 0; i < tab.length; i++) {
+          if (tab[i] == Math.max.apply(Math, _toConsumableArray(tab))) {
+            bestMarks.push(tab[i]);
+            tab.splice(i, 1);
+          }
+        }
+      }
+
+      return bestMarks;
+    },
+    isInTheBestMarks: function isInTheBestMarks(pupil, subjectWithModalities, subject, mark) {
+      var targetedClasseMarks = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.targetedClasseMarks;
+      var modality = subjectWithModalities[subject];
+      var marksAll = targetedClasseMarks;
+      var type = "epe";
+      var interros = [];
+
+      if (mark == '-') {
+        return '';
+      }
+
+      if (marksAll[pupil] !== null && marksAll[pupil] !== undefined) {
+        var marks = marksAll[pupil];
+
+        for (var i = 0; i < marks.length; i++) {
+          if (marks[i].type == 'epe' || marks[i].type == 'interrogations') {
+            interros.push(marks[i].value);
+          }
+        }
+
+        if (modality !== undefined) {
+          var bestMarks = this.getBest(interros, modality);
+
+          if (bestMarks.indexOf(mark) == -1) {
+            return 'text-danger';
+          }
+
+          return 'text-success';
+        } else {
+          return 'text-success';
+        }
+      }
+    },
+    updateModality: function updateModality() {
+      this.$store.commit('RESET_MODALITY_ALERT', {
+        status: true,
+        message: 'Traitement en cours...'
+      });
+      var modality = $('form#classe-modality input[name=modalityLength]').val();
+      var subject = this.targetedClasseSubject;
+      var classe = this.targetedClasse.id;
+      modality = parseInt(modality, 10);
+
+      if (modality !== null) {
+        if (modality > 0 && modality < 6) {
+          this.$store.dispatch('updateClasseModality', {
+            classe: this.$route.params.id,
+            subject: subject,
+            trimestre: this.trimestre,
+            modality: modality,
+            token: this.token
+          });
+        } else {
+          this.$store.commit('RESET_MODALITY_ALERT', {
+            status: true,
+            message: "La valeur renseignée est invalide"
+          });
+        }
+      }
     },
     getRange: function getRange(key, avg) {
       if (this.range) {
@@ -4582,7 +4733,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('SET_EDITED_PUPIL', pupil);
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'targetedClasseModality', 'token', 'alertModality', 'subjectWithModalities'])
 });
 
 /***/ }),
@@ -5842,6 +5993,7 @@ __webpack_require__.r(__webpack_exports__);
       return 0;
     },
     updateTargetedPupilMarks: function updateTargetedPupilMarks(pupil, token, subject, classe, marks, trimestre) {
+      console.log(this.editedPupilSubjectMarks);
       var cl = null;
 
       if (subject !== null && marks !== null) {
@@ -5895,7 +6047,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', {});
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['newPupil', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'newPupilName', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'trimestre'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['newPupil', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'newPupilName', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'trimestre', 'targetedClasseSubject'])
 });
 
 /***/ }),
@@ -6496,19 +6648,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: [],
@@ -6544,13 +6683,15 @@ __webpack_require__.r(__webpack_exports__);
         this.$store.dispatch('updateTeacherClasses', {
           teacher: this.editedTeacher,
           classes: this.classes,
-          token: this.token,
-          isAE: this.isAE
+          token: this.token
         });
       } else {
         this.$store.commit('RESET_EDITED_TEACHER_CLASSES1_CONFIRM');
         this.$store.commit('RESET_EDITED_TEACHER');
       }
+    },
+    resetAE: function resetAE(value) {
+      this.$store.commit('RESET_EDITED_TEACHER_AE', value);
     },
     getEditedOldClasseName: function getEditedOldClasseName() {
       if (this.editedTeacher.classe !== undefined && this.editedTeacher.level == "primary") {
@@ -6576,7 +6717,7 @@ __webpack_require__.r(__webpack_exports__);
         return "";
       }
     },
-    updateEditedTeacherClasses: function updateEditedTeacherClasses(teacher, token, isAE) {
+    updateEditedTeacherClasses: function updateEditedTeacherClasses(teacher, token) {
       var classes = {};
       var route = this.$route;
 
@@ -6592,7 +6733,6 @@ __webpack_require__.r(__webpack_exports__);
           teacher: teacher,
           classes: classes,
           token: token,
-          isAE: isAE,
           route: route
         });
       } else if (teacher.level == "primary") {
@@ -6604,7 +6744,6 @@ __webpack_require__.r(__webpack_exports__);
           if (teacher.classe.id == parseInt(classes.classe, 10)) {//Ancienne classe choisie alors on ne fait rien
           } else {
             this.classes = classes;
-            this.isAE = true;
             this.$store.commit('SET_EDITED_TEACHER_CLASSES1_CONFIRM', parseInt(classes.classe, 10));
             $('#editTeacherClassesModal .div-success').hide('slide', 'up');
             $('#editTeacherClassesModal .div-success h4').text('');
@@ -6621,12 +6760,10 @@ __webpack_require__.r(__webpack_exports__);
           }
         } else {
           this.classes = classes;
-          this.isAE = true;
           this.$store.dispatch('updateTeacherClasses', {
             teacher: teacher,
             classes: classes,
             token: token,
-            isAE: isAE,
             route: route
           });
         }
@@ -8571,6 +8708,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     editedPupilClasseAndSubjectMarks: function editedPupilClasseAndSubjectMarks(subject) {
       this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject);
+      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT', subject.id);
       $('#editPupilMarks .div-success').hide('slide', 'up');
       $('#editPupilMarks .div-success h4').text('');
       $('#editPupilMarks').animate({
@@ -8625,7 +8763,7 @@ __webpack_require__.r(__webpack_exports__);
       return Object(_helpers_helpers_js__WEBPACK_IMPORTED_MODULE_1__["default"])(subject, marks);
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef', 'targetedClasseSubject'])
 });
 
 /***/ }),
@@ -9306,7 +9444,7 @@ __webpack_require__.r(__webpack_exports__);
       $('#editTeacherPersoModal .div-success').hide('slide', 'up');
       $('#editTeacherPersoModal .div-success h4').text('');
       $('#editTeacherPersoModal').animate({
-        top: '100'
+        top: '10'
       });
       $('#editTeacherPersoModal form').show('slide', {
         direction: 'up'
@@ -14577,7 +14715,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n#edit-pupil-marks input + i{\n\tcolor: rgb(200, 0, 0);\n\tfont-style: normal;\n\ttext-shadow: 0 1px 1px black !important;\n}\n", ""]);
+exports.push([module.i, "\n#edit-pupil-marks input + i{\n\tcolor: rgb(200, 0, 0);\n\tfont-style: normal;\n\ttext-shadow: 0 1px 1px black !important;\n}\nform#edit-pupil-marks label{\n\tcolor: aqua !important;\n}\nform#edit-pupil-marks input{\n\tcolor: white !important;\n\tfont-family: cursive;\n}\nform#edit-pupil-marks input:focus{\n\tcolor: black !important;\n}\n\n\n", ""]);
 
 // exports
 
@@ -53682,7 +53820,7 @@ var render = function() {
                           class: _vm.isTheTargetedSubject(subject),
                           on: {
                             click: function($event) {
-                              return _vm.updateTargetedSubject(subject)
+                              return _vm.updateTargetedSubject(subject.id)
                             }
                           }
                         },
@@ -53717,9 +53855,194 @@ var render = function() {
                 _vm._v(" "),
                 _c("th", { staticClass: " pupils-tag" }, [_vm._v("Elèves")]),
                 _vm._v(" "),
-                _c("th", { staticClass: "subjects-tag" }, [_vm._v("Notes")]),
+                _c(
+                  "th",
+                  { staticClass: "subjects-tag" },
+                  [
+                    _c("span", [
+                      _vm._v("Les notes\n                        \t\t"),
+                      _vm.subjectWithModalities[_vm.targetedClasseSubject] ==
+                      undefined
+                        ? _c(
+                            "span",
+                            { staticClass: "h5-title text-white-50" },
+                            [_vm._v("Toutes les notes sont prises en comptes")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.subjectWithModalities[_vm.targetedClasseSubject] !==
+                      undefined
+                        ? _c(
+                            "span",
+                            { staticClass: "h5-title text-white-50" },
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  "Seulement les " +
+                                    _vm.subjectWithModalities[
+                                      _vm.targetedClasseSubject
+                                    ] +
+                                    " sont prises en compte"
+                                )
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ]),
+                    _vm._v(" "),
+                    _vm.modality
+                      ? _c(
+                          "span",
+                          {
+                            staticClass:
+                              "float-right mr-1 d-flex flex-column justify-content-between"
+                          },
+                          [
+                            _c("span", {
+                              staticClass: "fa fa-check text-success mb-2",
+                              attrs: { title: "Lancer les modalités" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.updateModality()
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("span", {
+                              staticClass: "fa fa-mail-reply text-info",
+                              attrs: { title: "Annuler la proccédure" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.changeModality("reset")
+                                }
+                              }
+                            })
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.modality
+                      ? _c(
+                          "span",
+                          {
+                            staticClass:
+                              "float-left ml-1 d-flex flex-column justify-content-center"
+                          },
+                          [
+                            _c("span", {
+                              staticClass: "fa fa-close text-danger mb-2",
+                              attrs: { title: "Annuler toutes les modalités" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.resetAllModality()
+                                }
+                              }
+                            })
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.modality
+                      ? _c("span", {
+                          staticClass: "fa fa-filter float-right m-0 p-0 mr-2",
+                          attrs: {
+                            title:
+                              " Définisser la modalité de calcule des moyennes"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.changeModality()
+                            }
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c(
+                      "transition",
+                      { attrs: { name: "justefade", appear: "" } },
+                      [
+                        _vm.modality
+                          ? _c(
+                              "span",
+                              { staticClass: "float-right m-0 p-0 mr-1" },
+                              [
+                                _c(
+                                  "form",
+                                  {
+                                    staticClass: "d-inline opac-form m-0 p-0",
+                                    attrs: { id: "classe-modality" }
+                                  },
+                                  [
+                                    _c("input", {
+                                      staticClass:
+                                        "form-control m-0 p-0 text-center",
+                                      class:
+                                        _vm.alertModality.status == false
+                                          ? "is-invalid"
+                                          : "",
+                                      staticStyle: { color: "orange" },
+                                      attrs: {
+                                        max: "5",
+                                        min: "1",
+                                        type: "number",
+                                        name: "modalityLength",
+                                        title:
+                                          "Veuillez renseigner le nombre de notes à prendre en compte"
+                                      }
+                                    })
+                                  ]
+                                )
+                              ]
+                            )
+                          : _vm._e()
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm.modality && _vm.alertModality.message == ""
+                      ? _c(
+                          "span",
+                          {
+                            staticClass: "h5-title text-warning d-block p-0 m-0"
+                          },
+                          [
+                            _vm._v(
+                              "\n\t                        \tIndiquer le nombre de notes à prendre en compte\n\t                        "
+                            )
+                          ]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.modality && _vm.alertModality.message !== ""
+                      ? _c(
+                          "span",
+                          {
+                            staticClass: "h5-title d-block p-0 m-0",
+                            class:
+                              _vm.alertModality.status == false
+                                ? "text-danger"
+                                : "text-success"
+                          },
+                          [
+                            _vm._v(
+                              "\n\t                        \t" +
+                                _vm._s(_vm.alertModality.message) +
+                                "\n\t                        "
+                            )
+                          ]
+                        )
+                      : _vm._e()
+                  ],
+                  1
+                ),
                 _vm._v(" "),
-                _c("th", { staticClass: "subjects-tag" }, [_vm._v("Moyennes")]),
+                _c("th", { staticClass: "subjects-tag" }, [
+                  _c("span", [_vm._v("Moyennes")]),
+                  _vm._v(" "),
+                  _c("span", {
+                    staticClass: "fa fa-desktop float-right mr-2",
+                    attrs: { title: "calculer les moyennes maintenant" }
+                  })
+                ]),
                 _vm._v(" "),
                 _c("th", { staticClass: "actions-tag" }, [_vm._v("Classer")])
               ])
@@ -53838,7 +54161,7 @@ var render = function() {
                         _vm._v(" "),
                         _c(
                           "td",
-                          { staticClass: "text-left pl-2" },
+                          { staticClass: "text-left p-2" },
                           [
                             _c(
                               "router-link",
@@ -53904,9 +54227,13 @@ var render = function() {
                           _c("table", { staticClass: "w-100" }, [
                             _c("tbody", { staticClass: "w-100 notes" }, [
                               _c("tr", { staticClass: "w-100" }, [
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
+                                _c(
+                                  "td",
+                                  {
+                                    class: _vm.isInTheBestMarks(
+                                      pupil.id,
+                                      _vm.subjectWithModalities,
+                                      _vm.targetedClasseSubject,
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -53914,12 +54241,28 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  )
-                                ]),
+                                  },
+                                  [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.getMarks(
+                                          pupil.id,
+                                          "epe",
+                                          0,
+                                          _vm.targetedClasseMarks
+                                        )
+                                      )
+                                    )
+                                  ]
+                                ),
                                 _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
+                                _c(
+                                  "td",
+                                  {
+                                    class: _vm.isInTheBestMarks(
+                                      pupil.id,
+                                      _vm.subjectWithModalities,
+                                      _vm.targetedClasseSubject,
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -53927,12 +54270,28 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  )
-                                ]),
+                                  },
+                                  [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.getMarks(
+                                          pupil.id,
+                                          "epe",
+                                          1,
+                                          _vm.targetedClasseMarks
+                                        )
+                                      )
+                                    )
+                                  ]
+                                ),
                                 _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
+                                _c(
+                                  "td",
+                                  {
+                                    class: _vm.isInTheBestMarks(
+                                      pupil.id,
+                                      _vm.subjectWithModalities,
+                                      _vm.targetedClasseSubject,
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -53940,12 +54299,28 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  )
-                                ]),
+                                  },
+                                  [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.getMarks(
+                                          pupil.id,
+                                          "epe",
+                                          2,
+                                          _vm.targetedClasseMarks
+                                        )
+                                      )
+                                    )
+                                  ]
+                                ),
                                 _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
+                                _c(
+                                  "td",
+                                  {
+                                    class: _vm.isInTheBestMarks(
+                                      pupil.id,
+                                      _vm.subjectWithModalities,
+                                      _vm.targetedClasseSubject,
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -53953,12 +54328,28 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  )
-                                ]),
+                                  },
+                                  [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.getMarks(
+                                          pupil.id,
+                                          "epe",
+                                          3,
+                                          _vm.targetedClasseMarks
+                                        )
+                                      )
+                                    )
+                                  ]
+                                ),
                                 _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
+                                _c(
+                                  "td",
+                                  {
+                                    class: _vm.isInTheBestMarks(
+                                      pupil.id,
+                                      _vm.subjectWithModalities,
+                                      _vm.targetedClasseSubject,
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -53966,8 +54357,20 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  )
-                                ]),
+                                  },
+                                  [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.getMarks(
+                                          pupil.id,
+                                          "epe",
+                                          4,
+                                          _vm.targetedClasseMarks
+                                        )
+                                      )
+                                    )
+                                  ]
+                                ),
                                 _vm._v(" "),
                                 _c("td", { staticClass: "text-primary" }, [
                                   _vm._v(
@@ -58514,8 +58917,7 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks
-                                                    .id,
+                                                  _vm.targetedClasseSubject,
                                                   "epe",
                                                   0
                                                 )
@@ -58573,8 +58975,7 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks
-                                                    .id,
+                                                  _vm.targetedClasseSubject,
                                                   "epe",
                                                   1
                                                 )
@@ -58632,8 +59033,7 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks
-                                                    .id,
+                                                  _vm.targetedClasseSubject,
                                                   "epe",
                                                   2
                                                 )
@@ -58691,8 +59091,7 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks
-                                                    .id,
+                                                  _vm.targetedClasseSubject,
                                                   "epe",
                                                   3
                                                 )
@@ -58750,8 +59149,7 @@ var render = function() {
                                               domProps: {
                                                 value: _vm.getMarks(
                                                   _vm.targetPupilMarks,
-                                                  _vm.editedPupilSubjectMarks
-                                                    .id,
+                                                  _vm.targetedClasseSubject,
                                                   "epe",
                                                   4
                                                 )
@@ -58894,8 +59292,7 @@ var render = function() {
                                                 domProps: {
                                                   value: _vm.getMarks(
                                                     _vm.targetPupilMarks,
-                                                    _vm.editedPupilSubjectMarks
-                                                      .id,
+                                                    _vm.targetedClasseSubject,
                                                     "devoirs",
                                                     0
                                                   )
@@ -58954,8 +59351,7 @@ var render = function() {
                                                 domProps: {
                                                   value: _vm.getMarks(
                                                     _vm.targetPupilMarks,
-                                                    _vm.editedPupilSubjectMarks
-                                                      .id,
+                                                    _vm.targetedClasseSubject,
                                                     "devoirs",
                                                     1
                                                   )
@@ -59013,7 +59409,7 @@ var render = function() {
                           return _vm.updateTargetedPupilMarks(
                             _vm.editedPupil,
                             _vm.token,
-                            _vm.editedPupilSubjectMarks.id,
+                            _vm.targetedClasseSubject,
                             _vm.editedPupilClasseMarks,
                             _vm.targetPupilMarks,
                             _vm.trimestre
@@ -61671,100 +62067,6 @@ var render = function() {
                               staticStyle: { width: "90%" }
                             },
                             [
-                              _c("div", { staticStyle: { width: "31%" } }, [
-                                _c(
-                                  "label",
-                                  {
-                                    staticClass: "mb-0",
-                                    attrs: { for: "ed_t_ae" }
-                                  },
-                                  [_vm._v("Choisir comme AE de ...")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass:
-                                      "w-100 d-flex justify-content-start border border-dark rounded p-1 pb-2"
-                                  },
-                                  [
-                                    _c("div", { staticClass: "mr-3" }, [
-                                      _c(
-                                        "label",
-                                        { attrs: { for: "ed_ae_oui" } },
-                                        [_vm._v("Authorisé")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.editedTeacherIsAE,
-                                            expression: "editedTeacherIsAE"
-                                          }
-                                        ],
-                                        staticClass: "custom-radio",
-                                        attrs: {
-                                          type: "radio",
-                                          name: "setToAE",
-                                          id: "ed_ae_oui",
-                                          value: "true"
-                                        },
-                                        domProps: {
-                                          checked: _vm._q(
-                                            _vm.editedTeacherIsAE,
-                                            "true"
-                                          )
-                                        },
-                                        on: {
-                                          change: function($event) {
-                                            _vm.editedTeacherIsAE = "true"
-                                          }
-                                        }
-                                      })
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("div", [
-                                      _c(
-                                        "label",
-                                        { attrs: { for: "ed_ae_non" } },
-                                        [_vm._v("Réfusé")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.editedTeacherIsAE,
-                                            expression: "editedTeacherIsAE"
-                                          }
-                                        ],
-                                        staticClass: "custom-radio",
-                                        attrs: {
-                                          type: "radio",
-                                          name: "setToAE",
-                                          id: "ed_ae_non",
-                                          value: "false"
-                                        },
-                                        domProps: {
-                                          checked: _vm._q(
-                                            _vm.editedTeacherIsAE,
-                                            "false"
-                                          )
-                                        },
-                                        on: {
-                                          change: function($event) {
-                                            _vm.editedTeacherIsAE = "false"
-                                          }
-                                        }
-                                      })
-                                    ])
-                                  ]
-                                )
-                              ]),
-                              _vm._v(" "),
                               _c("div", { staticStyle: { width: "31.7%" } }, [
                                 _c(
                                   "label",
@@ -61920,7 +62222,8 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-secondary mx-1 float-right",
+                      staticClass:
+                        "btn btn-secondary mx-1 float-right border border-white w-25",
                       attrs: { type: "button", "data-dismiss": "modal" },
                       on: {
                         click: function($event) {
@@ -61934,14 +62237,14 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-primary float-right",
+                      staticClass:
+                        "btn btn-primary float-right border border-white w-25",
                       attrs: { type: "button" },
                       on: {
                         click: function($event) {
                           return _vm.updateEditedTeacherClasses(
                             _vm.editedTeacher,
-                            _vm.token,
-                            _vm.editedTeacherIsAE
+                            _vm.token
                           )
                         }
                       }
@@ -62928,7 +63231,8 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-secondary mx-1 float-right",
+                      staticClass:
+                        "btn btn-secondary mx-1 float-right border border-white w-25",
                       attrs: { type: "button", "data-dismiss": "modal" },
                       on: {
                         click: function($event) {
@@ -62942,7 +63246,8 @@ var render = function() {
                   _c(
                     "button",
                     {
-                      staticClass: "btn btn-primary float-right",
+                      staticClass:
+                        "btn btn-primary float-right border border-white w-25",
                       attrs: { type: "button" },
                       on: {
                         click: function($event) {
@@ -90533,6 +90838,24 @@ var classes_actions = {
       store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
     });
   },
+  updateClasseModality: function updateClasseModality(store, inputs) {
+    axios.post('/admin/director/classesm/update/modality/for&c=' + inputs.classe + '/s=' + inputs.subject + '/t=' + inputs.trimestre, {
+      token: inputs.token,
+      classe_id: parseInt(inputs.classe, 10),
+      value: inputs.modality,
+      subject_id: inputs.subject,
+      trimestre: inputs.trimestre,
+      year: new Date().getFullYear()
+    }).then(function (response) {
+      store.commit('GET_A_CLASSE_DATA', response.data);
+      store.commit('RESET_MODALITY_ALERT', {
+        status: "updated",
+        message: "Mise à jour réussie. Les " + inputs.modality + " meilleures notes seront prises en comptes"
+      });
+    })["catch"](function (e) {
+      store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!");
+    });
+  },
   addANewClasse: function addANewClasse(store, inputs) {
     axios.post('/admin/director/classesm', {
       token: inputs.token,
@@ -90825,6 +91148,7 @@ var pupils_actions = {
     });
   },
   updateAPupilMarks: function updateAPupilMarks(store, inputs) {
+    console.log(inputs);
     axios.put('/admin/director/pupilsm/update/marks/update&marks/p=' + inputs.pupil.id + '&s=' + inputs.keys.subject + '&c=' + inputs.keys.classe, {
       epe1: inputs.notes.epe1,
       epe2: inputs.notes.epe2,
@@ -90999,13 +91323,13 @@ var teachers_actions = {
     if (inputs.teacher.level == "secondary") {
       axios.put('/admin/director/teachersm/update/update&classes&with&authorization/id=' + inputs.teacher.id, {
         token: inputs.token,
-        isAE: inputs.setToAE,
         classe1: parseInt(inputs.classes.c1, 10),
         classe2: parseInt(inputs.classes.c2, 10),
         classe3: parseInt(inputs.classes.c3, 10),
         classe4: parseInt(inputs.classes.c4, 10),
         classe5: parseInt(inputs.classes.c5, 10)
       }).then(function (response) {
+        console.log(response.data);
         store.commit('RESET_INVALID_INPUTS');
         store.commit('GET_TEACHERS_DATA', response.data);
         $('#editTeacherClassesModal .buttons-div').hide('size', function () {
@@ -91027,7 +91351,6 @@ var teachers_actions = {
     } else if (inputs.teacher.level == "primary") {
       axios.put('/admin/director/teachersm/update/update&classes&with&authorization/id=' + inputs.teacher.id, {
         token: inputs.token,
-        isAE: inputs.setToAE,
         classe: parseInt(inputs.classes.classe, 10)
       }).then(function (response) {
         store.commit('RESET_INVALID_INPUTS');
@@ -91232,6 +91555,7 @@ var classes_mutations = {
   GET_A_CLASSE_DATA: function GET_A_CLASSE_DATA(state, data) {
     state.token = data.token;
     state.targetedClasse = data.targetedClasse;
+    state.targetedClasseModality = data.ClasseModalities;
     state.targetedClasseSubject = data.targetedClasse.targetedSubject.id;
   },
   GET_A_CLASSE_TEACHERS: function GET_A_CLASSE_TEACHERS(state, data) {
@@ -91250,15 +91574,22 @@ var classes_mutations = {
       tag: data.tag
     };
   },
+  RESET_MODALITY_ALERT: function RESET_MODALITY_ALERT(state, data) {
+    state.alertModality = {
+      status: data.status,
+      message: data.message
+    };
+  },
   RESET_BLOCKED_CLASSSES: function RESET_BLOCKED_CLASSSES(state, data) {
     state.classesBlockedsAll = data;
   },
   RESET_TARGETED_CLASSE_SUBJECT_TARGETED: function RESET_TARGETED_CLASSE_SUBJECT_TARGETED(state, subject) {
-    state.targetedClasseSubject = subject.id;
+    state.targetedClasseSubject = subject;
   },
   RESET_TARGETED_CLASSE_MARKS: function RESET_TARGETED_CLASSE_MARKS(state, data) {
     state.targetedClasseMarks = data.classesMarks;
     state.targetedClasseSubjectsCoef = data.coefTables;
+    state.subjectWithModalities = data.subjectWithModalities;
   },
   SHOW_CLASSES_BY_LEVEL: function SHOW_CLASSES_BY_LEVEL(state, level) {
     var notBlockedSpace = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -91588,6 +91919,9 @@ var pupils_mutations = {
   RESET_TARGETED_PUPIL_SUBJECT_MARKS: function RESET_TARGETED_PUPIL_SUBJECT_MARKS(state, subject) {
     state.editedPupilSubjectMarks = subject;
   },
+  RESET_TARGETED_PUPIL_SUBJECT: function RESET_TARGETED_PUPIL_SUBJECT(state, id) {
+    state.targetedClasseSubject = id;
+  },
   SHOW_PUPILS_BY_LEVEL: function SHOW_PUPILS_BY_LEVEL(state, data) {
     if (data.blockedSpace == false) {
       if (data.level == 'secondary') {
@@ -91750,6 +92084,9 @@ var teachers_mutations = {
   SET_EDITED_TEACHER: function SET_EDITED_TEACHER(state, teacher) {
     state.editedTeacher = teacher;
   },
+  RESET_EDITED_TEACHER_AE: function RESET_EDITED_TEACHER_AE(state, data) {
+    state.editedTeacherIsAE = data;
+  },
   RESET_NEW_TEACHER: function RESET_NEW_TEACHER(state) {
     state.newTeacher = {
       name: '',
@@ -91880,6 +92217,7 @@ var classes_states = {
     pupils: [],
     subjects: []
   },
+  targetedClasseModality: [],
   targetedClasseSubject: 10,
   targetClasseFMT: [],
   targetedClasseMarks: [],
@@ -91906,7 +92244,12 @@ var classes_states = {
     first: {},
     second: {},
     third: {}
-  }
+  },
+  alertModality: {
+    status: false,
+    message: ''
+  },
+  subjectWithModalities: []
 };
 /* harmony default export */ __webpack_exports__["default"] = (classes_states);
 

@@ -51,6 +51,7 @@ const classes_states = {
         subjects: [],
 
     },
+    targetedClasseModality: [],
     targetedClasseSubject: 10,
     targetClasseFMT: [],
     targetedClasseMarks: [],
@@ -80,7 +81,9 @@ const classes_states = {
         first: {},
         second: {},
         third: {},
-    }
+    },
+    alertModality: {status: false, message: ''},
+    subjectWithModalities: []
 }
 
 export default classes_states

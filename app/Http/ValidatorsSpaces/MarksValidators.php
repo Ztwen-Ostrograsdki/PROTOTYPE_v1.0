@@ -30,6 +30,18 @@ trait MarksValidator {
     }
 
 
+    public function validateModality(array $data)
+    {
+        return Validator::make($data, [
+            'value' => ['numeric','max:5', 'min:1', 'bail', 'required'],
+            'year' => ['numeric', 'bail', 'required'],
+            'classe_id' => ['numeric', 'bail'],
+            'subject_id' => ['numeric', 'bail'],
+            'trimestre' => ['bail', 'required']
+        ]);
+    }
+
+
 
 
 }

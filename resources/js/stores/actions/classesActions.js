@@ -36,6 +36,24 @@ const classes_actions = {
             })
     },
 
+    updateClasseModality: (store, inputs) =>{
+        axios.post('/admin/director/classesm/update/modality/for&c=' + inputs.classe + '/s=' + inputs.subject + '/t=' + inputs.trimestre, {
+            token: inputs.token,
+            classe_id: parseInt(inputs.classe, 10),
+            value: inputs.modality,
+            subject_id: inputs.subject,
+            trimestre: inputs.trimestre,
+            year: (new Date).getFullYear()
+        })
+        .then(response => {
+            store.commit('GET_A_CLASSE_DATA', response.data)
+            store.commit('RESET_MODALITY_ALERT', {status: "updated", message: "Mise à jour réussie. Les " + inputs.modality + " meilleures notes seront prises en comptes"})
+        })
+        .catch(e => {
+           store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+        })
+    },
+
     addANewClasse: (store, inputs) => {
         axios.post('/admin/director/classesm', {
             token: inputs.token,

@@ -93,8 +93,8 @@
 			    </form>
 	      		</div>
 			    <div class="mx-auto mt-2 p-1 pb-2 buttons-div" style="width: 85%">
-			        <button type="button" class="btn btn-secondary mx-1 float-right" data-dismiss="modal" @click="resetEditedTeacher()">Annuler</button>
-			        <button type="button" class="btn btn-primary float-right" @click="updateEdited(editedTeacher, token)">Mettre à jour</button>
+			        <button type="button" class="btn btn-secondary mx-1 float-right border border-white w-25" data-dismiss="modal" @click="resetEditedTeacher()">Annuler</button>
+			        <button type="button" class="btn btn-primary float-right border border-white w-25" @click="updateEdited(editedTeacher, token)">Mettre à jour</button>
 			    </div>
 			    <div class="mx-auto mt-2 p-1 pb-2 div-success" style="width: 85%; display: none">
 			    	<div class="d-flex justify-content-center w-100 p-2 my-1">

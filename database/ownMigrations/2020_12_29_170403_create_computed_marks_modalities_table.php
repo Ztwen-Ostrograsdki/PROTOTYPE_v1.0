@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMarksTable extends Migration
+class CreateComputedMarksModalitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,14 +14,13 @@ class CreateMarksTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::create('marks', function (Blueprint $table) {
+        Schema::create('computed_marks_modalities', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('creator')->nullable();
             $table->string('editor')->nullable();
-            $table->boolean('authorized')->default(false);
-            $table->float('value')->nullable();
+            $table->boolean('authorized')->default(true);
+            $table->unsignedBigInteger('value')->nullable();
             $table->unsignedBigInteger('year');
-            $table->string('type');
             $table->string('trimestre');
 
             $table->unsignedBigInteger('subject_id');
@@ -31,14 +30,7 @@ class CreateMarksTable extends Migration
                   ->onUpdate('cascade')
                   ->onDelete('cascade');
 
-            $table->unsignedBigInteger('pupil_id')->nullable();
-            $table->foreign('pupil_id')
-                  ->references('id')
-                  ->on('pupils')
-                  ->onUpdate('cascade')
-                  ->onDelete('cascade');
-
-            $table->unsignedBigInteger('classe_id')->nullable();
+            $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')
                   ->references('id')
                   ->on('classes')
@@ -57,6 +49,6 @@ class CreateMarksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('marks');
+        Schema::dropIfExists('computed_marks_modalities');
     }
 }

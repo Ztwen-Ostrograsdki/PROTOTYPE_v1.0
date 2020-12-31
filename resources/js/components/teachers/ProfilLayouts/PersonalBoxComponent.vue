@@ -67,7 +67,7 @@
                 $('#editTeacherPersoModal .div-success').hide('slide', 'up')
                 $('#editTeacherPersoModal .div-success h4').text('')
                 $('#editTeacherPersoModal').animate({
-                    top: '100'
+                    top: '10'
                 })
                 
                 $('#editTeacherPersoModal form').show('slide', {direction: 'up'}, 1, function(){

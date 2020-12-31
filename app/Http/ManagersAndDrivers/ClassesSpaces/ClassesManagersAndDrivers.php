@@ -5,8 +5,10 @@ namespace App\Http\ManagersAndDrivers\ClassesSpaces;
 use App\Http\Controllers\Master\ClassesController;
 use App\Http\ValidatorsSpaces\ClassesValidators;
 use App\Models\Classe;
+use App\Models\ComputedMarksModalities;
 use App\Models\Pupil;
 use App\Models\Teacher;
+use Illuminate\Http\Request;
 
 //__DRM => DRIVERS and MANAGERS
 
@@ -19,6 +21,50 @@ class ClassesManagersAndDrivers{
 	public function __construct(Classe $classe){
 		$this->classe = $classe;
 	}
+
+
+    public static function __DRM_TO_EDIT_CLASSE_MODALITY(Request $request)
+    {
+
+        $user = auth()->user();
+        $authorized = false;
+        $roles = $user->getRoles();
+
+        if (in_array('admin', $roles) || in_array('superAdmin', $roles)) {
+            $authorized = true;
+        }
+
+        $subject = $request->subject_id;
+        $classe = $request->classe_id;
+        $year = $request->year;
+        $trimestre = 'trimestre '.$request->trimestre;
+
+        $oldModality = ComputedMarksModalities::withTrashed('deleted_at')->where('trimestre', $trimestre)->where('subject_id', $subject)->where('classe_id', $classe)->where('year', $year)->first();
+        if ($oldModality !== null) {
+            $oldModality->update(['value' => $request->value]);
+            return true;
+        }
+        else{
+            $data = [
+                'subject_id' => $subject, 
+                'classe_id' => $classe, 
+                'trimestre' => $trimestre,
+                'year' => $year, 
+                'creator' => $user->name, 
+                'authorized' => $authorized, 
+                'value' => $request->value
+            ];
+
+            $modality = ComputedMarksModalities::create($data);
+        }
+        
+        if ($modality) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
 
 	/**

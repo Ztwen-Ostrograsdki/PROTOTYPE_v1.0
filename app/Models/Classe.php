@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\ClasseAndSubjectJoiner;
 use App\Models\Classe;
+use App\Models\ComputedMarksModalities;
 use App\Models\Pupil;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -176,6 +177,51 @@ class Classe extends Model
         }
 
         return $blockeds;
+    }
+
+    public function getModalities():?array
+    {
+        $subjects = $this->subjects;
+        $id = $this->id;
+        $classeModality = [];
+
+        foreach ($subjects as $subject) {
+            $id_s = $subject->id;
+            $modality = ComputedMarksModalities::withTrashed('deleted_at')->where('classe_id', $id)->where('subject_id', $id_s)->first();
+            $classeModality[$id_s] = $modality;
+        }
+
+        return $classeModality;
+    }
+
+    /**
+     * Use to get for a classe they modalities joined to the specific subject
+     * @param  string $trimestre [description]
+     * @param  int $year      [description]
+     * @return array           [description]
+     */
+    public function getMarksOnModalities($trimestre, $year = null)
+    {
+        if ($year == null) {
+            $year = date('Y');
+        }
+
+        $subjectWithModalities = [];
+        $modalities = ComputedMarksModalities::withTrashed('deleted_at')->where('trimestre', $trimestre)->where('classe_id', $this->id)->where('year', $year)->get();
+
+        if (count($modalities) > 0) {
+            foreach ($this->subjects as $subject) 
+            {
+                foreach ($modalities as $modality) {
+                    if ($subject->id == $modality->subject_id) {
+                        $subjectWithModalities[$subject->id] = $modality->value;
+                    }
+                }
+            }
+        }
+
+        return $subjectWithModalities;
+
     }
 
 }

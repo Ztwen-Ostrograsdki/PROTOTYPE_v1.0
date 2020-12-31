@@ -146,6 +146,9 @@ const teachers_mutations = {
     SET_EDITED_TEACHER: (state, teacher) => {
         state.editedTeacher = teacher
     },
+    RESET_EDITED_TEACHER_AE: (state, data) =>{
+        state.editedTeacherIsAE = data
+    },
 
     RESET_NEW_TEACHER: (state) => {
         state.newTeacher = {

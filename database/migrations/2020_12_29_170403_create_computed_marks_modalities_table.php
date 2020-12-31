@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHorairesTable extends Migration
+class CreateComputedMarksModalitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,14 +14,21 @@ class CreateHorairesTable extends Migration
     public function up()
     {
         Schema::disableForeignKeyConstraints();
-         Schema::create('horaires', function (Blueprint $table) {
+        Schema::create('computed_marks_modalities', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('day');
-            $table->string('start');
-            $table->string('end');
             $table->string('creator')->nullable();
             $table->string('editor')->nullable();
-            $table->unsignedBigInteger('year')->nullable();
+            $table->boolean('authorized')->default(true);
+            $table->unsignedBigInteger('value')->nullable();
+            $table->unsignedBigInteger('year');
+            $table->string('trimestre');
+
+            $table->unsignedBigInteger('subject_id');
+            $table->foreign('subject_id')
+                  ->references('id')
+                  ->on('subjects')
+                  ->onUpdate('cascade')
+                  ->onDelete('cascade');
 
             $table->unsignedBigInteger('classe_id');
             $table->foreign('classe_id')
@@ -30,14 +37,8 @@ class CreateHorairesTable extends Migration
                   ->onUpdate('cascade')
                   ->onDelete('cascade');
 
-            $table->unsignedBigInteger('subject_id');
-            $table->foreign('subject_id')
-                  ->references('id')
-                  ->on('subjects')
-                  ->onUpdate('cascade')
-                  ->onDelete('cascade');
-       
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -48,6 +49,6 @@ class CreateHorairesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('horaires');
+        Schema::dropIfExists('computed_marks_modalities');
     }
 }

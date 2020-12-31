@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Master;
 use App\ClasseAndSubjectJoiner;
 use App\Helpers\Operators\Computator;
 use App\Http\Controllers\Controller;
+use App\Http\ManagersAndDrivers\Authenticator;
+use App\Http\ManagersAndDrivers\ClassesSpaces\ClassesManagersAndDrivers;
 use App\Http\ValidatorsSpaces\ClassesValidators;
 use App\ModelHelper;
 use App\Models\Classe;
+use App\Models\ComputedMarksModalities;
 use App\Models\Mark;
 use App\Models\Pupil;
 use App\Models\Subject;
@@ -70,12 +73,7 @@ class ClassesController extends Controller
         $classeWithHeads = [];
 
         $classesSecondary = Classe::whereLevel('secondary')->orderBy('name', 'asc')->get();
-        $classesPrimary = [];
-
-        $cps = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
-        foreach ($cps as $cp) {
-            $classesPrimary[$cp->id] = $cp;
-        }
+        $classesPrimary = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
         $blockeds = Classe::getBlockeds();
 
         $data = [
@@ -124,6 +122,8 @@ class ClassesController extends Controller
            $subjects = Subject::whereLevel('primary')->get();
         }
 
+        $ClasseModality = $classe->getModalities();
+
         $classeFMT = $classe->getFormattedClasseName();
 
         $data = [
@@ -139,7 +139,8 @@ class ClassesController extends Controller
                     'respo2' => $respo2
                 ],
             ], 
-            'token' => $token
+            'token' => $token,
+            'ClasseModalities' => $ClasseModality
         ];
         return response()->json($data);
     }
@@ -182,6 +183,37 @@ class ClassesController extends Controller
         return response()->json($data);
     }
 
+    public function updateClasseModality(Request $request)
+    {
+
+        $auth_token = Authenticator::__AUTH_TOKEN($request->token);
+        if ($auth_token !== []) {
+            return response()->json(['invalidInputs' => ['token' => "La requête est invalide"]]);
+        }
+        else{
+            
+            $user = auth()->user();
+            $authorized = false;
+            $roles = $user->getRoles();
+
+            if (in_array('admin', $roles) || in_array('superAdmin', $roles)) {
+                $authorized = true;
+            }
+
+            
+            $classe = Classe::withTrashed('deleted_at')->whereId($request->classe_id)->first();
+            $insertion = ClassesManagersAndDrivers::__DRM_TO_EDIT_CLASSE_MODALITY($request);
+            
+            if ($insertion) {
+                return $this->getAClasseData($classe->id);
+            }
+            else{
+                return response()->json(['invalidInputs' => ['modality' => "Une erreure lors de l'insertion des données; vérifier vos données"]]);
+            }
+
+        }
+    }
+
 
     public function getClasseMarks(int $classe, int $subject, int $trimestre = 1)
     {
@@ -204,6 +236,8 @@ class ClassesController extends Controller
             $coefTables[$sub->id] = $coef;
         }
 
+        $subjectWithModalities = $c->getMarksOnModalities($trim);
+
         foreach ($pupils as $pupil) {
             $pupilMarks = Mark::where('pupil_id', $pupil->id)->where('trimestre', $trim)->where('subject_id', $subject)->where('value', '>', 0)->get();
             if (count($pupilMarks) > 0) {
@@ -214,7 +248,9 @@ class ClassesController extends Controller
             }
             
         }
-        return response()->json(['classesMarks' => $marks, 'coefTables' => $coefTables]);
+
+
+        return response()->json(['classesMarks' => $marks, 'coefTables' => $coefTables, 'subjectWithModalities' => $subjectWithModalities]);
     }
 
 

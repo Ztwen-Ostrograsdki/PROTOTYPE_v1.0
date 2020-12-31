@@ -163,6 +163,7 @@
 			},
 			editedPupilClasseAndSubjectMarks(subject){
 				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject)
+				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT', subject.id)
 				$('#editPupilMarks .div-success').hide('slide', 'up')
                 $('#editPupilMarks .div-success h4').text('')
                 $('#editPupilMarks').animate({
@@ -217,7 +218,7 @@
 		},
 
 		computed: mapState([
-          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef'
+          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef', 'targetedClasseSubject'
         ])
 
 	}

@@ -150,6 +150,10 @@ const pupils_mutations = {
         state.editedPupilSubjectMarks = subject
     },
 
+    RESET_TARGETED_PUPIL_SUBJECT: (state, id) =>{
+        state.targetedClasseSubject = id
+    },
+
 
 	SHOW_PUPILS_BY_LEVEL: (state, data) => {
 		if(data.blockedSpace == false){

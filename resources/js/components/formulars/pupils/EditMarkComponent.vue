@@ -34,27 +34,27 @@
 			        		<div class="mx-auto mt-2 d-flex justify-content-around" style="width: 93%">
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe1" class="m-0 p-0">EPE 1</label>
-		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe1', invalidInputs)" name="epe1" id="edit_p_epe1" placeholder="EPE 1" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 0)">
+		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe1', invalidInputs)" name="epe1" id="edit_p_epe1" placeholder="EPE 1" :value="getMarks(targetPupilMarks, targetedClasseSubject, 'epe', 0)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe1 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe2" class="m-0 p-0">EPE 2</label>
-		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe2', invalidInputs)" name="epe2" id="edit_p_epe2" placeholder="EPE 2" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 1)">
+		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe2', invalidInputs)" name="epe2" id="edit_p_epe2" placeholder="EPE 2" :value="getMarks(targetPupilMarks, targetedClasseSubject, 'epe', 1)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe2 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe3" class="m-0 p-0">EPE 3</label>
-		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe3', invalidInputs)" name="epe3" id="edit_p_epe3" placeholder="EPE 3" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 2)">
+		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe3', invalidInputs)" name="epe3" id="edit_p_epe3" placeholder="EPE 3" :value="getMarks(targetPupilMarks, targetedClasseSubject, 'epe', 2)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe3 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe4" class="m-0 p-0">EPE 4</label>
-		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe4', invalidInputs)" name="epe4" id="edit_p_epe4" placeholder="EPE 4" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 3)">
+		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe4', invalidInputs)" name="epe4" id="edit_p_epe4" placeholder="EPE 4" :value="getMarks(targetPupilMarks, targetedClasseSubject, 'epe', 3)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe4 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
 		                        <div class="mx-auto" style="width: 19.2%">
 		                            <label for="edit_p_epe5" class="m-0 p-0">EPE 5</label>
-		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe5', invalidInputs)" name="epe5" id="edit_p_epe5" placeholder="EPE 5" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'epe', 4)">
+		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('epe5', invalidInputs)" name="epe5" id="edit_p_epe5" placeholder="EPE 5" :value="getMarks(targetPupilMarks, targetedClasseSubject, 'epe', 4)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.epe5 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
 		                    </div>
@@ -78,13 +78,13 @@
                     			<div class="mx-auto mt-2 d-flex justify-content-start" style="width: 93%">
 		                        <div class="mr-2" style="width: 30%">
 		                            <label for="edit_p_dev1" class="m-0 p-0">Devoir 1</label>
-		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('dev1', invalidInputs)" name="dev1" id="edit_p_dev1" placeholder="Dev 1" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'devoirs', 0)">
+		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('dev1', invalidInputs)" name="dev1" id="edit_p_dev1" placeholder="Dev 1" :value="getMarks(targetPupilMarks, targetedClasseSubject, 'devoirs', 0)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.dev1 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
 
 		                        <div class="mr-2" style="width: 30%">
 		                            <label for="edit_p_dev2" class="m-0 p-0">Devoir 2</label>
-		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('dev2', invalidInputs)" name="dev2" id="edit_p_dev2" placeholder="Dev 2" :value="getMarks(targetPupilMarks, editedPupilSubjectMarks.id, 'devoirs', 1)">
+		                            <input type="text" class="m-0 p-0 form-control p-1" :class="getInvalids('dev2', invalidInputs)" name="dev2" id="edit_p_dev2" placeholder="Dev 2" :value="getMarks(targetPupilMarks, targetedClasseSubject, 'devoirs', 1)">
 		                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.dev2 !== undefined"> {{ 'Valeur invalide!' }} </i>
 		                        </div>
 		                    </div>
@@ -95,7 +95,7 @@
 			    </form>
 	      		</div>
 			    <div class="mx-auto mt-2 p-1 pb-2 buttons-div" style="width: 93%">
-			        <button type="button" class="btn btn-primary w-25 float-right" @click="updateTargetedPupilMarks(editedPupil, token, editedPupilSubjectMarks.id, editedPupilClasseMarks, targetPupilMarks, trimestre)">Inserer</button>
+			        <button type="button" class="btn btn-primary w-25 float-right" @click="updateTargetedPupilMarks(editedPupil, token, targetedClasseSubject, editedPupilClasseMarks, targetPupilMarks, trimestre)">Inserer</button>
 			        <button type="button" class="btn btn-secondary w-25 mx-1 float-right" data-dismiss="modal">Annuler</button>
 			    </div>
 			    <div class="mx-auto mt-2 p-1 pb-2 div-success" style="width: 93%; display: none">
@@ -170,6 +170,7 @@
 				return 0
 			},
 			updateTargetedPupilMarks(pupil, token, subject, classe, marks, trimestre){
+				console.log(this.editedPupilSubjectMarks)
 				let cl = null
 					if(subject !== null && marks !== null){
 						if(marks[subject] !== undefined){
@@ -228,7 +229,7 @@
 		},
 
 		computed: mapState([
-            'newPupil', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'newPupilName', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'trimestre'
+            'newPupil', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'newPupilName', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'trimestre', 'targetedClasseSubject'
         ]),
 
 
@@ -245,5 +246,20 @@
 		font-style: normal;
 		text-shadow: 0 1px 1px black !important;
 	}
+
+	form#edit-pupil-marks label{
+		color: aqua !important;
+	}
+
+	form#edit-pupil-marks input{
+		color: white !important;
+		font-family: cursive;
+	}
+
+	form#edit-pupil-marks input:focus{
+		color: black !important;
+	}
+
+
 </style>
 

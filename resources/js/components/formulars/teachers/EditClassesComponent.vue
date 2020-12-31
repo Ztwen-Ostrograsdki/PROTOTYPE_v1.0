@@ -58,19 +58,6 @@
 	                    </div>
 				        
 	                    <div class=" mx-auto mt-2 d-flex justify-content-around" style="width: 90%">
-	                    	<div style="width: 31%;" class="">
-	                            <label for="ed_t_ae" class="mb-0">Choisir comme AE de ...</label>
-	                            <div class="w-100 d-flex justify-content-start border border-dark rounded p-1 pb-2">
-	                            	<div class="mr-3">
-	                            		<label for="ed_ae_oui">Authorisé</label>
-	                            		<input v-model="editedTeacherIsAE" type="radio" name="setToAE" id="ed_ae_oui" value="true" class="custom-radio">
-	                            	</div>
-	                            	<div>
-	                            		<label for="ed_ae_non">Réfusé</label>
-	                            		<input v-model="editedTeacherIsAE" type="radio" name="setToAE" id="ed_ae_non" value="false" class="custom-radio">
-	                            	</div>
-	                            </div>
-	                        </div>
 	                        <div style="width: 31.7%;">
 	                            <label for="ed_t_c4" class="m-0 p-0">Classes 4</label>
 	                            <select name="classe4" id="ed_t_c4" class="custom-select" :class="getInvalids('c4', invalidInputs)">
@@ -92,8 +79,8 @@
 			    </form>
 	      		</div>
 			    <div class="mx-auto mt-2 p-1 pb-2 buttons-div" style="width: 90%">
-			        <button type="button" class="btn btn-secondary mx-1 float-right" data-dismiss="modal" @click="resetEditedTeacher()">Annuler</button>
-			        <button type="button" class="btn btn-primary float-right" @click="updateEditedTeacherClasses(editedTeacher, token, editedTeacherIsAE)">Mettre à jour</button>
+			        <button type="button" class="btn btn-secondary mx-1 float-right border border-white w-25" data-dismiss="modal" @click="resetEditedTeacher()">Annuler</button>
+			        <button type="button" class="btn btn-primary float-right border border-white w-25" @click="updateEditedTeacherClasses(editedTeacher, token)">Mettre à jour</button>
 			    </div>
 			    <div class="mx-auto mt-2 p-1 pb-2 div-success" style="width: 90%; display: none">
 			    	<div class="d-flex justify-content-center w-100 p-2 my-1">
@@ -172,13 +159,16 @@
 			classesConfirm(request){
 				if (request) {
 					this.$store.commit('SET_CLASSES_CONFIRM', true)
-					this.$store.dispatch('updateTeacherClasses', {teacher: this.editedTeacher, classes: this.classes, token: this.token, isAE: this.isAE})
+					this.$store.dispatch('updateTeacherClasses', {teacher: this.editedTeacher, classes: this.classes, token: this.token})
 				}
 				else{
 					this.$store.commit('RESET_EDITED_TEACHER_CLASSES1_CONFIRM')
 					this.$store.commit('RESET_EDITED_TEACHER')
 				}
 				
+			},
+			resetAE(value){
+				this.$store.commit('RESET_EDITED_TEACHER_AE', value)
 			},
 
 			getEditedOldClasseName(){
@@ -208,7 +198,7 @@
 			},
 			
 
-			updateEditedTeacherClasses(teacher, token, isAE){
+			updateEditedTeacherClasses(teacher, token){
 				let classes = {}
 				let route = this.$route
 				if(teacher.level == "secondary"){
@@ -219,7 +209,7 @@
 						c4: $('form#teacher-classes-edit select[name=classe4]').val(),
 						c5: $('form#teacher-classes-edit select[name=classe5]').val()
 					}
-					this.$store.dispatch('updateTeacherClasses', {teacher, classes, token, isAE, route})
+					this.$store.dispatch('updateTeacherClasses', {teacher, classes, token, route})
 				}
 				else if(teacher.level == "primary"){
 
@@ -232,7 +222,6 @@
 						}
 						else{
 							this.classes = classes
-							this.isAE = true
 							this.$store.commit('SET_EDITED_TEACHER_CLASSES1_CONFIRM', parseInt(classes.classe, 10))
 							$('#editTeacherClassesModal .div-success').hide('slide', 'up')
 			                $('#editTeacherClassesModal .div-success h4').text('')
@@ -251,8 +240,7 @@
 					}
 					else{
 						this.classes = classes
-						this.isAE = true
-						this.$store.dispatch('updateTeacherClasses', {teacher, classes, token, isAE, route})
+						this.$store.dispatch('updateTeacherClasses', {teacher, classes, token, route})
 					}
 					
 				}

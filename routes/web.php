@@ -57,8 +57,8 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::post('classesm/c={id}/marks/s={subject}/trimestre/t={trimestre}/index', 'Master\ClassesController@getClasseMarks');
 		Route::get('classesm/c={id}/marks&with&order/s={subject}/trimestre/t={trimestre}/ordering', 'Master\ClassesController@orderPupilsOfThisClasse');
 		Route::put('classesm/restore/id={id}', 'Master\ClassesController@restore');
+		Route::post('classesm/update/modality/for&c={classe}/s={subject}/t={trimestre}', 'Master\ClassesController@updateClasseModality');
 		Route::resource('classesm', 'Master\ClassesController')->middleware('onlySuperAdmin');
-
 		//PUPILS
 		Route::get('pupilsm/DATA&for&pupils', 'Master\PupilsController@pupilsDataSender')->name('sender');
 		Route::get('pupilsm/DATA&for&pupils/{q?}', 'Master\PupilsController@getPupilsBySearch');

@@ -21,7 +21,6 @@ const teachers_actions = {
         if(inputs.teacher.level == "secondary"){
         	axios.put('/admin/director/teachersm/update/update&classes&with&authorization/id=' + inputs.teacher.id, {
 	        	token: inputs.token,
-	        	isAE: inputs.setToAE,
 	        	classe1: parseInt(inputs.classes.c1, 10),
 	        	classe2: parseInt(inputs.classes.c2, 10),
 	        	classe3: parseInt(inputs.classes.c3, 10),
@@ -29,6 +28,7 @@ const teachers_actions = {
 	        	classe5: parseInt(inputs.classes.c5, 10)
 	        })
 	        .then(response => {
+                console.log(response.data)
 	        	store.commit('RESET_INVALID_INPUTS')
 	            store.commit('GET_TEACHERS_DATA', response.data)
 
@@ -55,7 +55,6 @@ const teachers_actions = {
         else if(inputs.teacher.level == "primary"){
         	axios.put('/admin/director/teachersm/update/update&classes&with&authorization/id=' + inputs.teacher.id, {
 	        	token: inputs.token,
-	        	isAE: inputs.setToAE,
 	        	classe: parseInt(inputs.classes.classe, 10)
 	        })
 	        .then(response => {

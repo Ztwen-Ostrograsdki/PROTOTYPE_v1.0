@@ -127,7 +127,7 @@
                     <div class="d-flex w-100 my-1 justify-content-start">
                         <div class="mx-1 my-0">
                             <span class="fa fa-refresh text-white-50" @click="filtrer('all')" v-if="alertClassesSearch !== 'Toutes les classes'"></span>
-                            <button class="btn btn-primary mx-1" @click="filtrer('primary')"> Le Primaire ({{ ' '+ classesPrimary.length +' ' }}) </button>
+                            <button class="btn btn-primary mx-1" @click="filtrer('primary')"> Le Primaire ({{ ' '+ classesPrimary.length + ' ' }}) </button>
                             <button class="btn btn-primary" @click="filtrer('secondary')">Le Secondaire ({{ ' '+ classesSecondary.length +' ' }})</button>
                         </div>
                         <h5 class="card-link mt-3 text-white-50 ml-3"> {{ alertClassesSearch }}</h5>

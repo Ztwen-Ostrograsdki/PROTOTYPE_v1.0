@@ -85,7 +85,7 @@
 					<transition name="fadelow" appear>
 						<div class="d-flex float-right justify-content-end pr-2" style="width: 95%">
 							<span class="text-muted mt-2 mr-2 cursive">Coef: <i>{{ targetedClasseSubjectsCoef[targetedClasseSubject] }}</i></span>
-							<span class="btn border p-1 ml-1" :class="isTheTargetedSubject(subject)" v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject)">{{ subject.name }}</span>
+							<span class="btn border p-1 ml-1" :class="isTheTargetedSubject(subject)" v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject.id)">{{ subject.name }}</span>
 						</div>
 					</transition>
 				</div>
@@ -97,8 +97,37 @@
                     <thead>
                         <th class="no-tag">No</th>
                         <th class=" pupils-tag">Elèves</th>
-                        <th class="subjects-tag">Notes</th>
-                        <th class="subjects-tag">Moyennes</th>
+                        <th class="subjects-tag">
+                        	<span>Les notes
+                        		<span class="h5-title text-white-50" v-if="subjectWithModalities[targetedClasseSubject] == undefined">Toutes les notes sont prises en comptes</span>
+                        		<span class="h5-title text-white-50" v-if="subjectWithModalities[targetedClasseSubject] !== undefined">{{ 'Seulement les ' + subjectWithModalities[targetedClasseSubject] + ' sont prises en compte'}}</span>
+                        	</span>
+                        	<span class="float-right mr-1 d-flex flex-column justify-content-between" v-if="modality">
+                        		<span class="fa fa-check text-success mb-2" title="Lancer les modalités" @click="updateModality()"></span>
+                        		<span class="fa fa-mail-reply text-info" title="Annuler la proccédure" @click="changeModality('reset')"></span>
+                        	</span>
+                        	<span class="float-left ml-1 d-flex flex-column justify-content-center" v-if="modality">
+                        		<span class="fa fa-close text-danger mb-2" title="Annuler toutes les modalités" @click="resetAllModality()"></span>
+                        	</span>
+                        	<span class="fa fa-filter float-right m-0 p-0 mr-2" title=" Définisser la modalité de calcule des moyennes" @click="changeModality()" v-if="!modality"></span>
+                        	<transition name="justefade" appear>
+                        		<span class="float-right m-0 p-0 mr-1" v-if="modality">
+                        			<form id="classe-modality" class="d-inline opac-form m-0 p-0">
+                        				<input style="color: orange" :class="alertModality.status == false ? 'is-invalid' : ''" max="5" min="1" class="form-control m-0 p-0 text-center" type="number" name="modalityLength" title="Veuillez renseigner le nombre de notes à prendre en compte">
+                        			</form>
+                        		</span>
+                        	</transition>
+                        	<span v-if="modality && alertModality.message == ''" class="h5-title text-warning d-block p-0 m-0">
+	                        	Indiquer le nombre de notes à prendre en compte
+	                        </span>
+	                        <span v-if="modality && alertModality.message !== ''" :class="alertModality.status == false ? 'text-danger' : 'text-success'" class="h5-title d-block p-0 m-0">
+	                        	{{alertModality.message}}
+	                        </span>
+                        </th>
+                        <th class="subjects-tag">
+                        	<span>Moyennes</span>
+                        	<span class="fa fa-desktop float-right mr-2" title="calculer les moyennes maintenant"></span>
+                        </th>
                         <th class="actions-tag">Classer</th>
                     </thead>
                 </transition>
@@ -140,7 +169,7 @@
                     	</tr>
                     	<tr class="border-bottom border-white-50" v-for="(pupil, k) in targetedClasse.pupils">
                     		<td>{{ k + 1 }}</td>
-                    		<td class="text-left pl-2">
+                    		<td class="text-left p-2">
 	                    		<router-link :to="{name: 'pupilsProfil', params: {id: pupil.id}}"   class="card-link d-inline-block" >
 	                                    <span  class="w-100 d-inline-block link-profiler"  @click="setEdited(pupil)">
 	                                        {{pupil.name}}
@@ -152,11 +181,11 @@
                     			<table class="w-100">
                     				<tbody class="w-100 notes">
                     					<tr class="w-100">
-		                    				<td>{{ getMarks(pupil.id, 'epe', 0, targetedClasseMarks) }}</td>
-		                    				<td>{{ getMarks(pupil.id, 'epe', 1, targetedClasseMarks) }}</td>
-		                    				<td>{{ getMarks(pupil.id, 'epe', 2, targetedClasseMarks) }}</td>
-		                    				<td>{{ getMarks(pupil.id, 'epe', 3, targetedClasseMarks) }}</td>
-		                    				<td>{{ getMarks(pupil.id, 'epe', 4, targetedClasseMarks) }}</td>
+		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 0, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 0, targetedClasseMarks) }}</td>
+		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 1, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 1, targetedClasseMarks) }}</td>
+		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 2, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 2, targetedClasseMarks) }}</td>
+		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 3, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 3, targetedClasseMarks) }}</td>
+		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 4, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 4, targetedClasseMarks) }}</td>
 		                    				
 		                    				<td class="text-primary">{{getAverage(pupil.id, targetedClasseMarks).avgEPE}}</td>
 		                    				<td class="text-primary">{{ getMarks(pupil.id, 'devoir', 0, targetedClasseMarks) }}</td>
@@ -208,6 +237,7 @@
             	showOptions: false,
             	trimestre: 1,
             	range: false,
+            	modality: false
             }   
         },
         created(){
@@ -297,8 +327,7 @@
 				}
 				
 			},
-			getAverage(pupil, targetedClasseMarks, coefs = this.targetedClasseSubjectsCoef, subject = this.targetedClasseSubject){
-
+			getAverage(pupil, targetedClasseMarks, coefs = this.targetedClasseSubjectsCoef, subject = this.targetedClasseSubject, subjectWithModalities = this.subjectWithModalities){
 				let marksAll = targetedClasseMarks
 				let type = "epe"
 				let interros = []
@@ -321,10 +350,29 @@
 					}
 
 					if(interros.length > 0){
-						for (var i = 0; i < interros.length; i++) {
-							somEPE += interros[i]
+						if(subjectWithModalities[subject] !== undefined){
+							let modality = subjectWithModalities[subject]
+							if(interros.length <= modality){
+								for (var i = 0; i < interros.length; i++) {
+									somEPE += interros[i]
+								}
+								avgEPE = somEPE / interros.length
+							}
+							else{
+								interros = this.getBest(interros, modality)
+								for (var i = 0; i < interros.length; i++) {
+									somEPE += interros[i]
+								}
+								avgEPE = somEPE / interros.length
+							}
+							
 						}
-						avgEPE = somEPE / interros.length
+						else{
+							for (var i = 0; i < interros.length; i++) {
+								somEPE += interros[i]
+							}
+							avgEPE = somEPE / interros.length
+						}
 					}
 
 					let somDEV = 0
@@ -352,8 +400,9 @@
 						avg = '-'
 					}
 
+					avgEPE !== '-' ? avgEPE = Number.parseFloat(avgEPE).toFixed(2) : avgEPE = '-'
 
-					return {avgEPE: Number.parseFloat(avgEPE).toFixed(2), avg: Number.parseFloat(avg).toFixed(2), avgCoef: Number.parseFloat(avg * coef).toFixed(2)}
+					return {avgEPE: avgEPE, avg: Number.parseFloat(avg).toFixed(2), avgCoef: Number.parseFloat(avg * coef).toFixed(2)}
 
 				}
 				else{
@@ -364,8 +413,91 @@
 			},
 
 			oderer(classe, subject, trimestre){
+				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
+
 				this.$store.dispatch('getOderer', {classe: classe, subject: subject, trimestre: trimestre})
 				this.range = true
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: subject, trimestre: this.trimestre})
+
+			},
+
+			changeModality(action = null){
+				this.$store.commit('RESET_MODALITY_ALERT', {status: true, message: ''})
+				this.modality = !this.modality
+			},
+
+			resetAllModality(){
+				let tab = [5, 12, 14, 8, 20]
+				
+
+
+				
+
+			},
+
+			getBest(tab, limit){
+				let bestMarks = []
+				while (bestMarks.length < limit) {
+					for (var i = 0; i < tab.length; i++) {
+						if(tab[i] == Math.max(...tab)){
+							bestMarks.push(tab[i])
+							tab.splice(i, 1)
+						}
+						
+					}
+				}
+
+				return bestMarks
+			},
+
+			isInTheBestMarks(pupil, subjectWithModalities, subject, mark, targetedClasseMarks = this.targetedClasseMarks){
+				let modality = subjectWithModalities[subject]
+
+				let marksAll = targetedClasseMarks
+				let type = "epe"
+				let interros = []
+
+				if(mark == '-'){
+					return ''
+				}
+				
+				
+				if(marksAll[pupil] !== null && marksAll[pupil] !== undefined){
+					let marks = marksAll[pupil]
+					for (var i = 0; i < marks.length; i++) {
+						if(marks[i].type == 'epe' || marks[i].type == 'interrogations'){
+							interros.push(marks[i].value)
+						}
+					}
+					if(modality !== undefined){
+						let bestMarks = this.getBest(interros, modality)
+						if(bestMarks.indexOf(mark) == -1){
+							return 'text-danger'
+						}
+						return 'text-success'
+						
+					}
+					else{
+						return 'text-success'
+					}
+				}
+			},
+
+			updateModality(){
+				this.$store.commit('RESET_MODALITY_ALERT', {status: true, message: 'Traitement en cours...'})
+				let modality = $('form#classe-modality input[name=modalityLength]').val()
+				let subject = this.targetedClasseSubject
+				let classe = this.targetedClasse.id
+
+				modality = parseInt(modality, 10)
+				if(modality !== null){
+					if(modality > 0 && modality < 6){
+						this.$store.dispatch('updateClasseModality', {classe: this.$route.params.id, subject: subject, trimestre: this.trimestre, modality, token: this.token})
+					}
+					else{
+						this.$store.commit('RESET_MODALITY_ALERT', {status: true, message: "La valeur renseignée est invalide"})
+					}
+				}
 			},
 
 			getRange(key, avg){
@@ -396,7 +528,7 @@
 		},
 
 		computed: mapState([
-            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks'
+            'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'targetedClasseModality', 'token', 'alertModality', 'subjectWithModalities'
         ])
 
 	}
