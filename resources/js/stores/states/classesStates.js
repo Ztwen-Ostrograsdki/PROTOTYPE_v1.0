@@ -14,6 +14,7 @@ let MONTHS = [
 ]
 
 const classes_states = {
+    refreshClasse: {status: false, confirm: false},
 	pupilsArray : [], //With her classes formatted
     secondaryClasses : {},
     newClasse: {

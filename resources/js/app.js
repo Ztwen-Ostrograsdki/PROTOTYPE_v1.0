@@ -44,6 +44,7 @@ let classe_marks = Vue.component('classe-marks', require('./components/classes/l
 let classe_profil = Vue.component('profil-classe', require('./components/classes/ProfilComponent.vue').default)
 let classe_listing = Vue.component('listing-classe', require('./components/classes/layouts/ListingForAClasseComponent.vue').default)
 let listing_classes_component = Vue.component('listing-classes', require('./components/admin/layouts/ListingClassesComponent.vue').default)
+let confirm_refresh_class = Vue.component('classe-refresh', require('./components/classes/confirmations/ConfirmRefreshClassComponent.vue').default)
 let classes_redList = Vue.component('classes-redList', require('./components/classes/RedListComponent.vue').default)
 
 
@@ -199,6 +200,12 @@ const routes = [
 				path: '/admin/director/classesm/:id/marks/index',
 				component: classe_marks,
 				name: 'classeMarks',
+				store
+			},
+			{
+				path: '/admin/director/classesm/:id/marks/index/subject/:s',
+				component: classe_marks,
+				name: 'classeSubjectMarks',
 				store
 			}
 		]

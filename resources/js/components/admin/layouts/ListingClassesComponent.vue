@@ -133,7 +133,8 @@
 
             
             destroy(id){
-                this.$store.dispatch('lazyDeleteClasse', {id: id, forced: false})                
+                let route = this.$route
+                this.$store.dispatch('lazyDeleteClasse', {id: id, forced: false, route: route})                
             },
 
             closeProfiler(){

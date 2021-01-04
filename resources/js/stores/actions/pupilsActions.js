@@ -47,7 +47,6 @@ const pupils_actions = {
             })
     },
     updateAPupilMarks: (store, inputs) => {
-        console.log(inputs)
         axios.put('/admin/director/pupilsm/update/marks/update&marks/p=' + inputs.pupil.id + '&s=' + inputs.keys.subject + '&c=' + inputs.keys.classe , {
             epe1: inputs.notes.epe1,
             epe2: inputs.notes.epe2,
@@ -62,10 +61,10 @@ const pupils_actions = {
         .then(response => {
             if(response.data.invalidInputs == undefined){
                 store.commit('RESET_INVALID_INPUTS')
-                if(inputs.route !== undefined && inputs.route.name == "classeMarks"){
-                    store.dispatch('getAClasseData', inputs.route.params.id)
+                if(inputs.route !== undefined && (inputs.route.name == "classeMarks" || inputs.route.name == "classeSubjectMarks")){
                     store.dispatch('getAClasseMarks', {classe: inputs.route.params.id, subject: inputs.keys.subject, trimestre: inputs.trimestre})
-                }
+                    store.dispatch('getAClasseData', inputs.route.params.id)
+                }   
                 
 
                 $('#editPupilMarks .buttons-div').hide('size', function(){
@@ -187,6 +186,16 @@ const pupils_actions = {
             	
         })
 	},
+    forceDeletePupils: (store, pupil) => {
+        axios.delete('/admin/director/pupilsm/delete/with&force/id=' + pupil.id)
+             .then(response => {
+                store.commit('GET_PUPILS_DATA', response.data)
+                store.commit('ALERT_MAKER', "L'élève " + pupil.name + " a été supprimé avec succès!")
+                
+        })
+    },
+
+
 
     restorePupils: (store, pupil) => {
         axios.put('/admin/director/pupilsm/restore/id=' + pupil.id)

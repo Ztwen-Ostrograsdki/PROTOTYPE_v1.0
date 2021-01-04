@@ -149,6 +149,24 @@ const classes_actions = {
             store.commit('GET_CLASSES_DATA', response.data)
         })
     },
+    refreshOnPupils: (store, inputs) => {
+        axios.delete('/admin/director/classesm/refresh/id=' + inputs.classe.id + '/forced=' + inputs.forced, {
+            id: inputs.classe.id,
+            forced: inputs.forced
+        })
+        .then(response => {
+            store.commit('GET_CLASSES_DATA', response.data)
+            store.commit('RESET_REFRESH_CLASSE_CONFIRMATION', {status: true, confirm: true})
+
+        })
+    }, 
+    deletePupilOfAClasse: (store, inputs) => {
+        axios.delete('/admin/director/classesm/delete&pupil&of&a&classe/id=' + inputs.pupil.classe_id + '/p=' + inputs.pupil.id)
+         .then(response => {
+            store.commit('GET_A_CLASSE_DATA', response.data)
+            store.commit('ALERT_MAKER', "L'élève " + inputs.pupil.name + " a été envoyé dans la corbeille avec succès!")
+        })
+    },
     restoreClasses: (store, classe) => {
         axios.put('/admin/director/classesm/restore/id=' + classe.id)
             .then(response => {

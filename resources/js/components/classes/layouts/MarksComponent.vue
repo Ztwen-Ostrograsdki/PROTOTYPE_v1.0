@@ -25,10 +25,10 @@
 			        </div>
 			        <div class="profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around float-left">
 						<div class="w-100 float-left">
-							<div class="text-right w-100 ml-2" @click="toggleOptions(showOptions)" v-if="!showOptions">
+							<div class="text-right w-100 ml-2" @click="toggleOptions()" v-if="!showOptions">
 								<span class="fa fa-sliders float-right"></span>
 							</div>
-							<div class="text-right w-100 ml-2" @click="toggleOptions(showOptions)" v-if="showOptions">
+							<div class="text-right w-100 ml-2" @click="toggleOptions()" v-if="showOptions">
 								<span class="fa fa-chevron-up float-right"></span>
 							</div>
 							<transition name="scalefade" appear>
@@ -85,7 +85,13 @@
 					<transition name="fadelow" appear>
 						<div class="d-flex float-right justify-content-end pr-2" style="width: 95%">
 							<span class="text-muted mt-2 mr-2 cursive">Coef: <i>{{ targetedClasseSubjectsCoef[targetedClasseSubject] }}</i></span>
-							<span class="btn border p-1 ml-1" :class="isTheTargetedSubject(subject)" v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject.id)">{{ subject.name }}</span>
+							<span v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject.id)">
+								<router-link :to="{name: 'classeSubjectMarks', params: {id: $route.params.id, s:subject.id}}"   class="card-link d-inline-block btn border p-1 ml-1" :class="isTheTargetedSubject(subject.id)">
+                                    <span  class="w-100 d-inline-block link-profiler">
+                                        {{ subject.name }}
+                                	</span>
+                            	</router-link>
+							</span>
 						</div>
 					</transition>
 				</div>
@@ -99,8 +105,14 @@
                         <th class=" pupils-tag">Elèves</th>
                         <th class="subjects-tag">
                         	<span>Les notes
-                        		<span class="h5-title text-white-50" v-if="subjectWithModalities[targetedClasseSubject] == undefined">Toutes les notes sont prises en comptes</span>
-                        		<span class="h5-title text-white-50" v-if="subjectWithModalities[targetedClasseSubject] !== undefined">{{ 'Seulement les ' + subjectWithModalities[targetedClasseSubject] + ' sont prises en compte'}}</span>
+                        		<span class="d-inline-block m-0 p-0" v-if="!modality">
+                        			<span class="h5-title text-white-50 m-0 p-0" v-if="subjectWithModalities[$route.params.s] !== undefined">
+                        			Seulement les {{subjectWithModalities[$route.params.s]}} meilleurs notes sont prises en comptes
+                        		</span>
+                        		<span class="h5-title text-white-50 m-0 p-0" v-if="subjectWithModalities[$route.params.s] == undefined">
+                        			Toutes les notes sont prises en comptes
+                        		</span>
+                        		</span>
                         	</span>
                         	<span class="float-right mr-1 d-flex flex-column justify-content-between" v-if="modality">
                         		<span class="fa fa-check text-success mb-2" title="Lancer les modalités" @click="updateModality()"></span>
@@ -126,7 +138,7 @@
                         </th>
                         <th class="subjects-tag">
                         	<span>Moyennes</span>
-                        	<span class="fa fa-desktop float-right mr-2" title="calculer les moyennes maintenant"></span>
+                        	<span @click="toggleComputing()" class="fa fa-desktop float-right mr-2" title="calculer les moyennes maintenant"></span>
                         </th>
                         <th class="actions-tag">Classer</th>
                     </thead>
@@ -175,17 +187,17 @@
 	                                        {{pupil.name}}
                                     	</span>
                                 </router-link>
-                                	<a href="#" title="card-link Editer les informations de" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editPupilMarks" @click="editedPupilClasseAndSubjectMarks(pupil, targetedClasseSubject)" ></a>
+                                	<a href="#" title="card-link Editer les informations de" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#editPupilMarks" @click="editedPupilClasseAndSubjectMarks(pupil, $route.params.s)" ></a>
                     		</td>
                     		<td>
                     			<table class="w-100">
                     				<tbody class="w-100 notes">
                     					<tr class="w-100">
-		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 0, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 0, targetedClasseMarks) }}</td>
-		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 1, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 1, targetedClasseMarks) }}</td>
-		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 2, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 2, targetedClasseMarks) }}</td>
-		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 3, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 3, targetedClasseMarks) }}</td>
-		                    				<td :class="isInTheBestMarks(pupil.id, subjectWithModalities, targetedClasseSubject, getMarks(pupil.id, 'epe', 4, targetedClasseMarks))">{{ getMarks(pupil.id, 'epe', 4, targetedClasseMarks) }}</td>
+		                    				<td>{{ getMarks(pupil.id, 'epe', 0, targetedClasseMarks) }}</td>
+		                    				<td >{{ getMarks(pupil.id, 'epe', 1, targetedClasseMarks) }}</td>
+		                    				<td>{{ getMarks(pupil.id, 'epe', 2, targetedClasseMarks) }}</td>
+		                    				<td >{{ getMarks(pupil.id, 'epe', 3, targetedClasseMarks) }}</td>
+		                    				<td >{{ getMarks(pupil.id, 'epe', 4, targetedClasseMarks) }}</td>
 		                    				
 		                    				<td class="text-primary">{{getAverage(pupil.id, targetedClasseMarks).avgEPE}}</td>
 		                    				<td class="text-primary">{{ getMarks(pupil.id, 'devoir', 0, targetedClasseMarks) }}</td>
@@ -237,19 +249,27 @@
             	showOptions: false,
             	trimestre: 1,
             	range: false,
-            	modality: false
+            	modality: false,
+            	computedAVG: false
             }   
         },
         created(){
             this.$store.dispatch('getAClasseData', this.$route.params.id)
-            this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.targetedClasseSubject, trimestre: this.trimestre})
+            this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+            this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
+			this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
         },
 
 		methods: {
 			toggleOptions(){
 				return this.showOptions = !this.showOptions
 			},
+			toggleComputing(){
+				return this.computedAVG = !this.computedAVG
+			},
 			editedPupilClasseAndSubjectMarks(pupil, subject){
+				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
+				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
 				this.$store.commit('SET_EDITED_PUPIL', pupil)
 				this.$store.dispatch('getAPupilDataAndMarks', {route: pupil.id, trimestre: this.trimestre})
 				$('#editPupilMarks .div-success').hide('slide', 'up')
@@ -269,14 +289,14 @@
                     })
                 })
 			},
-			updateTargetedSubject(subject){
+			updateTargetedSubject(subject = this.$route.params.s){
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
 				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject)
-				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.targetedClasseSubject, trimestre: this.trimestre})
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
 			},
 
 			isTheTargetedSubject(subject){
-				return subject.id == this.targetedClasseSubject ? 'border-warning btn-primary' : 'btn-secondary'
+				return subject == this.$route.params.s ? 'border-warning btn-primary' : 'btn-secondary'
 			},
 			getMarks(pupil, type, index, targetedClasseMarks){
 				if(targetedClasseMarks[pupil] == null){
@@ -338,6 +358,11 @@
 				
 				let avgEPE = 0
 				let avg = 0
+
+				if(!this.computedAVG){
+					return {avgEPE: '-', avg: '-', avgCoef: '-'}
+				}
+				
 				if(marksAll[pupil] !== null && marksAll[pupil] !== undefined){
 					let marks = marksAll[pupil]
 					for (var i = 0; i < marks.length; i++) {
@@ -412,12 +437,11 @@
 
 			},
 
-			oderer(classe, subject, trimestre){
-				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
-
-				this.$store.dispatch('getOderer', {classe: classe, subject: subject, trimestre: trimestre})
+			oderer(classe, subject = this.$route.params.s, trimestre){
+				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
+				this.$store.dispatch('getOderer', {classe: classe, subject: this.$route.params.s, trimestre: trimestre})
 				this.range = true
-				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: subject, trimestre: this.trimestre})
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
 
 			},
 
@@ -450,7 +474,8 @@
 				return bestMarks
 			},
 
-			isInTheBestMarks(pupil, subjectWithModalities, subject, mark, targetedClasseMarks = this.targetedClasseMarks){
+			isInTheBestMarks(pupil, subjectWithModalities, subject, markIndex, targetedClasseMarks = this.targetedClasseMarks){
+				let mark = this.getMarks(pupil, 'epe', 0, targetedClasseMarks)
 				let modality = subjectWithModalities[subject]
 
 				let marksAll = targetedClasseMarks
@@ -522,6 +547,7 @@
 				
 			},
             setEdited(pupil){
+            	let subject = this.$route.params.s
                 this.$store.commit('SET_EDITED_PUPIL', pupil)
             },
 

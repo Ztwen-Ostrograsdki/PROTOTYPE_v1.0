@@ -549,6 +549,32 @@ class PupilsController extends Controller
 
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function force_destroy(int $id)
+    {
+
+        $pupil = Pupil::withTrashed('deleted_at')->whereId((int)$id)->first();
+        // $marks = Marks::withTrashed('deleted_at')->where('pupil_id', $id)->where('classe_id', $pupil->classe_id)->where('year', date('Y'))->get();
+
+        // if (count($marks) > 0) {
+        //    foreach ($marks as $mark) {
+        //        $mark->pupil()->detach($pupil->id);
+        //        $mark->subject()->detach($mark->subject_id);
+        //        $mark->classe()->detach($mark->classe_id);
+        //    }
+        // }
+
+        if ($pupil->forceDelete()) {
+            return $this->pupilsDataSender();
+        }
+
+    }
+
     public function restore(int $id) 
     {   
         Pupil::withTrashed()->whereId((int)$id)->firstOrFail()->restore();

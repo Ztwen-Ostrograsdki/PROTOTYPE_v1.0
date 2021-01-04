@@ -417,4 +417,45 @@ class ClassesController extends Controller
         Classe::withTrashed('deleted_at')->whereId((int)$id)->firstOrFail()->restore();
         return $this->classesDataSender();
     }
+
+
+    /**
+     * Use to refresh a classe --- retrieve all pupils out this classe
+     * @param  boolean $forced [description]
+     * @return json          [description]
+     */
+    public function refreshOnPupils(Request $request, $id)
+    {
+        // $id = $request->classe;
+        // $forced = $request->forced;
+
+        // $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
+        
+        // $done = $classe->refreshOnPupils($forced);
+        // if ($done) {
+        //     return $this->getAClasseData($id);
+        // }
+        // else{
+        //     return response()->json(['errors' => "Une erreure est survenue"]);
+        // }
+        return $this->getAClasseData($id);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id classe
+     * @param  int  $p a pupil
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyPupil(int $id, int $p)
+    {
+        $pupil = Pupil::find((int)$p);
+        $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
+        if ($pupil->delete()) {
+            return $this->getAClasseData($classe->id);
+        }
+
+    }
+
 }

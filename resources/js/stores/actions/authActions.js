@@ -23,7 +23,7 @@ const auth_actions = {
             }
 		})
 		.catch(err => {
-			console.log(err)
+			
 		})     
 	},  
 	getUsers: (state) => {

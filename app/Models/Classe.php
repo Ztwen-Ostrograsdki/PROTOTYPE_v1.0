@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\ClasseAndSubjectJoiner;
+use App\Http\Controllers\Master\ClassesController;
 use App\Models\Classe;
 use App\Models\ComputedMarksModalities;
+use App\Models\Mark;
 use App\Models\Pupil;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -221,6 +223,50 @@ class Classe extends Model
         }
 
         return $subjectWithModalities;
+
+    }
+
+
+    /**
+     * Use to refresh a classe --- retrieve all pupils out this classe
+     * @param  boolean $forced [description]
+     * @return json          [description]
+     */
+    public function refreshOnPupils($forced = true)
+    {
+        $pupils = $this->pupils;
+
+        foreach ($pupils as $pupil) {
+            $marks = Mark::where('pupil_id', $p)->where('classe_id', $this->id)->where('year', date('Y'))->get();
+            $parents = $this->parentors();
+            if ($forced) {
+                $action = $pupil->forceDelete();
+                if ($action) {
+                    if ($pupil->id == $this->respo1) {
+                        $this->update(['respo1' => null]);
+                    }
+                    if ($pupil->id == $this->respo2) {
+                        $this->update(['respo2' => null]);
+                    }
+                    if (count($marks) > 0) {
+                        foreach ($marks as $mark) {
+                            $del_m = $mark->forceDelete();
+                        }
+                    }
+                    if (count($parents) > 0) {
+                        foreach ($parents as $parent) {
+                            $parent->forceDelete();
+                        }
+                    }
+
+                }
+            }
+            else{
+                $action = $pupil->delete();
+            }
+        }
+
+        return true;
 
     }
 

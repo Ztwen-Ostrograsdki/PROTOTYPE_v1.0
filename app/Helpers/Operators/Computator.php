@@ -14,10 +14,12 @@ class Computator{
 	private $subject;
 	private $trimestre;
 	private $marks;
+	private $modalities;
 
 	public function __construct(int $pupil, int $subject, int $trimestre = 1)
 	{
 		$this->pupil = Pupil::find($pupil);
+		$this->modalities = $this->pupil->classe->getModalities();
 		$this->subject = Subject::find($subject);
 		$this->trimestre = 'trimestre ' .$trimestre;
 	}
@@ -56,6 +58,13 @@ class Computator{
 
 	public function computor()
 	{
+		$modality = null;
+
+		if (array_key_exists($this->subject->id, $this->modalities)) {
+			$modality = $this->modalities[$this->subject->id]->value;
+		}
+
+
 		$marks = $this->getMarks();
 		$moyInterro = 0;
 		$somDev = 0;
@@ -64,9 +73,14 @@ class Computator{
 		if ($marks !== []) {
 
 			if ($marks['interro'] !== []) {
-				$som = array_sum($marks['interro']);
-
-				$moyInterro = $som / count($marks['interro']);
+				if ($modality == null) {
+					$som = array_sum($marks['interro']);
+					$moyInterro = $som / count($marks['interro']);
+				}
+				else{
+					$som = array_sum($this->getBestMarks($modality));
+					$moyInterro = $som / count($this->getBestMarks($modality));
+				}
 			}
 
 			if ($marks['devoir'] !== []) {
@@ -88,6 +102,38 @@ class Computator{
 
 		return null;
 
+	}
+
+	public function getBestMarks($modality = null)
+	{
+		$interros = ($this->getMarks())['interro'];
+		$theBestMarks = [];
+
+		if ($interros == []) {
+			return $theBestMarks;
+		}
+
+		if ($modality !== null) {
+			if ($modality >= count($interros)) {
+				$theBestMarks = $interros;
+			}
+			else{
+				while (count($theBestMarks) < $modality) {
+					for($i = 0; $i < count($interros); $i++){
+						if ($interros[$i] == max($interros)) {
+							$theBestMarks[] = $interros[$i];
+							unset($interros[$i]);
+						}
+					}
+				}	
+			}
+			
+		}
+		else{
+			$theBestMarks = $interros;
+		}
+
+		return $theBestMarks;
 	}
 
 

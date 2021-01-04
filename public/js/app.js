@@ -2342,6 +2342,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2762,9 +2763,11 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.commit('SHOW_CLASSES_BY_LEVEL', level);
     },
     destroy: function destroy(id) {
+      var route = this.$route;
       this.$store.dispatch('lazyDeleteClasse', {
         id: id,
-        forced: false
+        forced: false,
+        route: route
       });
     },
     closeProfiler: function closeProfiler() {
@@ -2999,7 +3002,19 @@ __webpack_require__.r(__webpack_exports__);
       return day + " " + m + " " + year;
     },
     destroy: function destroy(pupil) {
-      this.$store.dispatch('lazyDeletePupils', pupil);
+      var route = this.$route;
+
+      if (route.name == 'classesProfil') {
+        this.$store.dispatch('deletePupilOfAClasse', {
+          pupil: pupil,
+          route: route
+        });
+      } else {
+        this.$store.dispatch('lazyDeletePupils', pupil);
+      }
+    },
+    forceDestroy: function forceDestroy(pupil) {
+      this.$store.dispatch('forceDeletePupils', pupil);
     },
     closeProfiler: function closeProfiler() {
       this.profiler = false;
@@ -3915,6 +3930,110 @@ $(function () {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: [],
+  data: function data() {
+    return {
+      refresh: {
+        status: false,
+        confirm: false
+      }
+    };
+  },
+  created: function created() {},
+  methods: {
+    refreshStatus: function refreshStatus(status) {
+      this.refresh.status = status;
+    },
+    refresherClasse: function refresherClasse() {
+      var status = this.refresh.status;
+      var classe = this.targetedClasse.classe;
+      var route = this.$route.name;
+      this.$store.dispatch('refreshOnPupils', {
+        forced: status,
+        classe: classe,
+        route: route
+      });
+    }
+  },
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['classes', 'errors', 'targetedClasse', 'refreshClasse'])
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=script&lang=js& ***!
@@ -3925,6 +4044,16 @@ $(function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4141,6 +4270,9 @@ __webpack_require__.r(__webpack_exports__);
         girls: girls.length
       };
     },
+    resetAlert: function resetAlert() {
+      this.$store.commit('ALERT_RESET');
+    },
     togglePanel: function togglePanel() {
       return this.hidePanel = !this.hidePanel;
     },
@@ -4152,6 +4284,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     toggleOptions: function toggleOptions() {
       return this.showOptions = !this.showOptions;
+    },
+    getSubject: function getSubject() {
+      var subjects = this.targetedClasse.subjects;
+      return subjects[0].id;
     },
     addNewPupil: function addNewPupil() {
       this.$store.commit('RESET_NEW_PUPIL');
@@ -4165,9 +4301,15 @@ __webpack_require__.r(__webpack_exports__);
       $('#newPupilPersoModal form').show('fade', function () {
         $('#newPupilPersoModal .buttons-div').show('fade');
       });
+    },
+    resetRefreshClasseConfirm: function resetRefreshClasseConfirm() {
+      this.$store.commit('RESET_REFRESH_CLASSE_CONFIRMATION', {
+        status: false,
+        confirm: false
+      });
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'months', 'successed',, 'errors', 'targetedClasse', 'newPupil'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'type', 'months', 'successed',, 'errors', 'targetedClasse', 'newPupil', 'refreshClasse'])
 });
 
 /***/ }),
@@ -4420,6 +4562,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4428,22 +4582,30 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       showOptions: false,
       trimestre: 1,
       range: false,
-      modality: false
+      modality: false,
+      computedAVG: false
     };
   },
   created: function created() {
     this.$store.dispatch('getAClasseData', this.$route.params.id);
     this.$store.dispatch('getAClasseMarks', {
       classe: this.$route.params.id,
-      subject: this.targetedClasseSubject,
+      subject: this.$route.params.s,
       trimestre: this.trimestre
     });
+    this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
+    this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s);
   },
   methods: {
     toggleOptions: function toggleOptions() {
       return this.showOptions = !this.showOptions;
     },
+    toggleComputing: function toggleComputing() {
+      return this.computedAVG = !this.computedAVG;
+    },
     editedPupilClasseAndSubjectMarks: function editedPupilClasseAndSubjectMarks(pupil, subject) {
+      this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
+      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s);
       this.$store.commit('SET_EDITED_PUPIL', pupil);
       this.$store.dispatch('getAPupilDataAndMarks', {
         route: pupil.id,
@@ -4467,17 +4629,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         });
       });
     },
-    updateTargetedSubject: function updateTargetedSubject(subject) {
+    updateTargetedSubject: function updateTargetedSubject() {
+      var subject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.$route.params.s;
       this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject);
       this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject);
       this.$store.dispatch('getAClasseMarks', {
         classe: this.$route.params.id,
-        subject: this.targetedClasseSubject,
+        subject: this.$route.params.s,
         trimestre: this.trimestre
       });
     },
     isTheTargetedSubject: function isTheTargetedSubject(subject) {
-      return subject.id == this.targetedClasseSubject ? 'border-warning btn-primary' : 'btn-secondary';
+      return subject == this.$route.params.s ? 'border-warning btn-primary' : 'btn-secondary';
     },
     getMarks: function getMarks(pupil, type, index, targetedClasseMarks) {
       if (targetedClasseMarks[pupil] == null) {
@@ -4531,6 +4694,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       var coef = coefs[subject];
       var avgEPE = 0;
       var avg = 0;
+
+      if (!this.computedAVG) {
+        return {
+          avgEPE: '-',
+          avg: '-',
+          avgCoef: '-'
+        };
+      }
 
       if (marksAll[pupil] !== null && marksAll[pupil] !== undefined) {
         var marks = marksAll[pupil];
@@ -4609,17 +4780,19 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         };
       }
     },
-    oderer: function oderer(classe, subject, trimestre) {
-      this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject);
+    oderer: function oderer(classe) {
+      var subject = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.$route.params.s;
+      var trimestre = arguments.length > 2 ? arguments[2] : undefined;
+      this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
       this.$store.dispatch('getOderer', {
         classe: classe,
-        subject: subject,
+        subject: this.$route.params.s,
         trimestre: trimestre
       });
       this.range = true;
       this.$store.dispatch('getAClasseMarks', {
         classe: this.$route.params.id,
-        subject: subject,
+        subject: this.$route.params.s,
         trimestre: this.trimestre
       });
     },
@@ -4648,8 +4821,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
       return bestMarks;
     },
-    isInTheBestMarks: function isInTheBestMarks(pupil, subjectWithModalities, subject, mark) {
+    isInTheBestMarks: function isInTheBestMarks(pupil, subjectWithModalities, subject, markIndex) {
       var targetedClasseMarks = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.targetedClasseMarks;
+      var mark = this.getMarks(pupil, 'epe', 0, targetedClasseMarks);
       var modality = subjectWithModalities[subject];
       var marksAll = targetedClasseMarks;
       var type = "epe";
@@ -4730,6 +4904,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }
     },
     setEdited: function setEdited(pupil) {
+      var subject = this.$route.params.s;
       this.$store.commit('SET_EDITED_PUPIL', pupil);
     }
   },
@@ -5962,9 +6137,6 @@ __webpack_require__.r(__webpack_exports__);
     toggleInputs: function toggleInputs(object) {
       object.status = !object.status;
     },
-    // getMarks(){
-    // 	this.$store.commit('RESET_NEW_PUPIL')
-    // },
     validateMarks: function validateMarks(token) {// let newPupil = this.newPupil
       // this.$store.dispatch('addANewPupil', {newPupil, token})
     },
@@ -5993,7 +6165,6 @@ __webpack_require__.r(__webpack_exports__);
       return 0;
     },
     updateTargetedPupilMarks: function updateTargetedPupilMarks(pupil, token, subject, classe, marks, trimestre) {
-      console.log(this.editedPupilSubjectMarks);
       var cl = null;
 
       if (subject !== null && marks !== null) {
@@ -14564,6 +14735,44 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 // module
 exports.push([module.i, "\n.table-plan th{\n\tpadding: 0 !important;\n\tpadding-bottom: 1px !important;\n\tpadding-top: 1px !important;\n}\n.td-days td{\n\tborder-right: thin solid white;\n}\n.t-contents tbody tr td{\n\twidth: 20%;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\ndiv#options span:hover{\n    transform: scale(1.3);\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\ndiv#options span:hover{\n\ttransform: scale(1.3);\n}\n", ""]);
 
 // exports
 
@@ -46501,6 +46710,66 @@ if(false) {}
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/MarksComponent.vue?vue&type=style&index=0&lang=css&":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/layouts/MarksComponent.vue?vue&type=style&index=0&lang=css& ***!
@@ -48693,6 +48962,8 @@ var render = function() {
       _vm._v(" "),
       _c("classe-edit"),
       _vm._v(" "),
+      _c("classe-refresh"),
+      _vm._v(" "),
       _c("teacher-perso"),
       _vm._v(" "),
       _c("teacher-add"),
@@ -50374,6 +50645,11 @@ var render = function() {
                                     staticStyle: { width: "48%" },
                                     attrs: {
                                       title: "Supprimer définitement cet élève"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.forceDestroy(pupil)
+                                      }
                                     }
                                   },
                                   [
@@ -52479,6 +52755,321 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6&":
+/*!*****************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "modal fade",
+      staticStyle: { top: "100px !important" },
+      attrs: {
+        id: "confirmRefreshClassModal",
+        tabindex: "-1",
+        role: "dialog",
+        "aria-labelledby": "confirmRefreshClassModalLabel",
+        "aria-hidden": "true"
+      }
+    },
+    [
+      _c(
+        "div",
+        { staticClass: "modal-dialog text-center border border-white" },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "bg-linear-official-180 modal-content",
+              staticStyle: { "border-style": "solid", "border-radius": "0" }
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "w-100 mx-auto bg-linear-official-180" },
+                [
+                  _c("div", { staticClass: "mx-auto w-100 p-1 pb-2" }, [
+                    _c("div", { staticClass: "w-100 p-2 my-1 mx-auto" }, [
+                      _c(
+                        "h5",
+                        {
+                          staticClass: "text-center mx-auto text-warning w-75"
+                        },
+                        [_vm._v("Confirmation rafraîchissement de classe")]
+                      ),
+                      _vm._v(" "),
+                      _c("hr", { staticClass: "m-0 p-0 bg-white mb-2 w-100" }),
+                      _vm._v(" "),
+                      !_vm.refreshClasse.confirm
+                        ? _c("div", { staticClass: "mx-auto w-100" }, [
+                            _c("p", {
+                              staticClass: "w-100 mx-auto text-center"
+                            }),
+                            _c("h5", { staticClass: "text-danger cursive" }, [
+                              _vm._v(
+                                "Vous êtes sur le point de rafraîchir la classe de "
+                              ),
+                              _c("span", { staticClass: "text-warning" }, [
+                                _vm._v(
+                                  " " +
+                                    _vm._s(_vm.targetedClasse.classeFMT.name)
+                                ),
+                                _c("sup", [
+                                  _vm._v(
+                                    _vm._s(_vm.targetedClasse.classeFMT.sup)
+                                  )
+                                ]),
+                                _vm._v(
+                                  " " +
+                                    _vm._s(_vm.targetedClasse.classeFMT.idc) +
+                                    "\n                                "
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("br"),
+                            _vm._v(" "),
+                            _c("span", {}, [
+                              _c("i", { staticClass: "cursive" }, [
+                                _vm._v("Les apprenants de cette classe seront:")
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "form",
+                                {
+                                  staticClass:
+                                    "d-inline-block d-flex flex-column form-group",
+                                  attrs: { id: "refresh-classe" }
+                                },
+                                [
+                                  _c(
+                                    "span",
+                                    {
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.refreshStatus(false)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "label",
+                                        {
+                                          attrs: { for: "refresh_classe_false" }
+                                        },
+                                        [_vm._v("Envoyés dans la corbeille")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        staticClass: "custom-radio",
+                                        attrs: {
+                                          type: "radio",
+                                          name: "refresh",
+                                          id: "refresh_classe_false",
+                                          checked: "",
+                                          value: "false"
+                                        }
+                                      })
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "span",
+                                    {
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.refreshStatus(true)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "label",
+                                        {
+                                          attrs: { for: "refresh_classe_true" }
+                                        },
+                                        [_vm._v("Définitivement supprimés")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        staticClass: "custom-radio",
+                                        attrs: {
+                                          type: "radio",
+                                          name: "refresh",
+                                          id: "refresh_classe_true",
+                                          value: "true"
+                                        }
+                                      })
+                                    ]
+                                  )
+                                ]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("p"),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "w-100 mx-auto mt-2" }, [
+                              _c(
+                                "h5",
+                                {
+                                  staticClass:
+                                    "mx-auto w-100 text-center text-white-50"
+                                },
+                                [
+                                  _vm._v(
+                                    "Voulez-vous vraiment rafraîchir cette classe?"
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "mx-auto w-100 d-flex justify-content-center"
+                                },
+                                [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-danger mx-1",
+                                      attrs: { "data-dismiss": "modal" }
+                                    },
+                                    [_vm._v("Avorter la requête")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-primary mx-1",
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.refresherClasse()
+                                        }
+                                      }
+                                    },
+                                    [_vm._v("Confirmer la requête")]
+                                  )
+                                ]
+                              )
+                            ])
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.refreshClasse.confirm
+                        ? _c("div", { staticClass: "mx-auto w-100" }, [
+                            _vm._m(0),
+                            _vm._m(1),
+                            _vm._v(" "),
+                            _c("p"),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "w-100 mx-auto mt-2" }, [
+                              _c(
+                                "h5",
+                                {
+                                  staticClass:
+                                    "mx-auto w-100 text-center text-white-50"
+                                },
+                                [
+                                  _vm._v("La classe de "),
+                                  _c("span", { staticClass: "text-warning" }, [
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(
+                                          _vm.targetedClasse.classeFMT.name
+                                        )
+                                    ),
+                                    _c("sup", [
+                                      _vm._v(
+                                        _vm._s(_vm.targetedClasse.classeFMT.sup)
+                                      )
+                                    ]),
+                                    _vm._v(
+                                      " " +
+                                        _vm._s(
+                                          _vm.targetedClasse.classeFMT.idc
+                                        ) +
+                                        "\n                                "
+                                    )
+                                  ]),
+                                  _vm._v(" a été bien rafraîchie")
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _vm._m(2)
+                            ])
+                          ])
+                        : _vm._e()
+                    ])
+                  ])
+                ]
+              )
+            ]
+          )
+        ]
+      )
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "w-100 mx-auto text-center" }, [_c("br")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h4", {}, [
+      _c("span", {
+        staticClass: "fa fa-check-square-o text-success text-center d-block",
+        staticStyle: { "font-size": "15px" }
+      }),
+      _vm._v(" "),
+      _c("i", { staticClass: "cursive text-success" }, [
+        _vm._v("L'opération s'est déroulée avec succès")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "mx-auto w-100 d-flex justify-content-center" },
+      [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success mx-1 w-50",
+            attrs: { "data-dismiss": "modal" }
+          },
+          [_vm._v("Terminée")]
+        )
+      ]
+    )
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=template&id=1ed6edae&":
 /*!*********************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=template&id=1ed6edae& ***!
@@ -52531,7 +53122,7 @@ var render = function() {
                             _vm._v(
                               " " +
                                 _vm._s(_vm.targetedClasse.classeFMT.idc) +
-                                "\n\t\t                \t"
+                                "\n\t\t\t                \t"
                             )
                           ]),
                           _vm._v(" "),
@@ -52565,12 +53156,12 @@ var render = function() {
                                       },
                                       [
                                         _vm._v(
-                                          "\n\t\t                \t\t\t\t" +
+                                          "\n\t\t\t                \t\t\t\t" +
                                             _vm._s(
                                               _vm.targetedClasse.heads.teacher
                                                 .name
                                             ) +
-                                            "\n\t\t                \t\t\t"
+                                            "\n\t\t\t                \t\t\t"
                                         )
                                       ]
                                     )
@@ -52579,9 +53170,9 @@ var render = function() {
                                 _vm.targetedClasse.heads.teacher == null
                                   ? _c("span", { staticClass: "text-muted" }, [
                                       _vm._v(
-                                        "\n\t\t                \t\t\t\t" +
+                                        "\n\t\t\t                \t\t\t\t" +
                                           _vm._s("Non défini") +
-                                          "\n\t\t                \t\t\t"
+                                          "\n\t\t\t                \t\t\t"
                                       )
                                     ])
                                   : _vm._e()
@@ -52612,7 +53203,10 @@ var render = function() {
                   [
                     _c(
                       "div",
-                      { staticClass: "w-50 d-flex justify-content-start" },
+                      {
+                        staticClass: "w-50 d-flex justify-content-start",
+                        attrs: { id: "options" }
+                      },
                       [
                         !_vm.showOptions
                           ? _c(
@@ -52663,6 +53257,23 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 return _vm.addNewPupil()
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "mx-1 refresh" }, [
+                          _c("span", {
+                            staticClass:
+                              "float-right fa fa-refresh text-danger",
+                            attrs: {
+                              title: "Rafraichir cette classe...",
+                              "data-toggle": "modal",
+                              "data-target": "#confirmRefreshClassModal"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.resetRefreshClasseConfirm()
                               }
                             }
                           })
@@ -52734,7 +53345,7 @@ var render = function() {
                                               "fas fa-cogs fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                              Administation\n\t\t                            "
+                                            "\n\t\t\t                              Administation\n\t\t\t                            "
                                           )
                                         ]
                                       ),
@@ -52748,10 +53359,13 @@ var render = function() {
                                             "border-radius": "30px"
                                           },
                                           attrs: {
-                                            to:
-                                              "/admin/director/classesm/" +
-                                              this.$route.params.id +
-                                              "/marks/index"
+                                            to: {
+                                              name: "classeSubjectMarks",
+                                              params: {
+                                                id: _vm.$route.params.id,
+                                                s: _vm.getSubject()
+                                              }
+                                            }
                                           }
                                         },
                                         [
@@ -52760,7 +53374,7 @@ var render = function() {
                                               "fa fa-file-text fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                              Les notes\n\t            \t\t\t\t\t"
+                                            "\n\t\t\t                              Les notes\n\t\t            \t\t\t\t\t"
                                           )
                                         ]
                                       ),
@@ -52781,11 +53395,11 @@ var render = function() {
                                               "fa fa-line-chart fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                              1"
+                                            "\n\t\t\t                              1"
                                           ),
                                           _c("sup", [_vm._v("er")]),
                                           _vm._v(
-                                            " Trimestre\n\t\t                            "
+                                            " Trimestre\n\t\t\t                            "
                                           )
                                         ]
                                       ),
@@ -52806,11 +53420,11 @@ var render = function() {
                                               "fa fa-line-chart fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                              2"
+                                            "\n\t\t\t                              2"
                                           ),
                                           _c("sup", [_vm._v("ème")]),
                                           _vm._v(
-                                            " Trimestre\n\t\t                            "
+                                            " Trimestre\n\t\t\t                            "
                                           )
                                         ]
                                       ),
@@ -52831,11 +53445,11 @@ var render = function() {
                                               "fa fa-line-chart fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                              3"
+                                            "\n\t\t\t                              3"
                                           ),
                                           _c("sup", [_vm._v("ème")]),
                                           _vm._v(
-                                            " Trimestre\n\t\t                            "
+                                            " Trimestre\n\t\t\t                            "
                                           )
                                         ]
                                       ),
@@ -52856,7 +53470,7 @@ var render = function() {
                                               "fa fa-line-chart fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                              Scolarité\n\t\t                            "
+                                            "\n\t\t\t                              Scolarité\n\t\t\t                            "
                                           )
                                         ]
                                       ),
@@ -52874,7 +53488,7 @@ var render = function() {
                                               "fas fa-list fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                          Activity Log\n\t\t                        "
+                                            "\n\t\t\t                          Activity Log\n\t\t\t                        "
                                           )
                                         ]
                                       ),
@@ -52892,7 +53506,7 @@ var render = function() {
                                               "fas fa-sign-out-alt fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t                          Fermer cette classe\n\t\t                        "
+                                            "\n\t\t\t                          Fermer cette classe\n\t\t\t                        "
                                           )
                                         ]
                                       ),
@@ -52966,7 +53580,7 @@ var render = function() {
                                 _vm._v("1"),
                                 _c("sup", [_vm._v("er")]),
                                 _vm._v(
-                                  " Responsable: \n                \t\t\t"
+                                  " Responsable: \n\t                \t\t\t"
                                 ),
                                 _vm.targetedClasse.heads.respo1 !== null
                                   ? _c(
@@ -52989,12 +53603,12 @@ var render = function() {
                                       },
                                       [
                                         _vm._v(
-                                          "\n                \t\t\t\t" +
+                                          "\n\t                \t\t\t\t" +
                                             _vm._s(
                                               _vm.targetedClasse.heads.respo1
                                                 .name
                                             ) +
-                                            "\n                \t\t\t"
+                                            "\n\t                \t\t\t"
                                         )
                                       ]
                                     )
@@ -53003,9 +53617,9 @@ var render = function() {
                                 _vm.targetedClasse.heads.respo1 == null
                                   ? _c("span", { staticClass: "text-muted" }, [
                                       _vm._v(
-                                        "\n                \t\t\t\t" +
+                                        "\n\t                \t\t\t\t" +
                                           _vm._s("Non défini") +
-                                          "\n                \t\t\t"
+                                          "\n\t                \t\t\t"
                                       )
                                     ])
                                   : _vm._e()
@@ -53021,7 +53635,9 @@ var render = function() {
                               [
                                 _vm._v("2"),
                                 _c("sup", [_vm._v("ème")]),
-                                _vm._v(" Responsable: \n\t            \t\t\t"),
+                                _vm._v(
+                                  " Responsable: \n\t\t            \t\t\t"
+                                ),
                                 _vm.targetedClasse.heads.respo2 !== null
                                   ? _c(
                                       "router-link",
@@ -53043,12 +53659,12 @@ var render = function() {
                                       },
                                       [
                                         _vm._v(
-                                          "\n                \t\t\t\t" +
+                                          "\n\t                \t\t\t\t" +
                                             _vm._s(
                                               _vm.targetedClasse.heads.respo2
                                                 .name
                                             ) +
-                                            "\n                \t\t\t"
+                                            "\n\t                \t\t\t"
                                         )
                                       ]
                                     )
@@ -53057,9 +53673,9 @@ var render = function() {
                                 _vm.targetedClasse.heads.respo2 == null
                                   ? _c("span", { staticClass: "text-muted" }, [
                                       _vm._v(
-                                        "\n                \t\t\t\t" +
+                                        "\n\t                \t\t\t\t" +
                                           _vm._s("Non défini") +
-                                          "\n                \t\t\t"
+                                          "\n\t                \t\t\t"
                                       )
                                     ])
                                   : _vm._e()
@@ -53069,6 +53685,41 @@ var render = function() {
                           ])
                         ]
                       ),
+                      _vm._v(" "),
+                      _vm.alert
+                        ? _c(
+                            "div",
+                            {
+                              staticClass:
+                                "float-right d-flex justify-content-around pr-2 mt-1 mb-0 border py-1",
+                              class: _vm.type
+                            },
+                            [
+                              _c(
+                                "p",
+                                { staticClass: "h5-title m-0 px-2 pt-2" },
+                                [
+                                  _c("span", {
+                                    staticClass: "mx-2 fa fa-envelope-open"
+                                  }),
+                                  _vm._v(
+                                    _vm._s(_vm.message) +
+                                      "\n                        "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c("span", {
+                                staticClass: "mx-1 fa fa-close text-danger",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.resetAlert()
+                                  }
+                                }
+                              })
+                            ]
+                          )
+                        : _vm._e(),
                       _vm._v(" "),
                       _c(
                         "div",
@@ -53237,7 +53888,7 @@ var render = function() {
                                             _vm._v("1"),
                                             _c("sup", [_vm._v("er")]),
                                             _vm._v(
-                                              " Responsable: \n\t\t                \t\t\t"
+                                              " Responsable: \n\t\t\t                \t\t\t"
                                             ),
                                             _vm.targetedClasse.heads.respo1 !==
                                             null
@@ -53263,12 +53914,12 @@ var render = function() {
                                                   },
                                                   [
                                                     _vm._v(
-                                                      "\n\t\t                \t\t\t\t" +
+                                                      "\n\t\t\t                \t\t\t\t" +
                                                         _vm._s(
                                                           _vm.targetedClasse
                                                             .heads.respo1.name
                                                         ) +
-                                                        "\n\t\t                \t\t\t"
+                                                        "\n\t\t\t                \t\t\t"
                                                     )
                                                   ]
                                                 )
@@ -53281,9 +53932,9 @@ var render = function() {
                                                   { staticClass: "text-muted" },
                                                   [
                                                     _vm._v(
-                                                      "\n\t\t                \t\t\t\t" +
+                                                      "\n\t\t\t                \t\t\t\t" +
                                                         _vm._s("Non défini") +
-                                                        "\n\t\t                \t\t\t"
+                                                        "\n\t\t\t                \t\t\t"
                                                     )
                                                   ]
                                                 )
@@ -53304,7 +53955,7 @@ var render = function() {
                                             _vm._v("2"),
                                             _c("sup", [_vm._v("ème")]),
                                             _vm._v(
-                                              " Responsable: \n\t\t\t            \t\t\t"
+                                              " Responsable: \n\t\t\t\t            \t\t\t"
                                             ),
                                             _vm.targetedClasse.heads.respo2 !==
                                             null
@@ -53330,12 +53981,12 @@ var render = function() {
                                                   },
                                                   [
                                                     _vm._v(
-                                                      "\n\t\t                \t\t\t\t" +
+                                                      "\n\t\t\t                \t\t\t\t" +
                                                         _vm._s(
                                                           _vm.targetedClasse
                                                             .heads.respo2.name
                                                         ) +
-                                                        "\n\t\t                \t\t\t"
+                                                        "\n\t\t\t                \t\t\t"
                                                     )
                                                   ]
                                                 )
@@ -53348,9 +53999,9 @@ var render = function() {
                                                   { staticClass: "text-muted" },
                                                   [
                                                     _vm._v(
-                                                      "\n\t\t                \t\t\t\t" +
+                                                      "\n\t\t\t                \t\t\t\t" +
                                                         _vm._s("Non défini") +
-                                                        "\n\t\t                \t\t\t"
+                                                        "\n\t\t\t                \t\t\t"
                                                     )
                                                   ]
                                                 )
@@ -53402,7 +54053,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("span", [
       _c("span", { staticClass: "text-white-50" }, [_vm._v("Année Scolaire:")]),
-      _vm._v(" 2020 - 2021\n\t\t                ")
+      _vm._v(" 2020 - 2021\n\t\t\t                ")
     ])
   }
 ]
@@ -53510,7 +54161,7 @@ var render = function() {
                               staticClass: "text-right w-100 ml-2",
                               on: {
                                 click: function($event) {
-                                  return _vm.toggleOptions(_vm.showOptions)
+                                  return _vm.toggleOptions()
                                 }
                               }
                             },
@@ -53529,7 +54180,7 @@ var render = function() {
                               staticClass: "text-right w-100 ml-2",
                               on: {
                                 click: function($event) {
-                                  return _vm.toggleOptions(_vm.showOptions)
+                                  return _vm.toggleOptions()
                                 }
                               }
                             },
@@ -53816,15 +54467,48 @@ var render = function() {
                       return _c(
                         "span",
                         {
-                          staticClass: "btn border p-1 ml-1",
-                          class: _vm.isTheTargetedSubject(subject),
                           on: {
                             click: function($event) {
                               return _vm.updateTargetedSubject(subject.id)
                             }
                           }
                         },
-                        [_vm._v(_vm._s(subject.name))]
+                        [
+                          _c(
+                            "router-link",
+                            {
+                              staticClass:
+                                "card-link d-inline-block btn border p-1 ml-1",
+                              class: _vm.isTheTargetedSubject(subject.id),
+                              attrs: {
+                                to: {
+                                  name: "classeSubjectMarks",
+                                  params: {
+                                    id: _vm.$route.params.id,
+                                    s: subject.id
+                                  }
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "span",
+                                {
+                                  staticClass:
+                                    "w-100 d-inline-block link-profiler"
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                        " +
+                                      _vm._s(subject.name) +
+                                      "\n                                \t"
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        ],
+                        1
                       )
                     })
                   ],
@@ -53861,30 +54545,48 @@ var render = function() {
                   [
                     _c("span", [
                       _vm._v("Les notes\n                        \t\t"),
-                      _vm.subjectWithModalities[_vm.targetedClasseSubject] ==
-                      undefined
+                      !_vm.modality
                         ? _c(
                             "span",
-                            { staticClass: "h5-title text-white-50" },
-                            [_vm._v("Toutes les notes sont prises en comptes")]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.subjectWithModalities[_vm.targetedClasseSubject] !==
-                      undefined
-                        ? _c(
-                            "span",
-                            { staticClass: "h5-title text-white-50" },
+                            { staticClass: "d-inline-block m-0 p-0" },
                             [
-                              _vm._v(
-                                _vm._s(
-                                  "Seulement les " +
-                                    _vm.subjectWithModalities[
-                                      _vm.targetedClasseSubject
-                                    ] +
-                                    " sont prises en compte"
-                                )
-                              )
+                              _vm.subjectWithModalities[_vm.$route.params.s] !==
+                              undefined
+                                ? _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "h5-title text-white-50 m-0 p-0"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                        \t\t\tSeulement les " +
+                                          _vm._s(
+                                            _vm.subjectWithModalities[
+                                              _vm.$route.params.s
+                                            ]
+                                          ) +
+                                          " meilleurs notes sont prises en comptes\n                        \t\t"
+                                      )
+                                    ]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.subjectWithModalities[_vm.$route.params.s] ==
+                              undefined
+                                ? _c(
+                                    "span",
+                                    {
+                                      staticClass:
+                                        "h5-title text-white-50 m-0 p-0"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                        \t\t\tToutes les notes sont prises en comptes\n                        \t\t"
+                                      )
+                                    ]
+                                  )
+                                : _vm._e()
                             ]
                           )
                         : _vm._e()
@@ -54040,7 +54742,12 @@ var render = function() {
                   _vm._v(" "),
                   _c("span", {
                     staticClass: "fa fa-desktop float-right mr-2",
-                    attrs: { title: "calculer les moyennes maintenant" }
+                    attrs: { title: "calculer les moyennes maintenant" },
+                    on: {
+                      click: function($event) {
+                        return _vm.toggleComputing()
+                      }
+                    }
                   })
                 ]),
                 _vm._v(" "),
@@ -54214,7 +54921,7 @@ var render = function() {
                                 click: function($event) {
                                   return _vm.editedPupilClasseAndSubjectMarks(
                                     pupil,
-                                    _vm.targetedClasseSubject
+                                    _vm.$route.params.s
                                   )
                                 }
                               }
@@ -54227,13 +54934,9 @@ var render = function() {
                           _c("table", { staticClass: "w-100" }, [
                             _c("tbody", { staticClass: "w-100 notes" }, [
                               _c("tr", { staticClass: "w-100" }, [
-                                _c(
-                                  "td",
-                                  {
-                                    class: _vm.isInTheBestMarks(
-                                      pupil.id,
-                                      _vm.subjectWithModalities,
-                                      _vm.targetedClasseSubject,
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -54241,28 +54944,12 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  },
-                                  [
-                                    _vm._v(
-                                      _vm._s(
-                                        _vm.getMarks(
-                                          pupil.id,
-                                          "epe",
-                                          0,
-                                          _vm.targetedClasseMarks
-                                        )
-                                      )
-                                    )
-                                  ]
-                                ),
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c(
-                                  "td",
-                                  {
-                                    class: _vm.isInTheBestMarks(
-                                      pupil.id,
-                                      _vm.subjectWithModalities,
-                                      _vm.targetedClasseSubject,
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -54270,28 +54957,12 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  },
-                                  [
-                                    _vm._v(
-                                      _vm._s(
-                                        _vm.getMarks(
-                                          pupil.id,
-                                          "epe",
-                                          1,
-                                          _vm.targetedClasseMarks
-                                        )
-                                      )
-                                    )
-                                  ]
-                                ),
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c(
-                                  "td",
-                                  {
-                                    class: _vm.isInTheBestMarks(
-                                      pupil.id,
-                                      _vm.subjectWithModalities,
-                                      _vm.targetedClasseSubject,
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -54299,28 +54970,12 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  },
-                                  [
-                                    _vm._v(
-                                      _vm._s(
-                                        _vm.getMarks(
-                                          pupil.id,
-                                          "epe",
-                                          2,
-                                          _vm.targetedClasseMarks
-                                        )
-                                      )
-                                    )
-                                  ]
-                                ),
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c(
-                                  "td",
-                                  {
-                                    class: _vm.isInTheBestMarks(
-                                      pupil.id,
-                                      _vm.subjectWithModalities,
-                                      _vm.targetedClasseSubject,
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -54328,28 +54983,12 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  },
-                                  [
-                                    _vm._v(
-                                      _vm._s(
-                                        _vm.getMarks(
-                                          pupil.id,
-                                          "epe",
-                                          3,
-                                          _vm.targetedClasseMarks
-                                        )
-                                      )
-                                    )
-                                  ]
-                                ),
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c(
-                                  "td",
-                                  {
-                                    class: _vm.isInTheBestMarks(
-                                      pupil.id,
-                                      _vm.subjectWithModalities,
-                                      _vm.targetedClasseSubject,
+                                _c("td", [
+                                  _vm._v(
+                                    _vm._s(
                                       _vm.getMarks(
                                         pupil.id,
                                         "epe",
@@ -54357,20 +54996,8 @@ var render = function() {
                                         _vm.targetedClasseMarks
                                       )
                                     )
-                                  },
-                                  [
-                                    _vm._v(
-                                      _vm._s(
-                                        _vm.getMarks(
-                                          pupil.id,
-                                          "epe",
-                                          4,
-                                          _vm.targetedClasseMarks
-                                        )
-                                      )
-                                    )
-                                  ]
-                                ),
+                                  )
+                                ]),
                                 _vm._v(" "),
                                 _c("td", { staticClass: "text-primary" }, [
                                   _vm._v(
@@ -86248,6 +86875,7 @@ var classe_marks = Vue.component('classe-marks', __webpack_require__(/*! ./compo
 var classe_profil = Vue.component('profil-classe', __webpack_require__(/*! ./components/classes/ProfilComponent.vue */ "./resources/js/components/classes/ProfilComponent.vue")["default"]);
 var classe_listing = Vue.component('listing-classe', __webpack_require__(/*! ./components/classes/layouts/ListingForAClasseComponent.vue */ "./resources/js/components/classes/layouts/ListingForAClasseComponent.vue")["default"]);
 var listing_classes_component = Vue.component('listing-classes', __webpack_require__(/*! ./components/admin/layouts/ListingClassesComponent.vue */ "./resources/js/components/admin/layouts/ListingClassesComponent.vue")["default"]);
+var confirm_refresh_class = Vue.component('classe-refresh', __webpack_require__(/*! ./components/classes/confirmations/ConfirmRefreshClassComponent.vue */ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue")["default"]);
 var classes_redList = Vue.component('classes-redList', __webpack_require__(/*! ./components/classes/RedListComponent.vue */ "./resources/js/components/classes/RedListComponent.vue")["default"]); //HOMES
 
 var home = Vue.component('home-public', __webpack_require__(/*! ./components/home/HomeComponent.vue */ "./resources/js/components/home/HomeComponent.vue")["default"]);
@@ -86358,6 +86986,11 @@ var routes = [{
     path: '/admin/director/classesm/:id/marks/index',
     component: classe_marks,
     name: 'classeMarks',
+    store: _stores_store_js__WEBPACK_IMPORTED_MODULE_1__["default"]
+  }, {
+    path: '/admin/director/classesm/:id/marks/index/subject/:s',
+    component: classe_marks,
+    name: 'classeSubjectMarks',
     store: _stores_store_js__WEBPACK_IMPORTED_MODULE_1__["default"]
   }]
 }];
@@ -87250,6 +87883,93 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ConfirmRefreshClassComponent_vue_vue_type_template_id_ad4b31f6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6& */ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6&");
+/* harmony import */ var _ConfirmRefreshClassComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConfirmRefreshClassComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _ConfirmRefreshClassComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _ConfirmRefreshClassComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ConfirmRefreshClassComponent_vue_vue_type_template_id_ad4b31f6___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ConfirmRefreshClassComponent_vue_vue_type_template_id_ad4b31f6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************!*\
+  !*** ./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ConfirmRefreshClassComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*************************************************************************************************************************!*\
+  !*** ./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader!../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+
+/***/ "./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6&":
+/*!***********************************************************************************************************************!*\
+  !*** ./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6& ***!
+  \***********************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_template_id_ad4b31f6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/confirmations/ConfirmRefreshClassComponent.vue?vue&type=template&id=ad4b31f6&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_template_id_ad4b31f6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmRefreshClassComponent_vue_vue_type_template_id_ad4b31f6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/classes/layouts/ListingForAClasseComponent.vue":
 /*!********************************************************************************!*\
   !*** ./resources/js/components/classes/layouts/ListingForAClasseComponent.vue ***!
@@ -87261,7 +87981,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ListingForAClasseComponent_vue_vue_type_template_id_1ed6edae___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListingForAClasseComponent.vue?vue&type=template&id=1ed6edae& */ "./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=template&id=1ed6edae&");
 /* harmony import */ var _ListingForAClasseComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListingForAClasseComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _ListingForAClasseComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -87269,7 +87991,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _ListingForAClasseComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _ListingForAClasseComponent_vue_vue_type_template_id_1ed6edae___WEBPACK_IMPORTED_MODULE_0__["render"],
   _ListingForAClasseComponent_vue_vue_type_template_id_1ed6edae___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -87298,6 +88020,22 @@ component.options.__file = "resources/js/components/classes/layouts/ListingForAC
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ListingForAClasseComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css&":
+/*!*****************************************************************************************************************!*\
+  !*** ./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css& ***!
+  \*****************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader!../../../../../node_modules/css-loader??ref--6-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--6-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/classes/layouts/ListingForAClasseComponent.vue?vue&type=style&index=0&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ListingForAClasseComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -90784,9 +91522,7 @@ var auth_actions = {
       } else {
         state.commit('INVALID_INPUTS', response.data.invalidInputs);
       }
-    })["catch"](function (err) {
-      console.log(err);
-    });
+    })["catch"](function (err) {});
   },
   getUsers: function getUsers(state) {
     axios.post('/admin/director/master/get&all&users').then(function (response) {
@@ -90932,6 +91668,24 @@ var classes_actions = {
       store.commit('GET_CLASSES_DATA', response.data);
     });
   },
+  refreshOnPupils: function refreshOnPupils(store, inputs) {
+    axios["delete"]('/admin/director/classesm/refresh/id=' + inputs.classe.id + '/forced=' + inputs.forced, {
+      id: inputs.classe.id,
+      forced: inputs.forced
+    }).then(function (response) {
+      store.commit('GET_CLASSES_DATA', response.data);
+      store.commit('RESET_REFRESH_CLASSE_CONFIRMATION', {
+        status: true,
+        confirm: true
+      });
+    });
+  },
+  deletePupilOfAClasse: function deletePupilOfAClasse(store, inputs) {
+    axios["delete"]('/admin/director/classesm/delete&pupil&of&a&classe/id=' + inputs.pupil.classe_id + '/p=' + inputs.pupil.id).then(function (response) {
+      store.commit('GET_A_CLASSE_DATA', response.data);
+      store.commit('ALERT_MAKER', "L'élève " + inputs.pupil.name + " a été envoyé dans la corbeille avec succès!");
+    });
+  },
   restoreClasses: function restoreClasses(store, classe) {
     axios.put('/admin/director/classesm/restore/id=' + classe.id).then(function (response) {
       store.commit('GET_CLASSES_DATA', response.data);
@@ -90964,8 +91718,7 @@ var dashboards_actions = {
     axios["delete"]('/admin/director/master/dashbords/reset&horaires/reset&now/reset', {
       classe: data.classe,
       year: data.year
-    }).then(function (response) {
-      console.log(response.data); //         	state.dispatch('getTOOLS')
+    }).then(function (response) {//         	state.dispatch('getTOOLS')
       // state.dispatch('getHoraires', 2020)
     });
   },
@@ -91148,7 +91901,6 @@ var pupils_actions = {
     });
   },
   updateAPupilMarks: function updateAPupilMarks(store, inputs) {
-    console.log(inputs);
     axios.put('/admin/director/pupilsm/update/marks/update&marks/p=' + inputs.pupil.id + '&s=' + inputs.keys.subject + '&c=' + inputs.keys.classe, {
       epe1: inputs.notes.epe1,
       epe2: inputs.notes.epe2,
@@ -91163,13 +91915,13 @@ var pupils_actions = {
       if (response.data.invalidInputs == undefined) {
         store.commit('RESET_INVALID_INPUTS');
 
-        if (inputs.route !== undefined && inputs.route.name == "classeMarks") {
-          store.dispatch('getAClasseData', inputs.route.params.id);
+        if (inputs.route !== undefined && (inputs.route.name == "classeMarks" || inputs.route.name == "classeSubjectMarks")) {
           store.dispatch('getAClasseMarks', {
             classe: inputs.route.params.id,
             subject: inputs.keys.subject,
             trimestre: inputs.trimestre
           });
+          store.dispatch('getAClasseData', inputs.route.params.id);
         }
 
         $('#editPupilMarks .buttons-div').hide('size', function () {
@@ -91280,6 +92032,12 @@ var pupils_actions = {
     axios["delete"]('/admin/director/pupilsm/' + pupil.id).then(function (response) {
       store.commit('GET_PUPILS_DATA', response.data);
       store.commit('ALERT_MAKER', "L'élève " + pupil.name + " a été envoyé dans la corbeille avec succès!");
+    });
+  },
+  forceDeletePupils: function forceDeletePupils(store, pupil) {
+    axios["delete"]('/admin/director/pupilsm/delete/with&force/id=' + pupil.id).then(function (response) {
+      store.commit('GET_PUPILS_DATA', response.data);
+      store.commit('ALERT_MAKER', "L'élève " + pupil.name + " a été supprimé avec succès!");
     });
   },
   restorePupils: function restorePupils(store, pupil) {
@@ -91614,6 +92372,9 @@ var classes_mutations = {
       month: '',
       year: new Date().getFullYear()
     };
+  },
+  RESET_REFRESH_CLASSE_CONFIRMATION: function RESET_REFRESH_CLASSE_CONFIRMATION(state, data) {
+    state.refreshClasse = data;
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = (classes_mutations);
@@ -92182,6 +92943,10 @@ var auth_states = {
 __webpack_require__.r(__webpack_exports__);
 var MONTHS = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
 var classes_states = {
+  refreshClasse: {
+    status: false,
+    confirm: false
+  },
   pupilsArray: [],
   //With her classes formatted
   secondaryClasses: {},

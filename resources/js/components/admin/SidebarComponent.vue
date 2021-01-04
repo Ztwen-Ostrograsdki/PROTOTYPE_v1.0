@@ -104,6 +104,7 @@
         <parent-add></parent-add>
         <classe-add></classe-add>
         <classe-edit></classe-edit>
+        <classe-refresh></classe-refresh>
 
         <teacher-perso></teacher-perso>
         <teacher-add></teacher-add>

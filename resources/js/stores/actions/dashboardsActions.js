@@ -12,7 +12,6 @@ const dashboards_actions = {
 				year: data.year
 			})
             .then(response => {
-            	console.log(response.data)
     //         	state.dispatch('getTOOLS')
 				// state.dispatch('getHoraires', 2020)
         })

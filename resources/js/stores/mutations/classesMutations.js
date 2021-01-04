@@ -80,6 +80,10 @@ const classes_mutations = {
             month: '',
             year: (new Date).getFullYear(),
         }
+    },
+
+    RESET_REFRESH_CLASSE_CONFIRMATION: (state, data) =>{
+        state.refreshClasse = data
     }
 }
 

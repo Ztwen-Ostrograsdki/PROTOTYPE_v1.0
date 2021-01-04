@@ -32,7 +32,7 @@
 		        </div>
 		        <div class="profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around float-left">
 					<div class="w-100 float-left">
-						<div class="w-50 d-flex justify-content-start">
+						<div class="w-50 d-flex justify-content-start" id="options">
 							<div class="mx-1" @click="toggleOptions(showOptions)" v-if="!showOptions">
 								<span class="fa fa-sliders float-right"></span>
 							</div>
@@ -41,6 +41,10 @@
 							</div>
 							<div class="mx-1">
 								<span class="float-right fa fa-user-plus" title="Ajouter un nouvel apprenant..." data-toggle="modal" data-target="#newPupilPersoModal" @click="addNewPupil()">
+	                            </span>
+							</div>
+							<div class="mx-1 refresh">
+								<span @click="resetRefreshClasseConfirm()" class="float-right fa fa-refresh text-danger" title="Rafraichir cette classe..." data-toggle="modal" data-target="#confirmRefreshClassModal">
 	                            </span>
 							</div>
 						</div>
@@ -58,7 +62,7 @@
 			                                <i class="fas fa-cogs fa-sm fa-fw mr-2"></i>
 			                              Administation
 			                            </a>
-			                            <router-link :to="'/admin/director/classesm/' + this.$route.params.id + '/marks/index' " class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+			                            <router-link :to="{name: 'classeSubjectMarks', params: {id: $route.params.id, s:getSubject()}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
 			                            	<i class="fa fa-file-text fa-sm fa-fw mr-2"></i>
 			                              Les notes
 		            					</router-link>
@@ -121,6 +125,12 @@
 		            		</h5>
 		            	</div>
 					</div>
+					<div class="float-right d-flex justify-content-around pr-2 mt-1 mb-0 border py-1" :class="type" v-if="alert">
+                        <p class="h5-title m-0 px-2 pt-2">
+                            <span class="mx-2 fa fa-envelope-open"></span>{{ message }}
+                        </p>
+                        <span class="mx-1 fa fa-close text-danger" @click="resetAlert()"></span>
+                    </div>
 		            <div class="mx-1 d-flex flex-column font-italic border border-dark ">
 		            	<span class="fa fa-close float-right text-right d-inline-block w-100" v-if="!hidePanel" @click="togglePanel()"></span>
 		            	<span class="fa fa-chevron-down float-right text-right d-inline-block w-100" v-if="hidePanel" @click="togglePanel()"></span>
@@ -232,6 +242,9 @@
 
         		return {boys: boys.length, girls: girls.length}
         	},
+        	resetAlert(){
+                this.$store.commit('ALERT_RESET')
+            },
 
         	togglePanel(){
         		return this.hidePanel = !this.hidePanel
@@ -244,6 +257,11 @@
         	},
         	toggleOptions(){
 				return this.showOptions = !this.showOptions
+			},
+
+			getSubject(){
+				let subjects = this.targetedClasse.subjects
+				return subjects[0].id
 			},
 			addNewPupil(){
                 this.$store.commit('RESET_NEW_PUPIL')
@@ -259,16 +277,21 @@
                     $('#newPupilPersoModal .buttons-div').show('fade')
                 })
             },
+            resetRefreshClasseConfirm(){
+            	this.$store.commit('RESET_REFRESH_CLASSE_CONFIRMATION', {status: false, confirm: false})
+            }
         },
 
         computed: mapState([
-           'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'months', 'successed', , 'errors', 'targetedClasse', 'newPupil'
+           'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'type', 'months', 'successed', , 'errors', 'targetedClasse', 'newPupil', 'refreshClasse'
         ])
     }
 
     
 </script>
 <style>
-    
+    div#options span:hover{
+    	transform: scale(1.3);
+    }
 </style>
 

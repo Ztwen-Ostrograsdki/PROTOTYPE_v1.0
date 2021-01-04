@@ -61,7 +61,7 @@
                                     <button title="Restaurer cet élève" class="btn bg-secondary" style="width: 48%;" @click="restore(pupil)">
                                         <i class="fa fa-recycle text-success"></i>
                                     </button>
-                                    <button title="Supprimer définitement cet élève" class="btn bg-info"  style="width: 48%;">
+                                    <button @click="forceDestroy(pupil)" title="Supprimer définitement cet élève" class="btn bg-info"  style="width: 48%;">
                                         <i class="fa fa-user-times text-danger"></i>
                                     </button>
                                 </span>
@@ -121,7 +121,17 @@
                 return day + " " + m + " " + year
             },
             destroy(pupil){
-                this.$store.dispatch('lazyDeletePupils', pupil)                
+                let route = this.$route
+                if(route.name == 'classesProfil'){
+                    this.$store.dispatch('deletePupilOfAClasse', {pupil, route})  
+                }
+                else{
+                    this.$store.dispatch('lazyDeletePupils', pupil)                
+                }
+            },
+
+            forceDestroy(pupil){
+                this.$store.dispatch('forceDeletePupils', pupil)                
             },
 
             closeProfiler(){

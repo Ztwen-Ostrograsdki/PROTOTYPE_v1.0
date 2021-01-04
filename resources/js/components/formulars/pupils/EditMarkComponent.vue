@@ -124,6 +124,7 @@
 		},
 		created(){
             this.$store.dispatch('getTOOLS')
+
         },
 
 		methods: {
@@ -136,9 +137,6 @@
 			{
 				object.status = !object.status
 			},
-			// getMarks(){
-			// 	this.$store.commit('RESET_NEW_PUPIL')
-			// },
 
 			validateMarks(token){
 				// let newPupil = this.newPupil
@@ -170,7 +168,6 @@
 				return 0
 			},
 			updateTargetedPupilMarks(pupil, token, subject, classe, marks, trimestre){
-				console.log(this.editedPupilSubjectMarks)
 				let cl = null
 					if(subject !== null && marks !== null){
 						if(marks[subject] !== undefined){
@@ -218,8 +215,6 @@
 				}
 				let route = this.$route
 				this.$store.dispatch('updateAPupilMarks', {pupil, token, keys, notes, trimestre, route})
-				
-				
 			},
 
 			beforeDestroy(){
@@ -231,8 +226,6 @@
 		computed: mapState([
             'newPupil', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'newPupilName', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'trimestre', 'targetedClasseSubject'
         ]),
-
-
 
 	}
 

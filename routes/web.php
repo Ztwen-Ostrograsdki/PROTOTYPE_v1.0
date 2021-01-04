@@ -54,9 +54,12 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::get('classesm/get&classe&data&credentials/id={id}', 'Master\ClassesController@getAClasseData');
 		Route::get('classesm/get&classe&data&on&teachers&pupils/id={id}', 'Master\ClassesController@getAClasseTeachersAndPupils');
 		Route::get('classesm/{id}/marks/index', 'Master\ClassesController@show');
+		Route::get('classesm/{id}/marks/index/subject/{s}', 'Master\ClassesController@show');
 		Route::post('classesm/c={id}/marks/s={subject}/trimestre/t={trimestre}/index', 'Master\ClassesController@getClasseMarks');
 		Route::get('classesm/c={id}/marks&with&order/s={subject}/trimestre/t={trimestre}/ordering', 'Master\ClassesController@orderPupilsOfThisClasse');
 		Route::put('classesm/restore/id={id}', 'Master\ClassesController@restore');
+		Route::delete('classesm/refresh/id={id}/forced={f}', 'Master\ClassesController@refreshOnPupils');
+		Route::delete('classesm/delete&pupil&of&a&classe/id={id}/p={p}', 'Master\ClassesController@destroyPupil');
 		Route::post('classesm/update/modality/for&c={classe}/s={subject}/t={trimestre}', 'Master\ClassesController@updateClasseModality');
 		Route::resource('classesm', 'Master\ClassesController')->middleware('onlySuperAdmin');
 		//PUPILS
@@ -67,6 +70,7 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::post('pupilsm/{id}/marks/index/trimestre/{trimestre}', 'Master\PupilsController@sendPupilMarks');
 		Route::get('pupilsm/{id}/bulletin&trimestrielle&eleve/index/trimestre/{trimestre}', 'Master\PupilsController@buildBulletin');
 		Route::put('pupilsm/update/update&perso/id={id}', 'Master\PupilsController@persoUpdate');
+		Route::delete('pupilsm/delete/with&force/id={id}', 'Master\PupilsController@force_destroy');
 		Route::put('pupilsm/restore/id={id}', 'Master\PupilsController@restore');
 		Route::resource('pupilsm', 'Master\PupilsController')->middleware('onlySuperAdmin');
 
