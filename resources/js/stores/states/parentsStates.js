@@ -1,5 +1,6 @@
 const parents_states = {
 	allParents: [],
+	parents: [],
 	parentToPupil: {
 		identify: '',
 		relation: 'Père',
@@ -12,7 +13,9 @@ const parents_states = {
         contact: '',
         residence: '',
         works: ''
-	}
+	},
+	editedParent : {},
+	parentsSearching: null
 }
 
 export default parents_states

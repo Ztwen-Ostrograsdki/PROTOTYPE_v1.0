@@ -82,18 +82,21 @@ class Pupil extends Model
 
     }
 
-    public function parentors()
-    {
-        $parentors = [];
-        $parenters = Parentable::where('pupil_id', $this->id)->get();
+    
 
+    public function parents()
+    {
+        $parents = [];
+        $parenters = Parentable::where('pupil_id', $this->id)->get();
         if (count($parenters) > 0) {
             foreach ($parenters as $parenter) {
-                $parentors[] = Parentor::withTrashed('deleted_at')->where('id', $parenter->parentor_id)->first();
+                $parenters[] = [
+                    'parent' => Parentor::withTrashed('deleted_at')->where('id', $parenter->parentor_id)->first(),
+                    'relation' => $parenter->relation
+                ];
             }
         }
-
-        return $parentors;
+        return $parents;
     }
 
 

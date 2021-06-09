@@ -6,6 +6,7 @@ use App\Helpers\Tools\Tools;
 use App\Http\Controllers\Controller;
 use App\Models\Classe;
 use App\Models\Horaire;
+use App\Models\Parentor;
 use App\Models\Pupil;
 use App\Models\Subject;
 use App\Models\Teacher;
@@ -92,7 +93,6 @@ class SuperAdminController extends Controller
         $classesSecondary = Classe::whereLevel('secondary')->orderBy('name', 'asc')->get();
         
         $classesPrimary = Classe::whereLevel('primary')->orderBy('name', 'asc')->get();
-        
 
         $classesBlockeds = [];
         $classesPrimaryBlockeds = [];
@@ -107,6 +107,7 @@ class SuperAdminController extends Controller
         $PBSLength = count(Pupil::getBlockeds('secondary'));
         $PBPLength = count(Pupil::getBlockeds('primary'));
 
+        $parents = Parentor::withTrashed('deleted_at')->get();
         $data = [
             'user' => $user,
             'admin' => $admin,
@@ -125,7 +126,8 @@ class SuperAdminController extends Controller
             'classesPrimaryBlockeds' => $classesPrimaryBlockeds,
             'pupilsblockedLength' => $pupilsBlockedsLength, 
             'PBSLength' => $PBSLength, 
-            'PBPLength' => $PBPLength
+            'PBPLength' => $PBPLength,
+            'parents' => $parents
         ];
         
         return response()->json($data);
@@ -149,6 +151,7 @@ class SuperAdminController extends Controller
         $secondaryClasses = Classe::whereLevel('secondary')->get();
         $months = Tools::months();
         $roles = Tools::roles();
+        $classesWithPP = Classe::getAllPrincipals();
 
         if (count($secondaryClasses) > 0) {
             foreach ($secondaryClasses as $classe) {
@@ -164,6 +167,8 @@ class SuperAdminController extends Controller
             'secondaryClassesFormatted' => $secondaryClassesFormatted, 
             'primaryClasses' => $primaryClasses, 
             'allPrimaryClasses' => $allPrimaryClasses,
+            'classesWithPP' => $classesWithPP,
+
 
             'primarySubjects' => $primarySubjects, 
             'secondarySubjects' => $secondarySubjects,

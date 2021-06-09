@@ -54,12 +54,13 @@ Route::group(['prefix' => 'admin'], function(){
 		Route::get('classesm/get&classe&data&credentials/id={id}', 'Master\ClassesController@getAClasseData');
 		Route::get('classesm/get&classe&data&on&teachers&pupils/id={id}', 'Master\ClassesController@getAClasseTeachersAndPupils');
 		Route::get('classesm/{id}/marks/index', 'Master\ClassesController@show');
-		Route::get('classesm/{id}/marks/index/subject/{s}', 'Master\ClassesController@show');
+		Route::get('classesm/{id}/marks/index/subject/{s}/trimestre/{t}', 'Master\ClassesController@show');
+		// Route::get('classesm/{id}/marks/index/subject/{s}/trimestre={t}', 'Master\ClassesController@show');
 		Route::post('classesm/c={id}/marks/s={subject}/trimestre/t={trimestre}/index', 'Master\ClassesController@getClasseMarks');
 		Route::get('classesm/c={id}/marks&with&order/s={subject}/trimestre/t={trimestre}/ordering', 'Master\ClassesController@orderPupilsOfThisClasse');
 		Route::put('classesm/restore/id={id}', 'Master\ClassesController@restore');
 		Route::delete('classesm/refresh/id={id}/forced={f}', 'Master\ClassesController@refreshOnPupils');
-		Route::delete('classesm/delete&pupil&of&a&classe/id={id}/p={p}', 'Master\ClassesController@destroyPupil');
+		Route::delete('classesm/delete&pupil&of&a&classe/id={id}/p={p}/force={f}', 'Master\ClassesController@destroyPupil');
 		Route::post('classesm/update/modality/for&c={classe}/s={subject}/t={trimestre}', 'Master\ClassesController@updateClasseModality');
 		Route::resource('classesm', 'Master\ClassesController')->middleware('onlySuperAdmin');
 		//PUPILS
@@ -77,6 +78,7 @@ Route::group(['prefix' => 'admin'], function(){
 
 		//PARENTS
 		Route::get('parentsm/auth/get&all&parents', 'Master\ParentsController@getAllParents');
+		Route::get('parentsm/DATA&for&parents', 'Master\ParentsController@parentsDataSender');
 		Route::get('parentsm/search/get&only&parents&targeted/{search?}', 'Master\ParentsController@getAllParentsBySearch');
 		Route::post('parentsm/myChildren/related&to/{pupil}/joined', 'Master\ParentsController@joinedParentToPupil');
 		Route::resource('parentsm', 'Master\ParentsController')->middleware('onlySuperAdmin');
@@ -110,6 +112,7 @@ Route::group(['prefix' => 'admin'], function(){
 });
 
 Route::post('login/user&get&auth', 'Auth\LoginController@login');
+Route::post('logout/user/disconnected', 'Auth\LoginController@logout');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

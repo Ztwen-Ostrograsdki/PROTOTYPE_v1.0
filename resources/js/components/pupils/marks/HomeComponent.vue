@@ -34,12 +34,12 @@
         </div>
 		<div class="d-flex w-100 my-1 py-1 justify-content-between">
             <div class="mx-1 my-0 trimestrielle">
-                <span class="btn btn-secondary text-white-50 py-1 light-parent" @click="setTrimestre(1)">
+                <span :class="'btn btn-secondary text-white-50 py-1 light-parent'" @click="setTrimestre(1)">
                 	<hr :class="'light m-0 p-0'">
 	                <router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/1'"  class="text-white">Trimestre 1
 	            	</router-link>
             	</span>
-                <span class="btn btn-secondary text-white-50 py-1" @click="setTrimestre(2)">
+                <span :class="'btn btn-secondary text-white-50 py-1'" @click="setTrimestre(2)">
                 	<hr :class="'light m-0 p-0'">
                 	<router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/2'" class="text-white">Trimestre 2
 	            	</router-link>
@@ -117,7 +117,7 @@
 			},
 
 			getTrimestre(trimestre){
-				console.log(trimestre)
+				return trimestre == this.$route.params.trimestre ? 'btn-primary' : 'btn-secondary'
 				
 			}
 

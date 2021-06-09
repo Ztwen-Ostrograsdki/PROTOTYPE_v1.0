@@ -48,8 +48,6 @@ trait ClassesValidators {
         return (new ClassesManagersAndDrivers($classe))-> __DRM_TO_EDIT_CLASSE($tag, $request);
     }
 
-        
-
 
 }
 

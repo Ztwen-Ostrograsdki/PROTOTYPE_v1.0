@@ -45,23 +45,30 @@
 				                                <i class="fas fa-cogs fa-sm fa-fw mr-2"></i>
 				                              Administation
 				                            </a>
-				                            <router-link :to="'/admin/director/classesm/' + this.$route.params.id + '/marks/index' " class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+				                            <router-link :to="'/admin/director/classesm/' + targetedClasse.classe.id + '/marks/index' " class="w-100 my-1 hover link-float" style="border-radius: 30px;">
 				                            	<i class="fa fa-file-text fa-sm fa-fw mr-2"></i>
 				                              Les notes
 			            					</router-link>
+			            					<span @click="updateTargetedTrimestre(1)">
+				                            	<router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 1}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+				                            	<i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
+				                              	1<sup>er</sup> Trimestre
+			            					</router-link>
+				                            </span>
 			            					
-				                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
-				                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
-				                              1<sup>er</sup> Trimestre
-				                            </a>
-				                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
-				                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
-				                              2<sup>ème</sup> Trimestre
-				                            </a>
-				                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
-				                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
-				                              3<sup>ème</sup> Trimestre
-				                            </a>
+				                            <span @click="updateTargetedTrimestre(2)">
+				                            	<router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 2}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+				                            	<i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
+				                              	2<sup>ème</sup> Trimestre
+			            					</router-link>
+				                            </span>
+				                            <span @click="updateTargetedTrimestre(3)">
+				                            	<router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 3}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+				                            	<i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
+				                              	3<sup>ème</sup> Trimestre
+			            					</router-link>
+				                            </span>
+				                            
 				                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
 				                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
 				                              Scolarité
@@ -82,16 +89,40 @@
 				            </transition>
 						</div>
 					</div>
+					<div class="w-50 ml-5 mb-1 float-right">
+						<span class="d-flex justify-content-start w-100">
+							<span class="btn btn-primary border border-white p-0 w-25 px-1 m-0" @click="updateTargetedTrimestre(1)">
+	                            <router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 1}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+	                              	1<sup>er</sup> Trim
+	        					</router-link>
+                            </span>
+							<span class="btn btn-primary border border-white w-25 p-0 px-1 m-0 mx-1" @click="updateTargetedTrimestre(2)">
+	                            <router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 2}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+	                              	2<sup>ème</sup> Trim
+	        					</router-link>
+                            </span>
+							<span class="btn btn-primary w-25 border border-white p-0 px-1 m-0" @click="updateTargetedTrimestre(3)">
+                            	<router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 3}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+                              	3<sup>ème</sup>Trim
+        					</router-link>
+                            </span>
+						</span>
+					</div>
 					<transition name="fadelow" appear>
-						<div class="d-flex float-right justify-content-end pr-2" style="width: 95%">
-							<span class="text-muted mt-2 mr-2 cursive">Coef: <i>{{ targetedClasseSubjectsCoef[targetedClasseSubject] }}</i></span>
-							<span v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject.id)">
-								<router-link :to="{name: 'classeSubjectMarks', params: {id: $route.params.id, s:subject.id}}"   class="card-link d-inline-block btn border p-1 ml-1" :class="isTheTargetedSubject(subject.id)">
-                                    <span  class="w-100 d-inline-block link-profiler">
-                                        {{ subject.name }}
-                                	</span>
-                            	</router-link>
-							</span>
+						<div class="d-flex w-100">
+							<div class="float-left " style="width: 20%">
+								<h4 class="ml-2 h5-title"> Les notes de <strong class="text-warning"> {{ getTargetedSubjectName() == undefined ? '...' : getTargetedSubjectName().name }} </strong>du <i class="text-primary">Trim. {{getTargetedSubjectName() == undefined ? '...' : getTargetedSubjectName().trim}}</i></h4>
+							</div>
+							<div class="d-flex float-right justify-content-end pr-2" style="width: 90%">
+								<span class="text-muted mt-2 mr-2 cursive">Coef: <i>{{ targetedClasseSubjectsCoef[targetedClasseSubject] }}</i></span>
+								<span v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject.id)">
+									<router-link :to="{name: 'classeSubjectMarks', params: {id: $route.params.id, s:subject.id, t: $route.params.t}}"   class="card-link d-inline-block btn border p-1 ml-1" :class="isTheTargetedSubject(subject.id)">
+	                                    <span  class="w-100 d-inline-block link-profiler">
+	                                        {{ subject.name }}
+	                                	</span>
+	                            	</router-link>
+								</span>
+							</div>
 						</div>
 					</transition>
 				</div>
@@ -247,15 +278,14 @@
 		data() {
             return {
             	showOptions: false,
-            	trimestre: 1,
             	range: false,
             	modality: false,
-            	computedAVG: false
+            	computedAVG: false,
             }   
         },
         created(){
             this.$store.dispatch('getAClasseData', this.$route.params.id)
-            this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+            this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
             this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
 			this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
         },
@@ -271,7 +301,7 @@
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
 				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
 				this.$store.commit('SET_EDITED_PUPIL', pupil)
-				this.$store.dispatch('getAPupilDataAndMarks', {route: pupil.id, trimestre: this.trimestre})
+				this.$store.dispatch('getAPupilDataAndMarks', {route: pupil.id, trimestre: this.$route.params.t})
 				$('#editPupilMarks .div-success').hide('slide', 'up')
                 $('#editPupilMarks .div-success h4').text('')
                 $('#editPupilMarks').animate({
@@ -292,7 +322,11 @@
 			updateTargetedSubject(subject = this.$route.params.s){
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
 				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject)
-				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
+			},
+			updateTargetedTrimestre(subject = this.$route.params.s, trimestre){
+				this.trimestre = trimestre
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
 			},
 
 			isTheTargetedSubject(subject){
@@ -441,7 +475,7 @@
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
 				this.$store.dispatch('getOderer', {classe: classe, subject: this.$route.params.s, trimestre: trimestre})
 				this.range = true
-				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
 
 			},
 
@@ -517,7 +551,7 @@
 				modality = parseInt(modality, 10)
 				if(modality !== null){
 					if(modality > 0 && modality < 6){
-						this.$store.dispatch('updateClasseModality', {classe: this.$route.params.id, subject: subject, trimestre: this.trimestre, modality, token: this.token})
+						this.$store.dispatch('updateClasseModality', {classe: this.$route.params.id, subject: subject, trimestre: this.$route.params.t, modality, token: this.token})
 					}
 					else{
 						this.$store.commit('RESET_MODALITY_ALERT', {status: true, message: "La valeur renseignée est invalide"})
@@ -550,6 +584,22 @@
             	let subject = this.$route.params.s
                 this.$store.commit('SET_EDITED_PUPIL', pupil)
             },
+            getTargetedSubjectName(){
+            	let id = this.$route.params.s
+            	let trim = this.$route.params.t
+            	let name = ' ...'
+            	let tables =  this.targetedClasse.subjects
+
+            	for (var i = 0; i < tables.length; i++) {
+            		if (tables[i].id == id) {
+            			name = tables[i].name
+            			if (name == 'Physique-Chimie-Technologie') {
+            				return {name: 'PCT', trim}
+            			}
+            			return {name, trim}
+            		}
+            	}
+            }
 
 		},
 

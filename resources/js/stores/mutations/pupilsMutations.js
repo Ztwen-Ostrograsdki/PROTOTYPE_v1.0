@@ -185,7 +185,13 @@ const pupils_mutations = {
             }
         }
         
-	}
+	},
+    RESET_PUPIL_DELELTING: (state, pupil) =>{
+        state.deletingPupil = pupil
+    },
+    RESET_PUPIL_DELELTING_CONFIRMATION: (state, data) =>{
+        state.deletingPupilConfirmation = data
+    }
 }
 
 export default pupils_mutations

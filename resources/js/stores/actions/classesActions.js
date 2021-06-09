@@ -11,7 +11,7 @@ const classes_actions = {
                 store.commit('GET_A_CLASSE_DATA', response.data)
             })
             .catch(e => {
-               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+               // store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
     getAClasseTeachersAndPupils: (store, id) => {
@@ -21,7 +21,7 @@ const classes_actions = {
                 store.commit('GET_A_CLASSE_PUPILS', response.data.pupils)
             })
             .catch(e => {
-               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+               // store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
 
@@ -32,7 +32,7 @@ const classes_actions = {
                 store.commit('RESET_TARGETED_CLASSE_MARKS', response.data)
             })
             .catch(e => {
-               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+               // store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
 
@@ -107,7 +107,13 @@ const classes_actions = {
         .then(response => {
             if(response.data.invalidInputs == undefined){
                 store.commit('RESET_INVALID_INPUTS')
-                store.commit('GET_CLASSES_DATA', response.data)
+                if(data.route.name == 'classesProfil'){
+                    store.dispatch('getAClasseData', data.route.params.id)
+                }
+                else{
+                    store.commit('GET_CLASSES_DATA', response.data)
+                }
+                
                 store.commit('SUCCESSED', 'Mise à jour des données réussie')
                 
                 $('#editClasseModal .buttons-div').hide('size', function(){
@@ -150,20 +156,18 @@ const classes_actions = {
         })
     },
     refreshOnPupils: (store, inputs) => {
-        axios.delete('/admin/director/classesm/refresh/id=' + inputs.classe.id + '/forced=' + inputs.forced, {
-            id: inputs.classe.id,
-            forced: inputs.forced
-        })
+        axios.delete('/admin/director/classesm/refresh/id=' + inputs.classe.id + '/forced=' + inputs.forced)
         .then(response => {
-            store.commit('GET_CLASSES_DATA', response.data)
+            store.commit('GET_A_CLASSE_DATA', response.data)
             store.commit('RESET_REFRESH_CLASSE_CONFIRMATION', {status: true, confirm: true})
 
         })
     }, 
     deletePupilOfAClasse: (store, inputs) => {
-        axios.delete('/admin/director/classesm/delete&pupil&of&a&classe/id=' + inputs.pupil.classe_id + '/p=' + inputs.pupil.id)
+        axios.delete('/admin/director/classesm/delete&pupil&of&a&classe/id=' + inputs.pupil.classe_id + '/p=' + inputs.pupil.id + '/force=' + inputs.status)
          .then(response => {
             store.commit('GET_A_CLASSE_DATA', response.data)
+            store.commit('RESET_PUPIL_DELELTING_CONFIRMATION', {status: true, confirm: true})
             store.commit('ALERT_MAKER', "L'élève " + inputs.pupil.name + " a été envoyé dans la corbeille avec succès!")
         })
     },

@@ -17,7 +17,7 @@ const pupils_actions = {
                 store.commit('GET_A_PUPIL_DATA', response.data)
             })
             .catch(e => {
-               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+               // store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
 
@@ -37,7 +37,7 @@ const pupils_actions = {
                 this.$store.commit('SET_EDITED_PUPIL_SUBJECTS', response.data.subjects)
             })
             .catch(e => {
-               store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+               // store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
             })
     },
     getAPupilDataAndMarks: (store, pupil) => {
@@ -182,6 +182,7 @@ const pupils_actions = {
 		axios.delete('/admin/director/pupilsm/' + pupil.id)
              .then(response => {
             	store.commit('GET_PUPILS_DATA', response.data)
+                store.commit('RESET_PUPIL_DELELTING_CONFIRMATION', {status: true, confirm: true})
                 store.commit('ALERT_MAKER', "L'élève " + pupil.name + " a été envoyé dans la corbeille avec succès!")
             	
         })
@@ -190,6 +191,7 @@ const pupils_actions = {
         axios.delete('/admin/director/pupilsm/delete/with&force/id=' + pupil.id)
              .then(response => {
                 store.commit('GET_PUPILS_DATA', response.data)
+                store.commit('RESET_PUPIL_DELELTING_CONFIRMATION', {status: true, confirm: true})
                 store.commit('ALERT_MAKER', "L'élève " + pupil.name + " a été supprimé avec succès!")
                 
         })

@@ -1,8 +1,17 @@
 const auth_actions = {
 	logout: (state) => {
-        axios.post('/admin/director/master/logout&user')
+        axios.post('/logout/user/disconnected', 
+        		{
+	        		headers: {
+	        			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+			        }
+			    }
+        	)
 			.then(response => {
-				state.commit('LOGOUT', response.data)
+				if (response.data.success) {
+					state.commit('LOGOUT', response.data)
+					window.location = '/'
+				}
 			})      
 	},
 	login: (state, user) => {

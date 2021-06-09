@@ -8,6 +8,8 @@ const auth_states = {
     noUser: true,
     logout: "",
     token: "",
+    alert: false,
+    message: "",
     errors: {type: '', status: false}
 }
 

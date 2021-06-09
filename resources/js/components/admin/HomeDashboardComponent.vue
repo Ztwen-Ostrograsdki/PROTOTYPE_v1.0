@@ -99,11 +99,11 @@
 									</div>
 								</div>
 								<hr class="m-0" style="background-color: white">
-								<div class="mt-1 d-flex justify-content-between">
-									<div>
-										<span class="fa fa-baby fa-2x text-white" ></span>
-									</div>
-									<span class="fa fa-2x">1500</span>
+								<div class="mt-1 d-flex justify-content-center">
+									<router-link to="/admin/director/parentsm" class="link-white mt-1 d-flex justify-content-between w-100">
+										<span class="fa fa-baby fa-2x" ></span>
+										<span class="fa fa-2x">{{ allParents !== undefined ? allParents.length : '...' }}</span>
+					                </router-link>
 								</div>
 							</div>
 							<div class="py-4 float-right ml-3">
@@ -141,7 +141,7 @@
         },
 
         computed: mapState([
-            'errors', 'subjects','pl', 'tl', 'ul', 'psl', 'ppl', 'tpl', 'tsl', 'pupilsBlockedsLength', 'user', 'admin'
+            'errors', 'subjects','pl', 'tl', 'ul', 'psl', 'ppl', 'tpl', 'tsl', 'pupilsBlockedsLength', 'user', 'admin', 'allParents'
         ])
 	}
 </script>

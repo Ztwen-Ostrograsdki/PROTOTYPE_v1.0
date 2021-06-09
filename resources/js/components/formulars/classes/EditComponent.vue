@@ -47,7 +47,9 @@
                             <select v-model="editingClasse.teacher_id" name="teacher_id" id="edit_c_teacher" class="custom-select">
                                 <option value="null" :selected="wasSelected(editingClasse.teacher_id, null)" >Choisissez le prof</option>
                                 <option value="destroy">Réinitialiser</option>
-                                <option :selected="wasSelected(editingClasse.teacher_id, teacher.id)" :value="teacher.id" v-for="teacher in targetedClasseTeachers" > {{ teacher.name }} </option>
+                                <option class="w-100" :disabled="editingClasse.classe.teacher_id == teacher.id" :selected="wasSelected(editingClasse.teacher_id, teacher.id)" :value="teacher.id" v-for="teacher in targetedClasseTeachers" > {{ teacher.name }} 
+                                	<i class="float-right text-muted">{{getPPClasseName(teacher)}}</i>
+                                </option>
                             </select>
                            <i class="h5-title" v-if="invalidInputs !== undefined && invalidInputs.teacher !== undefined"> {{ invalidInputs.teacher[0] }} </i>
                         </div>
@@ -116,7 +118,6 @@
             this.$store.dispatch('getTOOLS')
         },
 
-		
 		methods: {
 
 			wasSelected(tag, target){
@@ -157,6 +158,20 @@
 				}
 				
 			},
+
+			getPPClasseName(teacher, classe = this.editingClasse.classe){
+				let table = this.classesWithPP
+				if(classe.teacher_id == teacher.id){
+					return " ...(est le PP actuel de cette classe)"
+				}
+				if(table[teacher.id] !== undefined){
+					return " ...(est le PP de la classe de " + table[teacher.id].name + ")"
+				}
+				else{
+					return ''
+				}
+					
+			},
 			getYears(){
 				let $tab = []
 				let now = (new Date).getFullYear()
@@ -168,7 +183,7 @@
 		},
 
 		computed: mapState([
-            'newClasse', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'editingClasse', 'targetedClasseTeachers', 'targetedClassePupils'
+            'newClasse', 'invalidInputs', 'successed', 'token', 'errors', 'months', 'primaryClasses', 'secondaryClasses', 'editingClasse', 'targetedClasseTeachers', 'targetedClassePupils', 'classesWithPP'
         ]),
 
 

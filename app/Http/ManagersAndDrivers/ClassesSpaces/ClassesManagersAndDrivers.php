@@ -67,6 +67,18 @@ class ClassesManagersAndDrivers{
     }
 
 
+    /**
+     * [__FORMAT_CLASSE_NAME_BEFORE description]
+     * @param  Request $request [description]
+     * @return Request $request [description]
+     */
+    public static function __FORMAT_CLASSE_NAME_BEFORE(Request $request)
+    {
+        preg_match(('/aa/'), $request->name);
+        return $request;
+    }
+
+
 	/**
      * Use to edit a classe step or part by part
      * @param  [type] $tag     the specific target of a classe that will be change or modify
@@ -77,25 +89,40 @@ class ClassesManagersAndDrivers{
     {
         $classe = $this->classe;
         if ($tag == 'teacher') {
-            $teacher = Teacher::withTrashed('deleted_at')->whereId($request['inputs'])->get()[0];
-            $is_pp = Classe::withTrashed('deleted_at')->where('teacher_id', $teacher->id)->get();
+            $t = $request['inputs'];
+            if ($t !== 'destroy') {
+               $teacher = Teacher::withTrashed('deleted_at')->whereId($t)->first();
+                $is_pp = Classe::withTrashed('deleted_at')->where('teacher_id', $teacher->id)->get();
 
-            if (count($is_pp) > 0) {
-                return response()->json(['invalidInputs' => ['teacher' => ["Cet(te) enseignant(e) que vous avez renseigneé est déja PP dans l'une de ses classes!"]]]);
-            }
-
-            if ($classe->teacher_id !== null) {
-                if ($classe->level == "primary") {
-                    $teacher->classes()->detach($classe->id);
+                if (count($is_pp) > 0) {
+                    return response()->json(['invalidInputs' => ['teacher' => ["Cet(te) enseignant(e) que vous avez renseigneé est déja PP dans l'une de ses classes!"]]]);
                 }
-                $classe->teacher_id = null;
+
+                if ($classe->teacher_id !== null) {
+                    if ($classe->level == "primary") {
+                        $teacher->classes()->detach($classe->id);
+                    }
+                    $classe->teacher_id = null;
+                }
+
+                $classe->teacher_id = $teacher->id;
+                $classe->save();
+
+                if ($teacher->level == 'primary') {
+                    $teacher->classes()->attach($classe->id);
+                }
             }
-
-            $classe->teacher_id = $teacher->id;
-            $classe->save();
-
-            if ($teacher->level == 'primary') {
-                $teacher->classes()->attach($classe->id);
+            else{
+                if ($classe->level == 'secondary') {
+                    $classe->teacher_id = null;
+                    $classe->save();
+                }
+                elseif ($classe->level == "primary") {
+                    $pp = Teacher::withTrashed('deleted_at')->whereId($classe->teacher_id)->first();
+                    $classe->teacher_id = null;
+                    $classe->save();
+                    $pp->classes()->detach($classe->id);
+                }
             }
         }
         if ($tag == 'name') {

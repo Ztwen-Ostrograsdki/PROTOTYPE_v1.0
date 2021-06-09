@@ -37,9 +37,9 @@
 							</span>
 						</div>
                     </div>
-                    <div class="mx-auto mt-1 d-flex justify-content-center" style="width: 93%" v-if="parentToPupil.identify.length > 7 && targets.length == 0">
+                    <div class="mx-auto mt-1 d-flex justify-content-center" style="width: 93%" v-if="parentsSearching && parentToPupil.identify.length > 7 && targets.length == 0">
                     	<div class="d-flex justify-content-start" style="width: 92%">
-	                    	<span class="mx-1 text-white-50 h5-title">Le parent que vous essayer de renseigner n'existe pas dans la base de donner. Voulez-vous l'inserer maintenant?
+	                    	<span class="mx-1 text-white-50 h5-title">Le parent que vous essayez de renseigner n'existe pas dans la base de données. Voulez-vous l'inserer maintenant?
 								<span class="d-flex justify-content-start mx-1">
 									<span @click="openNewParent()" class="text-primary mx-1 fa fa-user-plus border border-primary p-1 px-2" data-toggle="modal" data-target="#newParentModal" data-dismiss="modal" title="Ajouter ce parent maintenant"></span>
 									<span class="text-danger border-danger fa fa-user-times border p-1 px-2" data-toggle="modal" title="Ne pas ajouter le parent" data-target="#newParentModal" data-dismiss="modal"></span>
@@ -81,7 +81,6 @@
 			}
 		},
 		created(){
-
         },
 
 		
@@ -99,6 +98,7 @@
 			},
 
 			fetchTargets(){
+				this.$store.commit('RESET_PARENTS_SEARCHING', $('#editPupilParentsModal input#edit_p_parent_address').val())
 				if(this.parentToPupil.identify.length > 4){
 					axios.get('/admin/director/parentsm/search/get&only&parents&targeted/' + this.parentToPupil.identify)
 			            .then(response => {
@@ -128,13 +128,14 @@
 				let parentToPupil = this.parentToPupil
 				let pupil = this.targetPupil
 				let route = this.$route
+				let data = {token, pupil, parentToPupil, route}
 				this.$store.dispatch('updateTargetedPupilParents', {token, pupil, parentToPupil, route})
 			}
 			
 		},
 
 		computed: mapState([
-            'invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents', 'newParent', 'parentToPupil'
+            'invalidInputs', 'successed', 'token', 'targetPupil', 'targetPupilParents', 'allParents', 'newParent', 'parentToPupil', 'parentsSearching'
         ]),
 
 

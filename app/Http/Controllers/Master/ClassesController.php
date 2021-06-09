@@ -162,11 +162,8 @@ class ClassesController extends Controller
         }
         elseif ($classe->level == 'primary') {
             $teachers = Teacher::whereLevel('primary')->get();
-
             foreach ($teachers as $t) {
-                if (count($t->classes->toArray()) == 0) {
-                    $targetedClasseTeachers[$t->id] = $t;
-                }
+                $targetedClasseTeachers[$t->id] = $t;
             }
         }
 
@@ -215,7 +212,7 @@ class ClassesController extends Controller
     }
 
 
-    public function getClasseMarks(int $classe, int $subject, int $trimestre = 1)
+    public function getClasseMarks(int $classe, int $subject, int $trimestre)
     {
         $trim = 'trimestre ' .$trimestre;
 
@@ -250,7 +247,7 @@ class ClassesController extends Controller
         }
 
 
-        return response()->json(['classesMarks' => $marks, 'coefTables' => $coefTables, 'subjectWithModalities' => $subjectWithModalities]);
+        return response()->json(['classesMarks' => $marks, 'coefTables' => $coefTables, 'subjectWithModalities' => $subjectWithModalities, 'trim' => $trimestre]);
     }
 
 
@@ -424,20 +421,12 @@ class ClassesController extends Controller
      * @param  boolean $forced [description]
      * @return json          [description]
      */
-    public function refreshOnPupils(Request $request, $id)
+    public function refreshOnPupils(int $id, string $f)
     {
-        // $id = $request->classe;
-        // $forced = $request->forced;
+        $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
+        $f == 'true' ? $f = true : $f = false;
 
-        // $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
-        
-        // $done = $classe->refreshOnPupils($forced);
-        // if ($done) {
-        //     return $this->getAClasseData($id);
-        // }
-        // else{
-        //     return response()->json(['errors' => "Une erreure est survenue"]);
-        // }
+        $classe->refreshOnPupils($f);
         return $this->getAClasseData($id);
     }
 
@@ -448,12 +437,28 @@ class ClassesController extends Controller
      * @param  int  $p a pupil
      * @return \Illuminate\Http\Response
      */
-    public function destroyPupil(int $id, int $p)
+    public function destroyPupil(int $id, int $p, string $f)
     {
-        $pupil = Pupil::find((int)$p);
+        $pupil = Pupil::withTrashed('deleted_at')->whereId($p)->first();
         $classe = Classe::withTrashed('deleted_at')->whereId($id)->first();
-        if ($pupil->delete()) {
-            return $this->getAClasseData($classe->id);
+
+        if ($classe->respo1 == $pupil->id) {
+            $classe->respo1 = null;
+            $classe->save();
+        }
+        if ($classe->respo2 == $pupil->id) {
+            $classe->respo2 = null;
+            $classe->save();
+        }
+        if ($f == 'weak') {
+            if ($pupil->delete()) {
+                return $this->getAClasseData($classe->id);
+            }
+        }
+        elseif ($f == 'strong') {
+            if ($pupil->forceDelete()) {
+                return $this->getAClasseData($classe->id);
+            }
         }
 
     }

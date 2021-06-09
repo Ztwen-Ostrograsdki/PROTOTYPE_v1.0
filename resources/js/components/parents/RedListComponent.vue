@@ -16,7 +16,7 @@
                     <div class="mt-1 w-100">
                         <div class="w-100 d-flex justify-content-between">
                             <span class="fa fa-user fa-2x" ></span>
-                            <span class="fa fa-2x">{{ PBPLength }}</span>
+                            <span class="fa fa-2x">{{ TBPLength }}</span>
                         </div>
                         <div class="w-100 d-block">
                             <span class="w-100 d-flex justify-content-around">
@@ -126,14 +126,67 @@
                 <div class="container bg-transparent w-100 py-1">
                 <div class="d-flex w-100 my-1 justify-content-start">
                     <div class="mx-1">
-                        <span class="fa fa-refresh text-white-50" @click="filtrer('all')" v-if="alertPupilsSearch !== 'Tous les apprenants'"></span>
-                        <button class="btn btn-primary mx-1" @click="filtrer('primary')"> Le Primaire ({{ ' '+ PBPLength +' ' }}) </button>
-                        <button class="btn btn-primary" @click="filtrer('secondary')">Le Secondaire ({{ ' '+ PBSLength +' ' }})</button>
+                        <span class="fa fa-refresh text-white-50" @click="filtrer('all')" v-if="alertTeachersSearch !== 'Tous les enseignants'"></span>
+                        <button class="btn btn-primary mx-1" @click="filtrer('primary')"> Le Primaire ({{ ' '+ TBPLength +' ' }}) </button>
+                        <button class="btn btn-primary" @click="filtrer('secondary')">Le Secondaire ({{ ' '+ TBSLength +' ' }})</button>
                     </div>
-                    <h5 class="card-link mt-3 text-white-50 ml-3"> {{ alertPupilsSearch }}</h5>
+                    <h5 class="card-link mt-3 text-white-50 ml-3"> {{ alertTeachersSearch }}</h5>
                 </div>
-                <listing-pupils :isProfil="false" :deletedClasses="classesBlockedsAll"  :thePupils="pupilsBlockeds" :redList="true"></listing-pupils>
-
+                <div class="w-100" style="min-height: 500px;">
+                    <table class="table-table table-striped w-100">
+                        <transition name="fadelow" appear>
+                            <thead>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Sexe</th>
+                                <th class="d-lg-block d-none">Naissance</th>
+                                <th>Inscrit depuis</th>
+                                <th>Classe</th>
+                                <th>Actions</th>
+                            </thead>
+                        </transition>
+                        <transition name="bodyfade" appear>
+                        <tbody>
+                            <tr v-for="(teacher, k) in teachersBlockeds" :key="teacher.id" class="border-bottom border-dark">
+                                <td>
+                                    {{k+1}}
+                                </td>
+                                <td class="text-left">
+                                    <router-link :to="{name: 'pupilsProfil', params: {id: teacher.id}}"   class="card-link d-inline-block">
+                                        {{teacher.name}}
+                                    </router-link>
+                                    <a href="#" title="Editer les informations de" class="fa fa-edit text-white-50 float-right" style="font-size: 10px!important; font-weight: 200!important" data-toggle="modal" data-target="#exampleModal" @click="getEdited(teacher)"></a> 
+                                </td>
+                                <td>
+                                    {{gender(teacher.sexe)}}
+                                </td>
+                                <td class="d-lg-block d-none">
+                                    {{birthday(teacher)}}
+                                </td>
+                                <td>
+                                    {{tracher.month + ' ' + tracher.year}}
+                                </td>
+                                <td>
+                                    <a class="card-link w-100 d-inline-block" href="">
+                                        {{trachersArray[tracher.id].name}} <sup>{{trachersArray[tracher.id].sup}}</sup>{{trachersArray[tracher.id].idc}}
+                                    </a>
+                                </td>
+                                
+                                <td>
+                                    <span class="d-flex justify-content-between w-100">
+                                        <button title="Restaurer cet élève" class="btn bg-secondary" style="width: 48%;" @click="restore(teacher)">
+                                            <i class="fa fa-recycle text-success"></i>
+                                        </button>
+                                        <button title="Supprimer définitement cet élève" class="btn bg-info"  style="width: 48%;">
+                                            <i class="fa fa-user-times text-danger"></i>
+                                        </button>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        </transition>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -149,7 +202,7 @@
         data() {
             return {
                
-                selfMonths : [
+                months : [
                     "Janvier",
                     "Février",
                     "Mars",
@@ -167,7 +220,7 @@
             }   
         },
         created(){
-            this.$store.dispatch('getPupilsData')
+            this.$store.dispatch('getTeachersData')
             this.$store.dispatch('getTOOLS')
         },
 
@@ -177,7 +230,7 @@
             },
 
             filtrer(level){
-                this.$store.commit('SHOW_PUPILS_BY_LEVEL', {level, blockedSpace: true})
+                this.$store.commit('SHOW_TEACHER_BY_LEVEL', level, false)
             },
 
             birthday(user)
@@ -185,18 +238,18 @@
                 let date = user.birth
                 let parts = (date.split("-")).reverse()
                 let day = parts[0]
-                let m = (this.selfMonths[parts[1] - 1]).length > 5 ? (this.selfMonths[parts[1] - 1]).substring(0, 3) : this.selfMonths[parts[1] - 1]
+                let m = (this.months[parts[1] - 1]).length > 5 ? (this.months[parts[1] - 1]).substring(0, 3) : this.months[parts[1] - 1]
                 let year = parts[2]
 
                 return day + " " + m + " " + year
             },
-            restore(pupil){
-                this.$store.dispatch('restorePupils', pupil)
+            restore(teacher){
+                this.$store.dispatch('restoreTeacher', teacher)
                 
             },
-            getEdited(pupil){
+            getEdited(teacher){
                 this.$store.commit('RESET_INVALID_INPUTS')
-                this.$store.dispatch('getAPupilData', pupil)
+                this.$store.dispatch('getATeacherData', teacher)
 
                 
                 $('#exampleModal .div-success').hide('slide', 'up')
@@ -224,7 +277,7 @@
         },
 
         computed: mapState([
-             'pupilsBlockeds', 'pupilsBlockedsAll', 'PSBlockeds', 'PPBlockeds', 'pupilsArray', 'pupilsBlockedsLength', 'PBPLength', 'PBSLength', 'alertPupilsSearch', 'alert', 'type', 'message', 'editedPupil', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'successed', 'invalidInputs', 'classesBlockedsAll'
+            'teachersBlockeds', 'teachersBlockedsAll', 'TSBlockeds', 'TPBlockeds', 'teachersArray', 'teachersBlockedsLength', 'TBPLength', 'TBSLength', 'alertTeachersSearch', 'alert', 'type', 'message', 'editedTeacher', 'primaryClasses', 'secondaryClasses', 'primarySubjects', 'secondarySubjects', 'allSubjects', 'allRoles', 'allClasses', 'months', 'successed', 'invalidInputs'
         ])
     }
 

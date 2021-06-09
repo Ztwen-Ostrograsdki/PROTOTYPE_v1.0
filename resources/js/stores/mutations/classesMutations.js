@@ -27,6 +27,7 @@ const classes_mutations = {
     },
     GET_A_CLASSE_PUPILS: (state, data) => {
         state.targetedClassePupils = data
+
     },
     RESET_EDITING_CLASSE: (state, data) =>{
         state.editingClasse = {

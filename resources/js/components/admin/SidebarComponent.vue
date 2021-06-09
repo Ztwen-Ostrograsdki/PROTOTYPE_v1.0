@@ -78,12 +78,10 @@
                              <i class="fas fa-list fa-sm fa-fw mr-2"></i>
                           Activity Log
                         </a>
-                        <a class="w-100 py-1 pb-2 hover border-top link-float" href="">
+                        <a @click="logout()" class="w-100 py-1 pb-2 hover border-top link-float" href="#">
                             <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2"></i>
                           Logout
                         </a>
-                        <form id="logout-form" action="" method="POST" style="display: none;">
-                        </form>
                     </div>
                 </div> 
             </div>
@@ -99,7 +97,8 @@
         <pupil-perso></pupil-perso>
         <pupil-add></pupil-add>
         <pupil-edit-marks></pupil-edit-marks>
-        <pupil-edit-parents></pupil-edit-parents>
+        
+        <pupil-delete-confirmation></pupil-delete-confirmation>
         
         <parent-add></parent-add>
         <classe-add></classe-add>
@@ -110,6 +109,8 @@
         <teacher-add></teacher-add>
         <teacher-classes></teacher-classes>
 
+        <pupil-edit-parents></pupil-edit-parents>
+        <edit-parents></edit-parents>
         <new-horaire></new-horaire>
 
 	</div>
@@ -145,6 +146,10 @@
             wasSelected(tag, target){
                 return tag == target ? 'selected' : ''
             },
+
+            logout(){
+                this.$store.dispatch('logout')
+            },
         },
 
         computed: mapState([
@@ -158,7 +163,7 @@
 
 <style>
     .fade-enter-active, .fade-leave-active{
-        transition: opacity 2s, transform 1s;
+        transition: opacity 1s, transform 0.4s;
     }
 
     .fade-enter, .fade-leave-active{
@@ -210,7 +215,7 @@
         transform: scale(0.1);
     }
     .justefade-enter-active, .justefade-leave-active{
-        transition: opacity 0.5s,
+        transition: opacity 0.8s,
     }
 
     .justefade-enter, .justefade-leave-active{

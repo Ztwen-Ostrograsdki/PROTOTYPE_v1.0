@@ -28,7 +28,6 @@ const teachers_actions = {
 	        	classe5: parseInt(inputs.classes.c5, 10)
 	        })
 	        .then(response => {
-                console.log(response.data)
 	        	store.commit('RESET_INVALID_INPUTS')
 	            store.commit('GET_TEACHERS_DATA', response.data)
 
@@ -173,8 +172,7 @@ const teachers_actions = {
             
         })
         .catch(e => {
-            console.log(e)
-           store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
+           // store.commit('ALERT_MAKER', "L'opération a échoué: Echec de connexion au serveur! Veuillez réessayer!")
         })
     },
 

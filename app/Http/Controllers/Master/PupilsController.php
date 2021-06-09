@@ -71,7 +71,7 @@ class PupilsController extends Controller
            }
         }
 
-        foreach (Pupil::all() as $pupil) {
+        foreach (Pupil::withTrashed('deleted_at')->where('level', 'primary')->orWhere('level', 'secondary')->get() as $pupil) {
             if ($pupil->classe) {
                 $AllpupilsWithClasses[$pupil->id] = $pupil->classe->getFormattedClasseName();
             }
@@ -199,7 +199,7 @@ class PupilsController extends Controller
             $classeName = '';
         }
 
-        $parents = $pupil->parentors();
+        $parents = $pupil->parents();
 
         return response()->json(['p' => $pupil, 'subjects' => $subjects, 'coefTables' => $coefTables, 'token' => $token, 'classeFMT' => $classeFMT, 'birthFMT' => $birthday, 'classeName' => $classeName, 'firstName' => $firstName, 'lastName' => $lastName, 'pupilParents' => $parents]);
     }
@@ -543,6 +543,18 @@ class PupilsController extends Controller
     public function destroy(int $id)
     {
         $pupil = Pupil::find((int)$id);
+        $isRespoOfThisClasse = Classe::withTrashed('deleted_at')->where('respo1', $id)->orWhere('respo2', $id)->get();
+        if (count($isRespoOfThisClasse) > 0) {
+            $classe = $isRespoOfThisClasse[0];
+            if ($classe->respo1 == $id) {
+                $classe->respo1 = null;
+                $classe->save();
+            }
+            elseif ($classe->respo2 == $id) {
+                $classe->respo2 = null;
+                $classe->save();
+            }
+        }
         if ($pupil->delete()) {
             return $this->pupilsDataSender();
         }
@@ -559,16 +571,18 @@ class PupilsController extends Controller
     {
 
         $pupil = Pupil::withTrashed('deleted_at')->whereId((int)$id)->first();
-        // $marks = Marks::withTrashed('deleted_at')->where('pupil_id', $id)->where('classe_id', $pupil->classe_id)->where('year', date('Y'))->get();
-
-        // if (count($marks) > 0) {
-        //    foreach ($marks as $mark) {
-        //        $mark->pupil()->detach($pupil->id);
-        //        $mark->subject()->detach($mark->subject_id);
-        //        $mark->classe()->detach($mark->classe_id);
-        //    }
-        // }
-
+        $isRespoOfThisClasse = Classe::withTrashed('deleted_at')->where('respo1', $id)->orWhere('respo2', $id)->get();
+        if (count($isRespoOfThisClasse) > 0) {
+            $classe = $isRespoOfThisClasse[0];
+            if ($classe->respo1 == $id) {
+                $classe->respo1 = null;
+                $classe->save();
+            }
+            elseif ($classe->respo2 == $id) {
+                $classe->respo2 = null;
+                $classe->save();
+            }
+        }
         if ($pupil->forceDelete()) {
             return $this->pupilsDataSender();
         }

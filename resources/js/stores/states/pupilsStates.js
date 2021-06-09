@@ -14,6 +14,8 @@ let MONTHS = [
 ]
 
 const pupils_states = {
+    deletingPupilConfirmation: {status: false, confirm: false},
+    deletingPupil: {},
 	pupilsArray : [], //With her classes formatted
     secondaryPupils : {},
     targetPupil : {},

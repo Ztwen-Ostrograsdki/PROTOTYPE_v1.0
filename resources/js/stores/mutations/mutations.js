@@ -19,6 +19,7 @@ const default_mutations = {
 		state.tl = data.tl
 		state.tsl = data.tsl
 		state.tpl = data.tpl
+		state.allParents = data.parents
 
 		state.cl = data.classes.length
 		state.pcl = data.classesPrimary.length
@@ -37,6 +38,7 @@ const default_mutations = {
 		state.allRoles = data.roles
 		state.months = data.months
 		state.subjects = data.subjects
+		state.classesWithPP = data.classesWithPP
 		state.primaryClasses = data.primaryClasses
 		state.allPrimaryClasses = data.allPrimaryClasses
 		state.allSecondaryClasses = data.allSecondaryClasses

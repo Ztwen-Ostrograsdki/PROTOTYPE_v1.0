@@ -56,6 +56,30 @@ class Classe extends Model
         return $this->belongsTo(Teacher::class);
     }
 
+    /**
+     * Use to get all principals of the school
+     * @param  [type] $level [description]
+     * @return [type]        [description]
+     */
+    public static function getAllPrincipals($level = null)
+    {
+        $classesWithPP = [];
+        if ($level == null) {
+            $classes = Classe::where('id', '>', 0)->orderBy('level', 'asc')->get();
+        }
+        else{
+            $classes = Classe::where('level', $level)->orderBy('id', 'asc')->get();
+        }
+        if (count($classes) > 0) {
+            foreach ($classes as $classe) {
+                if ($classe->teacher !== null) {
+                    $classesWithPP[$classe->teacher->id] = $classe;
+                }
+            }
+        }
+        return $classesWithPP;
+    }
+
 
     public function respo1()
     {
@@ -234,40 +258,32 @@ class Classe extends Model
      */
     public function refreshOnPupils($forced = true)
     {
-        $pupils = $this->pupils;
-
+        $pupils = Pupil::withTrashed('deleted_at')->where('classe_id', $this->id)->get();
         foreach ($pupils as $pupil) {
-            $marks = Mark::where('pupil_id', $p)->where('classe_id', $this->id)->where('year', date('Y'))->get();
-            $parents = $this->parentors();
+            if ($pupil->id == $this->respo1) {
+                $this->update(['respo1' => null]);
+            }
+            if ($pupil->id == $this->respo2) {
+                $this->update(['respo2' => null]);
+            }
             if ($forced) {
-                $action = $pupil->forceDelete();
-                if ($action) {
-                    if ($pupil->id == $this->respo1) {
-                        $this->update(['respo1' => null]);
+                $parentors = $pupil->parentors;
+                if ($parentors->count() > 0) {
+                    foreach ($parentors as $parentor) {
+                        $parentor->forceDelete();
                     }
-                    if ($pupil->id == $this->respo2) {
-                        $this->update(['respo2' => null]);
-                    }
-                    if (count($marks) > 0) {
-                        foreach ($marks as $mark) {
-                            $del_m = $mark->forceDelete();
-                        }
-                    }
-                    if (count($parents) > 0) {
-                        foreach ($parents as $parent) {
-                            $parent->forceDelete();
-                        }
-                    }
-
                 }
+                $pupil->forceDelete();
             }
             else{
-                $action = $pupil->delete();
+                if ($pupil->deleted_at !== null) {
+                    // Already deleted
+                }
+                else{
+                    $action = $pupil->delete();
+                }
             }
         }
-
-        return true;
-
     }
 
 }

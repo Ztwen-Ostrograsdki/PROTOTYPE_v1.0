@@ -11,7 +11,6 @@
                         <th>Inscrit depuis</th>
                         <th v-if="!isProfil">Classe</th>
                         <th v-if="isProfil">Status</th>
-                        <th v-if="isProfil">Moyenne</th>
                         <th colspan="1">Actions</th>
                     </thead>
                 </transition>
@@ -46,12 +45,9 @@
                             <td v-if="isProfil">
                             	N
                             </td>
-                            <td v-if="isProfil">
-                            	15
-                            </td>
                             <td v-if="!redList">
                                 <span class="d-inline-block w-100">
-                                    <button title="Voulez vous supprimer" class="px-1 btn bg-transparent w-100" @click="destroy(pupil)">
+                                    <button data-toggle="modal" data-target="#confirmDeletingModal" title="Voulez vous supprimer" class="px-1 btn bg-transparent w-100" @click="destroying(pupil)">
                                         <i class="fa fa-trash text-danger"></i>
                                     </button>
                                 </span>
@@ -61,7 +57,7 @@
                                     <button title="Restaurer cet élève" class="btn bg-secondary" style="width: 48%;" @click="restore(pupil)">
                                         <i class="fa fa-recycle text-success"></i>
                                     </button>
-                                    <button @click="forceDestroy(pupil)" title="Supprimer définitement cet élève" class="btn bg-info"  style="width: 48%;">
+                                    <button data-toggle="modal" data-target="#confirmDeletingModal" @click="destroying(pupil)" title="Supprimer définitement cet élève" class="btn bg-info"  style="width: 48%;">
                                         <i class="fa fa-user-times text-danger"></i>
                                     </button>
                                 </span>
@@ -120,18 +116,15 @@
 
                 return day + " " + m + " " + year
             },
-            destroy(pupil){
+            destroying(pupil){
                 let route = this.$route
-                if(route.name == 'classesProfil'){
-                    this.$store.dispatch('deletePupilOfAClasse', {pupil, route})  
-                }
-                else{
-                    this.$store.dispatch('lazyDeletePupils', pupil)                
-                }
+                this.$store.commit('RESET_PUPIL_DELELTING_CONFIRMATION', {status: false, confirm: false})
+                this.$store.commit('RESET_PUPIL_DELELTING', pupil)
             },
 
             forceDestroy(pupil){
-                this.$store.dispatch('forceDeletePupils', pupil)                
+
+                // this.$store.dispatch('forceDeletePupils', pupil)                
             },
 
             closeProfiler(){
@@ -198,7 +191,7 @@
 
         
 		computed: mapState([
-          	'pupilsArray', 'targetedClasse', 'editedPupil'
+          	'pupilsArray', 'targetedClasse', 'editedPupil', 'deletingPupil', 'deletingPupilConfirmation'
         ])
 
 	}

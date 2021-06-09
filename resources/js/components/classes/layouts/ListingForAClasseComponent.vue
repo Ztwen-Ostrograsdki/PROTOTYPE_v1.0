@@ -2,32 +2,25 @@
 	<div class="w-100 d-flex justify-content-center">
 		<div class="w-100">
 			<div class="w-100">
-				<div class="d-flex w-100 my-1 py-1 justify-content-start">
-		            <div class="mx-1 my-0 w-100">
+				<div class="m-0 p-0 d-flex w-100 my-1 py-1 justify-content-center">
+		            <div class="p-0 m-0 mx-1 my-0 w-100">
 		                <h5 class="d-flex justify-content-between w-100 p-2">
 			                <span>
 			                	<span class="text-white-50">CSP LA PRUNELLE</span>
 			                </span> 
-			                <div class="d-flex justify-content-between">
-			                	<div class="mr-2">
-			                		<span class="text-white-50">Classe :</span> {{targetedClasse.classeFMT.name}}<sup>{{ targetedClasse.classeFMT.sup }}</sup> {{ targetedClasse.classeFMT.idc }}
-			                	</div>
-			                	<div class="ml-2">
-			                		<span> 
-			                			<span class="text-white-50">Principal: </span>
-			                			<router-link v-if="targetedClasse.heads.teacher !== null" :to="{name: 'teachersProfil', params: {id: targetedClasse.classe.teacher_id}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
-			                				{{ targetedClasse.heads.teacher.name }}
-			                			</router-link>
-			                			<span class="text-muted" v-if="targetedClasse.heads.teacher == null">
-			                				{{ 'Non défini'}}
-			                			</span>
+			                <div class="d-flex justify-content-center w-25">
+			                	<div class="w-100 d-flex justify-content-center">
+			                		<span style="font-size: 20px;">
+			                			{{targetedClasse.classeFMT.name}}<sup>{{ targetedClasse.classeFMT.sup }}</sup> {{ targetedClasse.classeFMT.idc }}
 			                		</span>
+			                		<span title="Modifier le nom de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'name')"></span>
 			                	</div>
 			                </div>
 			                <span>
 			                	<span class="text-white-50">Année Scolaire:</span> 2020 - 2021
 			                </span>
 			            </h5>
+		        		<hr class="bg-white m-0 p-0">
 		            </div>
 		        </div>
 		        <div class="profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around float-left">
@@ -99,6 +92,20 @@
 			            </transition>
 					</div>
 				</div>
+				<div class="mx-auto d-flex border justify-content-center mt-0 p-1 w-25 bg-linear-official-180">
+					<div class="m-0 p-0">
+                		<span> 
+                			<span class="text-white-50">Principal: </span>
+                			<router-link v-if="targetedClasse.heads.teacher !== null" :to="{name: getRouteForTeacher(targetedClasse.heads.teacher).name, params: {id: getRouteForTeacher(targetedClasse.heads.teacher).id}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+                				{{ targetedClasse.heads.teacher.name }}
+                			</router-link>
+                			<span class="text-muted" v-if="targetedClasse.heads.teacher == null">
+                				{{ 'Non défini'}}
+                			</span>
+                			<span title="Modifier le prof principal de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'teacher')"></span>
+                		</span>
+                	</div>
+				</div>
 		        <span class="fa fa-close float-right mb-2 text-right d-inline-block" v-if="!hideGrandPanel" @click="toggleGrandPanel()" title="Masquer le panel"></span>
 		        <span class="fa fa-chevron-down float-right mb-2 text-right d-inline-block" v-if="hideGrandPanel" @click="toggleGrandPanel()" title="Afficher le panel"></span>
 		        <transition name="scale" appear>
@@ -106,21 +113,33 @@
 					<div class="mx-1 d-flex flex-column font-italic border border-dark ">
 						<div class="mx-2">
 		            		<h5 class="text-white-50 h5-title">1<sup>er</sup> Responsable: 
-	                			<router-link v-if="targetedClasse.heads.respo1 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo1}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+	                			<span v-if="targetedClasse.heads.respo1 !== null">
+	                				<router-link :to="{name: getRouteForPupil(targetedClasse.heads.respo1).name, params: {id: getRouteForPupil(targetedClasse.heads.respo1).id}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
 	                				{{ targetedClasse.heads.respo1.name }}
 	                			</router-link>
+	                				<span title="Modifier le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo1')">
+	                				</span>
+	                			</span>
 	                			<span class="text-muted" v-if="targetedClasse.heads.respo1 == null">
 	                				{{ 'Non défini'}}
+	                				<span title="Définir maintenant le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo1')">
+	                				</span>
 	                			</span>
 		            		</h5>
 		            	</div>
 		            	<div>
 		            		<h5 class="text-white-50 h5-title">2<sup>ème</sup> Responsable: 
-		            			<router-link v-if="targetedClasse.heads.respo2 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo2}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
-	                				{{ targetedClasse.heads.respo2.name }}
-	                			</router-link>
+		            			<span v-if="targetedClasse.heads.respo2 !== null">
+		            				<router-link :to="{name: getRouteForPupil(targetedClasse.heads.respo2).name, params: {id: getRouteForPupil(targetedClasse.heads.respo2).id}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+	                					{{ targetedClasse.heads.respo2.name }}
+	                				</router-link>
+	                				<span title="Définir maintenant le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo2')">
+	                				</span>
+		            			</span>
 	                			<span class="text-muted" v-if="targetedClasse.heads.respo2 == null">
 	                				{{ 'Non défini'}}
+	                				<span title="Définir maintenant le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo2')">
+	                				</span>
 	                			</span>
 		            		</h5>
 		            	</div>
@@ -159,21 +178,33 @@
 			            	<div class="mx-1 d-flex justify-content-between font-italic" v-if="!hidePanel">
 			            		<div class="mx-2">
 				            		<h5 class="text-white-50 h5-title">1<sup>er</sup> Responsable: 
-			                			<router-link v-if="targetedClasse.heads.respo1 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo1}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
-			                				{{ targetedClasse.heads.respo1.name }}
-			                			</router-link>
+			                			<span v-if="targetedClasse.heads.respo1 !== null">
+			                				<router-link v-if="targetedClasse.heads.respo1 !== null" :to="{name: getRouteForPupil(targetedClasse.heads.respo1).name, params: {id: getRouteForPupil(targetedClasse.heads.respo1).id}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+				                				{{ targetedClasse.heads.respo1.name }}
+				                			</router-link>
+				                			<span title="Définir maintenant le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo1')">
+	                						</span>
+			                			</span>
 			                			<span class="text-muted" v-if="targetedClasse.heads.respo1 == null">
 			                				{{ 'Non défini'}}
+			                				<span title="Définir maintenant le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo1')">
+	                						</span>
 			                			</span>
 				            		</h5>
 				            	</div>
 				            	<div>
 				            		<h5 class="text-white-50 h5-title">2<sup>ème</sup> Responsable: 
-				            			<router-link v-if="targetedClasse.heads.respo2 !== null" :to="{name: 'pupilsProfil', params: {id: targetedClasse.classe.respo2}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
-			                				{{ targetedClasse.heads.respo2.name }}
-			                			</router-link>
+				            			<span v-if="targetedClasse.heads.respo2 !== null">
+				            				<router-link :to="{name: getRouteForPupil(targetedClasse.heads.respo2).name, params: {id: getRouteForPupil(targetedClasse.heads.respo2).id}}"   class="d-inline-block text-white card-link" style="font-size: 1em !important;">
+			                					{{ targetedClasse.heads.respo2.name }}
+			                				</router-link>
+			                				<span title="Définir maintenant le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo2')">
+	                						</span>
+				            			</span>
 			                			<span class="text-muted" v-if="targetedClasse.heads.respo2 == null">
 			                				{{ 'Non défini'}}
+			                				<span title="Définir maintenant le responsable de cette classe" style="font-size: 10px ;" class="text-white-50 fa fa-edit float-right mx-1" data-toggle="modal" data-target="#editClasseModal" @click="setEdited(targetedClasse.classe, 'respo2')">
+	                						</span>
 			                			</span>
 				            		</h5>
 				            	</div>
@@ -225,6 +256,20 @@
         },
 
         methods :{
+        	getRouteForPupil(pupil){
+        		if(pupil !== null){
+        			return {name: 'pupilsProfil', id: pupil.id}
+        		}
+        		else{
+        			return {name: 'pupilsProfil', id: 2}
+        		}
+        		
+        	},
+        	getRouteForTeacher(id){
+        		if(id !== null){
+        			return {name: 'teachersProfil', id: id}
+        		}
+        	},
 
         	getLengths(pupils = this.targetedClasse.pupils){
 
@@ -279,19 +324,45 @@
             },
             resetRefreshClasseConfirm(){
             	this.$store.commit('RESET_REFRESH_CLASSE_CONFIRMATION', {status: false, confirm: false})
-            }
+            },
+            setEdited(classe, tag){
+                this.$store.commit('RESET_INVALID_INPUTS')
+                
+                $('#editClasseModal .div-success').hide('slide', 'up')
+                $('#editClasseModal .div-success h4').text('')
+                $('#editClasseModal').animate({
+                    top: '100'
+                })
+                
+                $('#editClasseModal form').show('slide', {direction: 'up'}, 1, function(){
+                    $('#editClasseModal form').animate({
+                        opacity: '0'
+                    }, function(){
+                        $('#editClasseModal form').animate({
+                            opacity: '1'
+                        }, 800)
+                        $('#editClasseModal .buttons-div').show('fade')
+                    })
+                })
+
+                if(tag == 'teacher' || tag == 'respo1' || tag == 'respo2'){
+                    this.$store.dispatch('getAClasseTeachersAndPupils', classe.id)
+                }
+                
+                this.$store.commit('RESET_EDITING_CLASSE', {classe: classe, tag: tag}) 
+            },
         },
 
         computed: mapState([
-           'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'type', 'months', 'successed', , 'errors', 'targetedClasse', 'newPupil', 'refreshClasse'
+           'classes', 'classesAll', 'tl', 'alertClassesSearch', 'alert', 'message', 'type', 'months', 'successed', , 'errors', 'targetedClasse', 'newPupil', 'refreshClasse', 'editingClasse', 'targetedClasseTeachers', 'targetedClassePupils'
         ])
     }
 
     
 </script>
 <style>
-    div#options span:hover{
-    	transform: scale(1.3);
+    div#options span:hover, span.fa.fa-edit:hover{
+    	transform: scale(1.1);
     }
 </style>
 

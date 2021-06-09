@@ -64,14 +64,17 @@ let pupils_add = Vue.component('pupil-add', require('./components/formulars/pupi
 let pupils_perso_edit = Vue.component('pupil-perso', require('./components/formulars/pupils/EditPersonalComponent.vue').default)
 let pupils_edit_marks = Vue.component('pupil-edit-marks', require('./components/formulars/pupils/EditMarkComponent.vue').default)
 let pupils_edit_parents = Vue.component('pupil-edit-parents', require('./components/formulars/pupils/EditParentComponent.vue').default)
+let pupils_deleting = Vue.component('pupil-delete-confirmation', require('./components/pupils/confirmations/ConfirmDeletingPupilComponent.vue').default)
 
 let teachers_add = Vue.component('teacher-add', require('./components/formulars/teachers/AddNewComponent.vue').default)
 let teachers_perso_edit = Vue.component('teacher-perso', require('./components/formulars/teachers/EditPersonalComponent.vue').default)
 let teachers_classes_edit = Vue.component('teacher-classes', require('./components/formulars/teachers/EditClassesComponent.vue').default)
 
 let parents_add = Vue.component('parent-add', require('./components/formulars/parents/AddNewComponent.vue').default)
+let parents_edit = Vue.component('edit-parents', require('./components/formulars/parents/EditComponent.vue').default)
 let classes_add = Vue.component('classe-add', require('./components/formulars/classes/AddNewComponent.vue').default)
 let classes_edit = Vue.component('classe-edit', require('./components/formulars/classes/EditComponent.vue').default)
+
 
 let default_success = Vue.component('default-success', require('./components/success/SuccessComponent.vue').default)
 let add_new_horaire = Vue.component('new-horaire', require('./components/formulars/dashboards/NewHoraireComponent.vue').default)
@@ -88,6 +91,10 @@ let teachers_perso_data = Vue.component('teacher-perso-data', require('./compone
 let teachers_profil_box = Vue.component('profil-teacher-box', require('./components/teachers/ProfilLayouts/ProfilBoxComponent.vue').default)
 let teachers_classes_box = Vue.component('profil-teacher-classes-box', require('./components/teachers/ProfilLayouts/TeacherClassesBoxComponent.vue').default)
 
+//PARENTS
+let parents_home = Vue.component('parents-home', require('./components/parents/HomeComponent.vue').default)
+let listing_parents = Vue.component('listing-component-parents', require('./components/parents/ListingComponent.vue').default)
+let parents_redList = Vue.component('parents-redList', require('./components/parents/RedListComponent.vue').default)
 
 //DASHBOARDS COMPONENENTS
 let dashboard_plan = Vue.component('dashboard-plan', require('./components/admin/layouts/dashboards/PlansComponent.vue').default)
@@ -114,6 +121,7 @@ const routes = [
 			{
 				path: '/admin/director/pupilsm',
 				component: listing_pupils,
+				name: 'pupilsListing',
 			},
 			{
 				path: '/admin/director/pupilsm/redList',
@@ -151,6 +159,18 @@ const routes = [
 		]
 	},
 	{
+		path: '/admin/director/parentsm',
+		component: parents_home,
+		name: 'parentsIndex',
+		children: [
+			{
+				path: '/admin/director/parentsm',
+				component: listing_parents,
+				name: 'parentsListing',
+			},
+		]
+	},
+	{
 		path: '/admin/director/teachersm',
 		component: teachers_home,
 		name: 'teachersIndex',
@@ -158,6 +178,7 @@ const routes = [
 			{
 				path: '/admin/director/teachersm',
 				component: listing_teachers,
+				name: 'teachersListing',
 			},
 			{
 				path: '/admin/director/teachersm/redList',
@@ -183,6 +204,7 @@ const routes = [
 			{
 				path: '/admin/director/classesm',
 				component: listing_classes,
+				name: 'classesListing',
 			},
 			{
 				path: '/admin/director/classesm/redList',
@@ -203,7 +225,7 @@ const routes = [
 				store
 			},
 			{
-				path: '/admin/director/classesm/:id/marks/index/subject/:s',
+				path: '/admin/director/classesm/:id/marks/index/subject/:s/trimestre/:t',
 				component: classe_marks,
 				name: 'classeSubjectMarks',
 				store

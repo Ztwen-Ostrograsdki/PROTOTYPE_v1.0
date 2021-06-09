@@ -24,7 +24,7 @@ class ParentsController extends Controller
      */
     public function index()
     {
-
+        return view('directors.parents.index');
     }
 
     /**
@@ -79,10 +79,12 @@ class ParentsController extends Controller
         if ($parentExisted !== null) {
             if (count(Parentable::all()) > 0) {
                 $wasLied = Parentable::where('parentor_id', $parentExisted->id)->where('pupil_id', $p->id)->get();
+                
+
                 if(count($wasLied) < 1){
-                   Parentable::create(['parentor_id' => $parentExisted->id, 'pupil_id' => $p->id, 'relation' => $request->relation]);
-                   $controller = (new PupilsController())->getAPupilData($p->id);
-                   return $controller;
+                    Parentable::create(['parentor_id' => $parentExisted->id, 'pupil_id' => $p->id, 'relation' => $request->relation]);
+                    $controller = (new PupilsController())->getAPupilData($p->id);
+                    return $controller;
                 }
                 else{
                    return (new PupilsController())->getAPupilData($p->id);
@@ -127,7 +129,7 @@ class ParentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        return response()->json([$request->all(), $id]);
     }
 
     /**
@@ -146,6 +148,16 @@ class ParentsController extends Controller
     {
         $parents = Parentor::withTrashed('deleted_at')->get();
         return response()->json($parents);
+    }
+
+
+    public function parentsDataSender()
+    {
+        $parents = Parentor::getParentWithThesePupils();
+        $data = [
+            'parents' => $parents
+        ];
+        return response()->json($data);
     }
 
     public function getAllParentsBySearch($search)
