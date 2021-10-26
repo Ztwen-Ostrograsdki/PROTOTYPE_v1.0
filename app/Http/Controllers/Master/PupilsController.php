@@ -231,13 +231,14 @@ class PupilsController extends Controller
             if ($pupil->level === "secondary") {
                 foreach ($pupil->classe->subjects as $subject) {
                     $classe = $pupil->classe->id;
+                    $myModalities = $pupil->getMyClasseModalities();
                     $tr = 'trimestre '.$trimestre;
                     $marksArray = ['epe' => [], 'devoirs' => []];
                     $marks = Mark::where('pupil_id', $id)->where('classe_id', $classe)->where('trimestre', $tr)->where('subject_id', $subject->id)->get();
                     if (count($marks) > 0) {
                         $marksEPE = Mark::where('pupil_id', $id)->where('classe_id', $classe)->where('trimestre', $tr)->where('subject_id', $subject->id)->where('type', 'epe')->where('value', '>', 0)->get();
                         $marksDEV = Mark::where('pupil_id', $id)->where('classe_id', $classe)->where('trimestre', $tr)->where('subject_id', $subject->id)->where('type', 'devoir')->where('value', '>', 0)->get();
-                        $marksArrayByType[$subject->id] = ['epe' => $marksEPE, 'devoirs' => $marksDEV];
+                        $marksArrayByType[$subject->id] = ['epe' => $marksEPE, 'devoirs' => $marksDEV, 'modality' => $myModalities[$subject->id]];
                     }
                 }
             }
@@ -258,7 +259,7 @@ class PupilsController extends Controller
 
         }
 
-        return response()->json(['marks' => $marksArrayByType, 'tr' =>$trimestre, 'last' => ['mark' => null, 'subject' => null], 'best' => ['mark' => null, 'subject' => null], 'weak' => ['mark' => null, 'subject' => null], 'percentage' => null]);
+        return response()->json(['marks' => $marksArrayByType, 'tr' => $trimestre, 'last' => ['mark' => null, 'subject' => null], 'best' => ['mark' => null, 'subject' => null], 'weak' => ['mark' => null, 'subject' => null], 'percentage' => null]);
     }
 
 

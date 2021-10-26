@@ -51,7 +51,7 @@
 	                    		</table>
                     		</td>
                     	</tr>
-                    	<tr class="td border-bottom border-white" v-for="subject in editedPupilSubjects">
+                    	<tr :title="targetPupilMarks !== null && targetPupilMarks[subject.id] && targetPupilMarks[subject.id]['modality'] !== null ? ' Le prof a choisir les ' + targetPupilMarks[subject.id]['modality'] + ' meilleures notes ' : 'Le prof envisage prendre toutes les notes certainement' "  class="td border-bottom border-white" v-for="subject in editedPupilSubjects">
                     		<td class="d-flex justify-content-between pl-2 w-100">
                     			<a class="w-75" href="#">
                     				<span class="float-left">{{ subject.name }}</span>
@@ -63,11 +63,11 @@
                     			<table class="text-center w-100 text-white-50">
 	                    			<tbody class="w-100">
 	                    				<tr class="text-center w-100 td" v-if="targetPupilMarks !== null">
-	                    					<td class="text-center">{{ getSujectMarks(subject, 'epe', 0)}}</td>
-	                    					<td class="text-center">{{ getSujectMarks(subject, 'epe', 1)}}</td>
-	                    					<td class="text-center">{{ getSujectMarks(subject, 'epe', 2)}}</td>
-	                    					<td class="text-center">{{ getSujectMarks(subject, 'epe', 3)}}</td>
-	                    					<td class="text-center">{{ getSujectMarks(subject, 'epe', 4)}}</td>
+	                    					<td :class="'text-center ' + getMarkStatus(subject, 0)">{{ getSujectMarks(subject, 'epe', 0)}}</td>
+	                    					<td :class="'text-center ' + getMarkStatus(subject, 1)">{{ getSujectMarks(subject, 'epe', 1)}}</td>
+	                    					<td :class="'text-center ' + getMarkStatus(subject, 2)">{{ getSujectMarks(subject, 'epe', 2)}}</td>
+	                    					<td :class="'text-center ' + getMarkStatus(subject, 3)">{{ getSujectMarks(subject, 'epe', 3)}}</td>
+	                    					<td :class="'text-center ' + getMarkStatus(subject, 4)">{{ getSujectMarks(subject, 'epe', 4)}}</td>
 	                    					<td class="text-primary">{{ getEPPAverage(subject) }}</td>
 	                    				</tr>
 	                    				<tr class="text-center w-100 td" v-if="targetPupilMarks == null">
@@ -145,6 +145,9 @@
 
             }   
         },
+        created(){
+        	
+        },
 
 		methods: {
 			getSujectMarks(subject, type, id, marks = this.targetPupilMarks){
@@ -182,17 +185,22 @@
                 })
 			},
 
-			getEPPAverage(subject, marks = this.targetPupilMarks){
+			getEPPAverage(subject, marks = this.targetPupilMarks, modality = 5){
 				let type = "epe"
 				let all = []
+				let selectedMarks = []
 				let som = 0
 				let avg = 0
+				if (marks !== null && marks[subject.id] && marks[subject.id]['modality'] !== null) {
+					modality = marks[subject.id]['modality']
+				}
 				if(marks[subject.id] !== undefined){
 					for (var i = 0; i < marks[subject.id][type].length; i++) {
 						if(marks[subject.id][type][i] !== undefined && marks[subject.id][type][i] !== 0 && marks[subject.id][type][i] !== '0' && marks[subject.id][type][i] !== null){
 							all.push(marks[subject.id][type][i].value)
 						}
 					}
+					all = this.getBestMarks(all, modality)
 					for (var i = 0; i < all.length; i++) {
 						som += all[i]
 					}
@@ -212,13 +220,78 @@
 			},
 
 			getAverage(subject, marks = this.targetPupilMarks){
-				return averageComputor(subject, marks)
+				let modality = 5
+				if (marks !== null && marks[subject.id] && marks[subject.id]['modality'] !== null) {
+					modality = marks[subject.id]['modality']
+				}
+				return averageComputor(subject, marks, modality)
 				
+			}, 
+			getBestMarks(marks = [], modality = 5)
+			{
+				let bestMarks = []
+				if (marks.length < modality) {
+					bestMarks = marks
+				}
+				else{
+					while (bestMarks.length < modality) {
+						for (var i = 0; i < marks.length; i++) {
+							if(marks[i] == Math.max(...marks)){
+								bestMarks.push(marks[i])
+								marks.splice(i, 1)
+							}
+							
+						}
+					}
+				}
+				return bestMarks
+			},
+			getMarkStatus(subject, markIndex)
+			{
+				let marksTab = this.targetPupilMarks
+				let marks = []
+				let modality = 5
+				let mark = Number(this.getSujectMarks(subject, 'epe', markIndex, marksTab))
+				let text = ''
+
+				if (marksTab !== null && marksTab[subject.id] && marksTab[subject.id]['modality'] !== null) {
+					modality = marksTab[subject.id]['modality']
+				}
+
+
+				if(marksTab[subject.id] !== undefined){
+					
+						for (var i = 0; i < marksTab[subject.id]['epe'].length; i++) {
+							marks.push(marksTab[subject.id]['epe'][i].value)
+						}
+					
+				}
+
+				let bestMarks = this.getBestMarks(marks, modality)
+				
+				if (marks !== []) {
+					if (marks.length < modality) {
+						text = 'text-success'
+					}
+					
+				}
+				
+				if (bestMarks.indexOf(mark) == -1) {
+					text = 'text-warning'
+				}
+				else if (bestMarks.indexOf(mark) !== -1) {
+					text = 'text-success'
+				}
+				if (mark == '-' || isNaN(mark)) {
+					text = ''
+				}
+
+				return text
 			}
 		},
 
 		computed: mapState([
-          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef', 'targetedClasseSubject'
+          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef', 'targetedClasseSubject', 'subjectWithModalities'
         ])
 
 	}

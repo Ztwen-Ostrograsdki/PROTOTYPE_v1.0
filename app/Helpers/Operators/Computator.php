@@ -61,7 +61,7 @@ class Computator{
 		$modality = null;
 
 		if (array_key_exists($this->subject->id, $this->modalities)) {
-			$modality = $this->modalities[$this->subject->id]->value;
+			$modality = $this->modalities[$this->subject->id];
 		}
 
 
@@ -78,6 +78,7 @@ class Computator{
 					$moyInterro = $som / count($marks['interro']);
 				}
 				else{
+					$modality = $modality->value;
 					$som = array_sum($this->getBestMarks($modality));
 					$moyInterro = $som / count($this->getBestMarks($modality));
 				}

@@ -98,7 +98,6 @@ const pupils_mutations = {
     },
 
     SET_TARGET_PUPIL_MARKS: (state, data) =>{
-
         state.targetPupilMarks = data.data.marks
         state.trimestre = data.trimestre
         state.targetPupilPercentageSuccedMarks = data.data.percentage

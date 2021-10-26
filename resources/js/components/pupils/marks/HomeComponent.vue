@@ -22,9 +22,6 @@
 	                			<span class="text-white-50">Classe :</span> {{targetPupilClasseFMT.name}}<sup>{{ targetPupilClasseFMT.sup }}</sup> {{ targetPupilClasseFMT.idc }}
 	                		</router-link>
 	                	</div>
-	                	<div class="ml-2" v-if="editedPupil.level == 'primary'">
-	                		<span> <span class="text-white-50">Maître: </span>{{ 'Mr TOGAN Martin' }}</span>
-	                	</div>
 	                </div>
 	                <span>
 	                	<span class="text-white-50">Année Scolaire:</span> 2020 - 2021
@@ -32,23 +29,31 @@
 	            </h5>
             </div>
         </div>
-		<div class="d-flex w-100 my-1 py-1 justify-content-between">
+        <!-- LOADER LOADER LOADER LOADER LOADER LOADER -->
+			<div class="w-100 m-0 p-0 mx-auto d-flex justify-content-center bg-linear-official-180" v-if="LoadedPage">
+				<div class="m-0 p-0 mx-auto w-100 bg-transparent border border-white" style="height: 400px">
+					<img src="/media/loader/load2.gif" class="w-100 d-inline-block" style="position:relative; height: 400px; z-index: 0">
+					<h4 class="text-center mx-auto" style="position:relative; top: -350px; z-index: 3000">
+						Chargement en cours... Veuillez patienter quelques secondes... 
+					</h4>
+
+				</div>
+			</div>
+			<!-- en loader -->
+		<div class="d-flex w-100 my-1 py-1 justify-content-between" v-if="!LoadedPage">
             <div class="mx-1 my-0 trimestrielle">
-                <span :class="'btn btn-secondary text-white-50 py-1 light-parent'" @click="setTrimestre(1)">
-                	<hr :class="'light m-0 p-0'">
-	                <router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/1'"  class="text-white">Trimestre 1
+                <span :class="'btn btn-secondary text-white-50 p-0 m-0 light-parent'" @click="setTrimestre(1)">
+	                <router-link :class="getTrimestre(1)" :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/1'"  class="text-white m-0 py-2 px-3 w-100 d-inline-block">Trimestre 1
 	            	</router-link>
             	</span>
-                <span :class="'btn btn-secondary text-white-50 py-1'" @click="setTrimestre(2)">
-                	<hr :class="'light m-0 p-0'">
-                	<router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/2'" class="text-white">Trimestre 2
+                <span :class="'btn btn-secondary text-white-50 p-0 m-0 light-parent'" @click="setTrimestre(2)">
+	                <router-link :class="getTrimestre(2)" :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/2'"  class="text-white m-0 py-2 px-3 w-100 d-inline-block">Trimestre 2
 	            	</router-link>
-	            </span>
-                <span class="btn btn-secondary text-white-50 py-1" @click="setTrimestre(3)">
-                	<hr :class="'light m-0 p-0'">
-                	<router-link :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/3'" class="text-white">Trimestre 3
+            	</span>
+                <span :class="'btn btn-secondary text-white-50 p-0 m-0 light-parent'" @click="setTrimestre(3)">
+	                <router-link :class="getTrimestre(3)" :to="'/admin/director/pupilsm/' + this.$route.params.id + '/marks/index/trimestre/3'"  class="text-white m-0 py-2 px-3 w-100 d-inline-block">Trimestre 3
 	            	</router-link>
-	            </span>
+            	</span>
                 <span class="btn btn-warning text-dark py-1" v-if="targetPupilClasseFMT.name == '3' || targetPupilClasseFMT.name == 'T' || targetPupilClasseFMT.name == 'CM2'">Les notes d'examens</span>
             </div>
             <div class="mx-1 d-flex justify-content-between flex-column font-italic">
@@ -95,11 +100,14 @@
 		data() {
             return {
             	classeID: 0,
+            	LoadedPage: false,
+            	trimestre : 1
             }   
         },
 
         created(){
         	this.$store.dispatch('getAPupilDataAndMarks', {route: this.$route.params.id, trimestre: this.$route.params.trimestre})
+        	this.trimestre = this.$route.params.trimestre
         	axios.get('/admin/director/pupilsm/get&classe&of&pupil&with&data&credentials/id=' + this.$route.params.id)
                 .then(response => {
                     this.$store.commit('GET_A_PUPIL_DATA', response.data)
@@ -113,17 +121,23 @@
 		methods: {
 
 			setTrimestre(trimestre){
+				this.LoadedPage = true
+				this.trimestre = trimestre
+				this.$store.dispatch('getAPupilDataAndMarks', {route: this.$route.params.id, trimestre: trimestre})
 				this.$store.dispatch('getAPupilDataAndMarks', {route: this.$route.params.id, trimestre:trimestre})
+				setTimeout(() =>{
+					this.LoadedPage = false
+				}, 2000)
 			},
 
 			getTrimestre(trimestre){
-				return trimestre == this.$route.params.trimestre ? 'btn-primary' : 'btn-secondary'
+				return trimestre == this.$route.params.trimestre ? 'btn-warning text-dark' : 'btn-secondary'
 				
 			}
 
 		},
 		computed: mapState([
-          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'targetPupilMarks', 'editedPupilSubjects', 'editedPupil', 'targetPupilLastMark', 'targetPupilLastMarkSuject', 'targetPupilBestMark', 'targetPupilBestMarkSuject', 'targetPupilWeakMark', 'targetPupilWeakMarkSuject', 'targetPupilPercentageSuccedMarks'
+          	'targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'targetPupilMarks', 'editedPupilSubjects', 'editedPupil', 'targetPupilLastMark', 'targetPupilLastMarkSuject', 'targetPupilBestMark', 'targetPupilBestMarkSuject', 'targetPupilWeakMark', 'targetPupilWeakMarkSuject', 'targetPupilPercentageSuccedMarks',
         ])
 
 	}

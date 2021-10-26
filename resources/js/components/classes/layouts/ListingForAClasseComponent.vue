@@ -26,18 +26,18 @@
 		        <div class="profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around float-left">
 					<div class="w-100 float-left">
 						<div class="w-50 d-flex justify-content-start" id="options">
-							<div class="mx-1" @click="toggleOptions(showOptions)" v-if="!showOptions">
-								<span class="fa fa-sliders float-right"></span>
+							<div class="mx-2" @click="toggleOptions(showOptions)" v-if="!showOptions">
+								<span class="fa fa-sliders fa-2x float-right"></span>
 							</div>
-							<div class="mx-1" @click="toggleOptions(showOptions)" v-if="showOptions">
-								<span class="fa fa-chevron-up float-right"></span>
+							<div class="mx-2" @click="toggleOptions(showOptions)" v-if="showOptions">
+								<span class="fa fa-2x fa-chevron-up float-right"></span>
 							</div>
 							<div class="mx-1">
-								<span class="float-right fa fa-user-plus" title="Ajouter un nouvel apprenant..." data-toggle="modal" data-target="#newPupilPersoModal" @click="addNewPupil()">
+								<span class="float-right fa fa-user-plus fa-2x" title="Ajouter un nouvel apprenant..." data-toggle="modal" data-target="#newPupilPersoModal" @click="addNewPupil()">
 	                            </span>
 							</div>
-							<div class="mx-1 refresh">
-								<span @click="resetRefreshClasseConfirm()" class="float-right fa fa-refresh text-danger" title="Rafraichir cette classe..." data-toggle="modal" data-target="#confirmRefreshClassModal">
+							<div class="mx-2 refresh">
+								<span @click="resetRefreshClasseConfirm()" class="float-right fa-2x fa fa-refresh text-danger" title="Rafraichir cette classe..." data-toggle="modal" data-target="#confirmRefreshClassModal">
 	                            </span>
 							</div>
 						</div>
@@ -55,23 +55,11 @@
 			                                <i class="fas fa-cogs fa-sm fa-fw mr-2"></i>
 			                              Administation
 			                            </a>
-			                            <router-link :to="{name: 'classeSubjectMarks', params: {id: $route.params.id, s:getSubject()}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+			                            <router-link :to="{name: 'classeMarks', params: {id: $route.params.id}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
 			                            	<i class="fa fa-file-text fa-sm fa-fw mr-2"></i>
-			                              Les notes
+			                              Les Notes
 		            					</router-link>
 		            					
-			                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
-			                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
-			                              1<sup>er</sup> Trimestre
-			                            </a>
-			                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
-			                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
-			                              2<sup>ème</sup> Trimestre
-			                            </a>
-			                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
-			                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
-			                              3<sup>ème</sup> Trimestre
-			                            </a>
 			                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
 			                                <i class="fa fa-line-chart fa-sm fa-fw mr-2"></i>
 			                              Scolarité
@@ -257,16 +245,14 @@
 
         methods :{
         	getRouteForPupil(pupil){
-        		if(pupil !== null){
-        			return {name: 'pupilsProfil', id: pupil.id}
+        		let id = 1
+        		if(pupil !== null && pupil !== undefined){
+        			id = pupil.id
+        			return {name: 'pupilsProfil', id}
         		}
-        		else{
-        			return {name: 'pupilsProfil', id: 2}
-        		}
-        		
         	},
         	getRouteForTeacher(id){
-        		if(id !== null){
+        		if(id !== undefined){
         			return {name: 'teachersProfil', id: id}
         		}
         	},

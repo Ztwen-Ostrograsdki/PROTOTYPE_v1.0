@@ -53,7 +53,7 @@ const classes_states = {
 
     },
     targetedClasseModality: [],
-    targetedClasseSubject: 10,
+    targetedClasseSubject: undefined,
     targetClasseFMT: [],
     targetedClasseMarks: [],
     targetedClasseSubjectsCoef: [],

@@ -145,6 +145,34 @@ class ClassesController extends Controller
         return response()->json($data);
     }
 
+    /**
+     * To get a pupil of classe order by average
+     * @param  int         $id        [description]
+     * @param  int         $classe    [description]
+     * @param  int         $subject   [description]
+     * @param  int|integer $trimestre [description]
+     * @return [type]                 [description]
+     */
+    public function orderPupilsOfThisClasse(int $classe, int $subject, int $trimestre = 1)
+    {
+        $classe = Classe::find((int)$classe);
+        $pupils = $classe->pupils;
+        $pupilsOrdered = [];
+        $pupilsMarks = [];
+
+        foreach ($pupils as $pupil) {
+            $pupilsMarks[$pupil->id] = (new Computator($pupil->id, $subject , $trimestre))->computor();
+        }
+
+        arsort($pupilsMarks);
+
+        foreach ($pupilsMarks as $key => $value) {
+            $pupilsOrdered[] = Pupil::find($key);
+        }
+        return $this->getAClasseData($classe->id, $pupilsOrdered);
+    }
+
+
     public function getAClasseTeachersAndPupils(int $id, $year = null)
     {
         $data = [];
@@ -251,33 +279,7 @@ class ClassesController extends Controller
     }
 
 
-    /**
-     * To get a pupil of classe order by average
-     * @param  int         $id        [description]
-     * @param  int         $classe    [description]
-     * @param  int         $subject   [description]
-     * @param  int|integer $trimestre [description]
-     * @return [type]                 [description]
-     */
-    public function orderPupilsOfThisClasse(int $classe, int $subject, int $trimestre = 1)
-    {
-        $classe = Classe::find((int)$classe);
-        $pupils = $classe->pupils;
-        $pupilsOrdered = [];
-        $pupilsMarks = [];
-
-        foreach ($pupils as $pupil) {
-            $pupilsMarks[$pupil->id] = (new Computator($pupil->id, $subject , $trimestre))->computor();
-        }
-
-        arsort($pupilsMarks);
-
-        foreach ($pupilsMarks as $key => $value) {
-            $pupilsOrdered[] = Pupil::find($key);
-        }
-        return $this->getAClasseData($classe->id, $pupilsOrdered);
-    }
-
+    
 
 
     /**

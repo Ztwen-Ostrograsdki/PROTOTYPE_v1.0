@@ -3,9 +3,11 @@
 namespace App\Models;
 use App\Helpers\TrashedGet;
 use App\Models\Classe;
+use App\Models\ComputedMarksModalities;
 use App\Models\Mark;
 use App\Models\Parentable;
 use App\Models\Parentor;
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -97,6 +99,29 @@ class Pupil extends Model
             }
         }
         return $parents;
+    }
+
+    /**
+     * [getMyClasseModality description]
+     * @return [type] [description]
+     */
+    public function getMyClasseModalities()
+    {
+        $myModalities = [];
+
+        $subjects = Classe::find($this->classe_id)->subjects;
+        if (count($subjects) > 0) {
+            foreach ($subjects as $subject) {
+                $modality = ComputedMarksModalities::withTrashed('deleted_at')->where('classe_id', $this->classe_id)->where('subject_id', $subject->id)->first();
+                if ($modality == null) {
+                    $myModalities[$subject->id] = null;
+                }
+                else{
+                    $myModalities[$subject->id] = $modality->value;
+                }
+            }
+        }
+        return $myModalities;
     }
 
 

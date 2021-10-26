@@ -38,10 +38,11 @@ const helpers = {
 	}
 }
 
-const averageComputor = function(subject, marks = []){
+const averageComputor = function(subject, marks = [], modality = 5){
 	if(marks[subject.id] !== undefined){
 		let typeEpe = "epe"
-		let all = []
+		let allEPETab = []
+		let selectedEPETab = []
 		let som = 0
 
 		let APEAgvValidate = 0
@@ -51,14 +52,29 @@ const averageComputor = function(subject, marks = []){
 		let type = "devoirs"
 		for (var i = 0; i < marks[subject.id][typeEpe].length; i++) {
 			if(marks[subject.id][typeEpe][i] !== undefined && marks[subject.id][typeEpe][i] !== 0 && marks[subject.id][typeEpe][i] !== '0' && marks[subject.id][typeEpe][i] !== null){
-				all.push(marks[subject.id][typeEpe][i].value)
+			 	allEPETab.push(marks[subject.id][typeEpe][i].value)
 			}
 		}
-		for (var i = 0; i < all.length; i++) {
-			som += all[i]
+
+		if (allEPETab.length < modality) {
+			selectedEPETab = allEPETab
+		}
+		else{
+			while (selectedEPETab.length < modality) {
+				for (var i = 0; i < allEPETab.length; i++) {
+					if(allEPETab[i] == Math.max(...allEPETab)){
+						selectedEPETab.push(allEPETab[i])
+						allEPETab.splice(i, 1)
+					}
+					
+				}
+			}
+		}
+		for (var i = 0; i < selectedEPETab.length; i++) {
+			som += selectedEPETab[i]
 		}
 		if(som !== 0){
-			APEAgvValidate = som / all.length
+			APEAgvValidate = som / selectedEPETab.length
 		}
 		else{
 			APEAgvValidate = 0

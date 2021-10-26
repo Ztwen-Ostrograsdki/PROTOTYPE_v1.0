@@ -25,14 +25,21 @@
 			        </div>
 			        <div class="profil-admin d-lg-inline-block d-sm-flex d-md-flex justify-content-sm-around justify-content-md-around float-left">
 						<div class="w-100 float-left">
-							<div class="text-right w-100 ml-2" @click="toggleOptions()" v-if="!showOptions">
-								<span class="fa fa-sliders float-right"></span>
-							</div>
-							<div class="text-right w-100 ml-2" @click="toggleOptions()" v-if="showOptions">
-								<span class="fa fa-chevron-up float-right"></span>
+							<div class="d-flex justify-content-around w-50 mx-auto">
+								<div class="text-right m-0 p-0 px-2">
+								<router-link :to="{name: 'classesProfil',params: {id:targetedClasse.classe.id}}" class="w-100 hover link-float" style="border-radius: 30px;">
+		                            	<span class="fa fa-home fa-2x"></span>
+	            					</router-link>
+								</div>
+								<div class="text-right pl-1" @click="toggleOptions()" v-if="!showOptions">
+									<span class="fa fa-sliders fa-2x"></span>
+								</div>
+								<div class="text-right pl-1" @click="toggleOptions()" v-if="showOptions">
+									<span class="fa fa-chevron-up fa-2x"></span>
+								</div>
 							</div>
 							<transition name="scalefade" appear>
-							<div class="login-profil  position-absolute border border-white" style="width: 250px; top: 165px; left:18px; z-index: 100; background-image: url(/media/img/art-2578353_1920.jpg) !important; background-position: -200px 300px;" v-if="showOptions">
+							<div class="login-profil  position-absolute border border-white" style="width: 250px; top: 200px; left:18px; z-index: 100; background-image: url(/media/img/art-2578353_1920.jpg) !important; background-position: -400px 300px;" v-if="showOptions">
 				                <div class="w-100 border" style="">
 				                    <a class="w-100 link-float d-inline-block border m-0 py-1" href="#">
 				                        <i class="fa fa-sliders fa-sm fa-fw mr-2"></i>
@@ -40,7 +47,7 @@
 				                        <span class="mr-2 d-none d-lg-inline text-dark float-right"></span>
 				                    </a>
 				                      <!-- Dropdown - User Information -->
-				                    <div class="w-100 border">
+				                    <div class="w-100 border" v-if="targetedClasse.classe">
 				                            <a class="w-100 my-1 hover link-float" href="" style="border-radius: 30px;">
 				                                <i class="fas fa-cogs fa-sm fa-fw mr-2"></i>
 				                              Administation
@@ -91,20 +98,39 @@
 					</div>
 					<div class="w-50 ml-5 mb-1 float-right">
 						<span class="d-flex justify-content-start w-100">
-							<span class="btn btn-primary border border-white p-0 w-25 px-1 m-0" @click="updateTargetedTrimestre(1)">
-	                            <router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 1}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+							<span v-if="$route.params.s" class="btn btn-primary border border-white p-0 w-25 px-1 m-0" @click="updateTargetedTrimestre(1)">
+	                            <router-link :to="{name: 'classeSubjectMarks',params: {id:$route.params.id, s: $route.params.s, t: 1}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
 	                              	1<sup>er</sup> Trim
 	        					</router-link>
                             </span>
-							<span class="btn btn-primary border border-white w-25 p-0 px-1 m-0 mx-1" @click="updateTargetedTrimestre(2)">
-	                            <router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 2}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+                            <span v-if="!$route.params.s" class="btn border pt-1 border-white p-0 w-25 px-1 m-0">
+	                            <span class="w-100 hover text-white-50 link-float" style="border-radius: 30px;">
+	                              	1<sup>er</sup> Trim
+	        					</span>
+                            </span>
+
+
+							<span v-if="$route.params.s" class="btn btn-primary border border-white w-25 p-0 px-1 m-0 mx-1" @click="updateTargetedTrimestre(2)">
+	                            <router-link :to="{name: 'classeSubjectMarks',params: {id:$route.params.id, s: $route.params.s, t: 2}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
 	                              	2<sup>ème</sup> Trim
 	        					</router-link>
                             </span>
-							<span class="btn btn-primary w-25 border border-white p-0 px-1 m-0" @click="updateTargetedTrimestre(3)">
-                            	<router-link :to="{name: 'classeSubjectMarks',params: {id:targetedClasse.classe.id, s: targetedClasseSubject, t: 3}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
+                            <span v-if="!$route.params.s" class="btn border pt-1 border-white p-0 w-25 px-1 m-0 mx-1">
+	                            <span class="w-100 hover text-white-50 link-float" style="border-radius: 30px;">
+	                              	2<sup>ème</sup> Trim
+	        					</span>
+                            </span>
+
+
+							<span v-if="$route.params.s" class="btn btn-primary w-25 border border-white p-0 px-1 m-0" @click="updateTargetedTrimestre(3)">
+                            	<router-link :to="{name: 'classeSubjectMarks',params: {id:$route.params.id, s: $route.params.s, t: 3}}" class="w-100 my-1 hover link-float" style="border-radius: 30px;">
                               	3<sup>ème</sup>Trim
         					</router-link>
+                            </span>
+                            <span v-if="!$route.params.s" class="btn border pt-1 border-white p-0 w-25 px-1 m-0">
+	                            <span class="w-100 hover text-white-50 link-float" style="border-radius: 30px;">
+	                              	3<sup>ème</sup> Trim
+	        					</span>
                             </span>
 						</span>
 					</div>
@@ -116,7 +142,7 @@
 							<div class="d-flex float-right justify-content-end pr-2" style="width: 90%">
 								<span class="text-muted mt-2 mr-2 cursive">Coef: <i>{{ targetedClasseSubjectsCoef[targetedClasseSubject] }}</i></span>
 								<span v-for="subject in targetedClasse.subjects" @click="updateTargetedSubject(subject.id)">
-									<router-link :to="{name: 'classeSubjectMarks', params: {id: $route.params.id, s:subject.id, t: $route.params.t}}"   class="card-link d-inline-block btn border p-1 ml-1" :class="isTheTargetedSubject(subject.id)">
+									<router-link :to="{name: 'classeSubjectMarks', params: {id: $route.params.id, s:subject.id, t: trimestre}}"   class="card-link d-inline-block btn border p-1 ml-1" :class="isTheTargetedSubject(subject.id)">
 	                                    <span  class="w-100 d-inline-block link-profiler">
 	                                        {{ subject.name }}
 	                                	</span>
@@ -128,8 +154,25 @@
 				</div>
 			</div>
 		</div>
-		<div class="w-100 mx-auto d-flex justify-content-center bg-linear-official-180">
-			<table class="table-table table-striped w-100 classes-marks">
+		
+		<div class="w-100 mx-auto d-flex justify-content-center bg-linear-official-180 border border-white">
+			<!-- LOADER LOADER LOADER LOADER LOADER LOADER -->
+			<div class="w-100 m-0 p-0 mx-auto d-flex justify-content-center bg-linear-official-180" v-if="LoadedPage">
+				<div class="m-0 p-0 mx-auto w-100 bg-transparent border border-white" style="height: 400px">
+					<img src="/media/loader/load2.gif" class="w-100 d-inline-block" style="position:relative; height: 400px; z-index: 0">
+					<h4 class="text-center mx-auto" style="position:relative; top: -350px; z-index: 3000">
+						Chargement en cours... Veuillez patienter quelques secondes... 
+					</h4>
+
+				</div>
+			</div>
+			<!-- en loader -->
+			<div class="w-100 p-2 mx-auto d-flex justify-content-center bg-linear-official-180" v-if="!$route.params.s && !LoadedPage">
+				<h6 class="m-0 p-0 mx-auto text-muted">
+					Veuillez sélectionner une matière, pour voir ou éditer les notes, moyennes et rangs
+				</h6>
+			</div>
+			<table class="table-table table-striped w-100 classes-marks" v-if="$route.params.s && !LoadedPage">
 				<transition name="justefade" appear>
                     <thead>
                         <th class="no-tag">No</th>
@@ -174,7 +217,7 @@
                         <th class="actions-tag">Classer</th>
                     </thead>
                 </transition>
-               	<transition name="fadelow" appear>
+               	<transition name="justefade" appear>
                     <tbody class="w-100 marks-td">
                     	<tr class="border-bottom border-white">
                     		<td class=" bg-linear-official-180">x</td>
@@ -207,7 +250,7 @@
 	                    		</table>
                     		</td>
                     		<td>
-                    			<span class="fa fa-recycle" @click="oderer($route.params.id, targetedClasseSubject, trimestre)"></span>
+                    			<span class="fa fa-recycle" @click="oderer($route.params.id, targetedClasseSubject)"></span>
                     		</td>
                     	</tr>
                     	<tr class="border-bottom border-white-50" v-for="(pupil, k) in targetedClasse.pupils">
@@ -272,7 +315,7 @@
 </template>
 <script>
 	import { mapState } from 'vuex'
-	import averageComputor from '../../../helpers/helpers.js'
+	// import averageComputor from '../../../helpers/helpers.js'
 
 	export default{
 		data() {
@@ -281,13 +324,26 @@
             	range: false,
             	modality: false,
             	computedAVG: false,
+            	trimestre: 1,
+            	LoadedPage: false
             }   
         },
         created(){
-            this.$store.dispatch('getAClasseData', this.$route.params.id)
-            this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
-            this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
-			this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
+        	let id
+
+        	if (this.$route.params.s) {
+        		this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
+				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+        	}
+        	if (!this.$route.params.id) {
+        		id = this.targetedClasse.classe.id
+        	}
+        	else{
+        		id = this.$route.params.id
+        	}
+            this.$store.dispatch('getAClasseData', id)
+            
         },
 
 		methods: {
@@ -295,9 +351,18 @@
 				return this.showOptions = !this.showOptions
 			},
 			toggleComputing(){
+				this.LoadedPage = true
+				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
+				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+				setTimeout(() =>{
+					this.LoadedPage = false
+				}, 1000)
 				return this.computedAVG = !this.computedAVG
+				
 			},
 			editedPupilClasseAndSubjectMarks(pupil, subject){
+				this.computedAVG = !this.computedAVG
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
 				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
 				this.$store.commit('SET_EDITED_PUPIL', pupil)
@@ -319,14 +384,23 @@
                     })
                 })
 			},
-			updateTargetedSubject(subject = this.$route.params.s){
+			updateTargetedSubject(subject){
+				this.LoadedPage = true
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
 				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject)
-				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+				setTimeout(() =>{
+					this.LoadedPage = false
+				}, 2000)
 			},
-			updateTargetedTrimestre(subject = this.$route.params.s, trimestre){
+			updateTargetedTrimestre(trimestre){
 				this.trimestre = trimestre
-				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
+				this.LoadedPage = true
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.trimestre})
+				setTimeout(() =>{
+					this.LoadedPage = false
+				}, 2000)
+				
 			},
 
 			isTheTargetedSubject(subject){
@@ -382,6 +456,8 @@
 				
 			},
 			getAverage(pupil, targetedClasseMarks, coefs = this.targetedClasseSubjectsCoef, subject = this.targetedClasseSubject, subjectWithModalities = this.subjectWithModalities){
+				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject)
+				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject)
 				let marksAll = targetedClasseMarks
 				let type = "epe"
 				let interros = []
@@ -471,25 +547,28 @@
 
 			},
 
-			oderer(classe, subject = this.$route.params.s, trimestre){
+			oderer(classe, subject = this.$route.params.s){
+				let trimestre = this.$route.params.t
+				this.LoadedPage = true
 				this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s)
+				this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s)
 				this.$store.dispatch('getOderer', {classe: classe, subject: this.$route.params.s, trimestre: trimestre})
 				this.range = true
-				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: this.$route.params.t})
+				this.computedAVG = true
+				this.$store.dispatch('getAClasseMarks', {classe: this.$route.params.id, subject: this.$route.params.s, trimestre: trimestre})
+				setTimeout(() =>{
+					this.LoadedPage = false
+				}, 2000)
 
 			},
 
 			changeModality(action = null){
+				this.range = false
 				this.$store.commit('RESET_MODALITY_ALERT', {status: true, message: ''})
 				this.modality = !this.modality
 			},
 
 			resetAllModality(){
-				let tab = [5, 12, 14, 8, 20]
-				
-
-
-				
 
 			},
 
@@ -602,6 +681,7 @@
             }
 
 		},
+		
 
 		computed: mapState([
             'allClasses', 'successed', 'invalidInputs', 'errors', 'targetedClasse', 'targetedClasseMarks', 'targetedClasseSubject', 'targetedClasseSubjectsCoef', 'targetPupilMarks', 'editedPupil', 'editedPupilSubjectMarks', 'editedPupilClasseMarks', 'targetedClasseModality', 'token', 'alertModality', 'subjectWithModalities'

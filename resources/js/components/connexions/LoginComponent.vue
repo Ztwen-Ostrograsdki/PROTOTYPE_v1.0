@@ -17,14 +17,14 @@
 		        	<div class="mx-auto mt-2 d-flex justify-content-between" style="width: 93%">
                         <div class="mx-auto w-100">
                             <label for="log_add" class="m-0 p-0">Adresse E-mail</label>
-                            <input type="text" class="m-0 p-0 form-control p-1" :class="emailIsValid()" name="add" id="log_add" placeholder="Veuillez renseigner votre adresse électronique" v-model="valideAdd">
+                            <input autocomplete="" type="text" class="m-0 p-0 form-control p-1" :class="emailIsValid()" name="add" id="log_add" placeholder="Veuillez renseigner votre adresse électronique" v-model="valideAdd">
                             <i class="h5-title" v-if="wrongAdd"> L'adresse que vous renseigner est invalide </i>
                         </div>
                     </div>
                     <div class="mx-auto mt-2 d-flex justify-content-between" style="width: 93%">
                         <div class="mx-auto w-100">
                             <label for="log_pwd" class="m-0 p-0">Mot de Passe</label>
-                            <input type="password" class="m-0 p-0 form-control p-1" :class="getInvalids(invalidInputs)" name="pwd" id="log_pwd" placeholder="Veuillez renseigner votre mot de passe" v-model="password">
+                            <input autocomplete="" type="password" class="m-0 p-0 form-control p-1" :class="getInvalids(invalidInputs)" name="pwd" id="log_pwd" placeholder="Veuillez renseigner votre mot de passe" v-model="password">
                         </div>
                         
                     </div>

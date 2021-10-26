@@ -23,12 +23,12 @@
 					<span class="float-right fa fa-recycle mx-2 text-danger" title="Nettoyer le tableau de bord des emplois du temps" @click="resetHoraires({classe: null, year: 2020})"></span>
 				</span>
 			</h3>
-			<div class="mx-auto w-100 mt-2">
-				<table class="w-100 table-table table-striped table-plan">
+			<div class="mx-auto w-100 mt-2 emploi-du-temps"  >
+				<table class="table-table table-striped table-plan">
 					<thead>
-						<th class="border border-right">Gpes Pque</th>
-						<th class="h5-title border border-right" style="width: 12.5%" v-for="classe in secondaryClassesFormatted">
-							<table class="w-100 text-center">
+						<th class="border border-right" style="width: 100px">Gpes Pque</th>
+						<th class="h5-title border border-right" style="" v-for="classe in secondaryClassesFormatted">
+							<table class="text-center">
 								<thead class="w-100">
 									<th class="w-100 p-0 m-0" colspan="5">
 										<span class="">
@@ -269,6 +269,12 @@
 	}
 
 	.t-contents tbody tr td{
-		width: 20%;
+		/*width: 20%;*/
 	}
-	</style>
+	.emploi-du-temps{
+		overflow-x: scroll;
+	}
+	.emploi-du-temps .table-plan{
+		width: 2000px;
+	}
+</style>

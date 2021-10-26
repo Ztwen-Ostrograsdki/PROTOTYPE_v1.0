@@ -4249,18 +4249,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: [],
@@ -4279,20 +4267,18 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {},
   methods: {
     getRouteForPupil: function getRouteForPupil(pupil) {
-      if (pupil !== null) {
+      var id = 1;
+
+      if (pupil !== null && pupil !== undefined) {
+        id = pupil.id;
         return {
           name: 'pupilsProfil',
-          id: pupil.id
-        };
-      } else {
-        return {
-          name: 'pupilsProfil',
-          id: 2
+          id: id
         };
       }
     },
     getRouteForTeacher: function getRouteForTeacher(id) {
-      if (id !== null) {
+      if (id !== undefined) {
         return {
           name: 'teachersProfil',
           id: id
@@ -4400,7 +4386,6 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _helpers_helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../helpers/helpers.js */ "./resources/js/helpers/helpers.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -4681,7 +4666,50 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+ // import averageComputor from '../../../helpers/helpers.js'
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -4689,27 +4717,54 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       showOptions: false,
       range: false,
       modality: false,
-      computedAVG: false
+      computedAVG: false,
+      trimestre: 1,
+      LoadedPage: false
     };
   },
   created: function created() {
-    this.$store.dispatch('getAClasseData', this.$route.params.id);
-    this.$store.dispatch('getAClasseMarks', {
-      classe: this.$route.params.id,
-      subject: this.$route.params.s,
-      trimestre: this.$route.params.t
-    });
-    this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
-    this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s);
+    var id;
+
+    if (this.$route.params.s) {
+      this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
+      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s);
+      this.$store.dispatch('getAClasseMarks', {
+        classe: this.$route.params.id,
+        subject: this.$route.params.s,
+        trimestre: this.trimestre
+      });
+    }
+
+    if (!this.$route.params.id) {
+      id = this.targetedClasse.classe.id;
+    } else {
+      id = this.$route.params.id;
+    }
+
+    this.$store.dispatch('getAClasseData', id);
   },
   methods: {
     toggleOptions: function toggleOptions() {
       return this.showOptions = !this.showOptions;
     },
     toggleComputing: function toggleComputing() {
+      var _this = this;
+
+      this.LoadedPage = true;
+      this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
+      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s);
+      this.$store.dispatch('getAClasseMarks', {
+        classe: this.$route.params.id,
+        subject: this.$route.params.s,
+        trimestre: this.trimestre
+      });
+      setTimeout(function () {
+        _this.LoadedPage = false;
+      }, 1000);
       return this.computedAVG = !this.computedAVG;
     },
     editedPupilClasseAndSubjectMarks: function editedPupilClasseAndSubjectMarks(pupil, subject) {
+      this.computedAVG = !this.computedAVG;
       this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
       this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s);
       this.$store.commit('SET_EDITED_PUPIL', pupil);
@@ -4735,25 +4790,34 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         });
       });
     },
-    updateTargetedSubject: function updateTargetedSubject() {
-      var subject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.$route.params.s;
+    updateTargetedSubject: function updateTargetedSubject(subject) {
+      var _this2 = this;
+
+      this.LoadedPage = true;
       this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject);
       this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject);
       this.$store.dispatch('getAClasseMarks', {
         classe: this.$route.params.id,
         subject: this.$route.params.s,
-        trimestre: this.$route.params.t
+        trimestre: this.trimestre
       });
+      setTimeout(function () {
+        _this2.LoadedPage = false;
+      }, 2000);
     },
-    updateTargetedTrimestre: function updateTargetedTrimestre() {
-      var subject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.$route.params.s;
-      var trimestre = arguments.length > 1 ? arguments[1] : undefined;
+    updateTargetedTrimestre: function updateTargetedTrimestre(trimestre) {
+      var _this3 = this;
+
       this.trimestre = trimestre;
+      this.LoadedPage = true;
       this.$store.dispatch('getAClasseMarks', {
         classe: this.$route.params.id,
         subject: this.$route.params.s,
-        trimestre: this.$route.params.t
+        trimestre: this.trimestre
       });
+      setTimeout(function () {
+        _this3.LoadedPage = false;
+      }, 2000);
     },
     isTheTargetedSubject: function isTheTargetedSubject(subject) {
       return subject == this.$route.params.s ? 'border-warning btn-primary' : 'btn-secondary';
@@ -4801,6 +4865,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       var coefs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.targetedClasseSubjectsCoef;
       var subject = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.targetedClasseSubject;
       var subjectWithModalities = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : this.subjectWithModalities;
+      this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', subject);
+      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', subject);
       var marksAll = targetedClasseMarks;
       var type = "epe";
       var interros = [];
@@ -4897,32 +4963,39 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }
     },
     oderer: function oderer(classe) {
+      var _this4 = this;
+
       var subject = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.$route.params.s;
-      var trimestre = arguments.length > 2 ? arguments[2] : undefined;
+      var trimestre = this.$route.params.t;
+      this.LoadedPage = true;
       this.$store.commit('RESET_TARGETED_CLASSE_SUBJECT_TARGETED', this.$route.params.s);
+      this.$store.commit('RESET_TARGETED_PUPIL_SUBJECT_MARKS', this.$route.params.s);
       this.$store.dispatch('getOderer', {
         classe: classe,
         subject: this.$route.params.s,
         trimestre: trimestre
       });
       this.range = true;
+      this.computedAVG = true;
       this.$store.dispatch('getAClasseMarks', {
         classe: this.$route.params.id,
         subject: this.$route.params.s,
-        trimestre: this.$route.params.t
+        trimestre: trimestre
       });
+      setTimeout(function () {
+        _this4.LoadedPage = false;
+      }, 2000);
     },
     changeModality: function changeModality() {
       var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      this.range = false;
       this.$store.commit('RESET_MODALITY_ALERT', {
         status: true,
         message: ''
       });
       this.modality = !this.modality;
     },
-    resetAllModality: function resetAllModality() {
-      var tab = [5, 12, 14, 8, 20];
-    },
+    resetAllModality: function resetAllModality() {},
     getBest: function getBest(tab, limit) {
       var bestMarks = [];
 
@@ -9622,11 +9695,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      classeID: 0
+      classeID: 0,
+      LoadedPage: false,
+      trimestre: 1
     };
   },
   created: function created() {
@@ -9636,6 +9716,7 @@ __webpack_require__.r(__webpack_exports__);
       route: this.$route.params.id,
       trimestre: this.$route.params.trimestre
     });
+    this.trimestre = this.$route.params.trimestre;
     axios.get('/admin/director/pupilsm/get&classe&of&pupil&with&data&credentials/id=' + this.$route.params.id).then(function (response) {
       _this.$store.commit('GET_A_PUPIL_DATA', response.data);
 
@@ -9644,13 +9725,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     setTrimestre: function setTrimestre(trimestre) {
+      var _this2 = this;
+
+      this.LoadedPage = true;
+      this.trimestre = trimestre;
       this.$store.dispatch('getAPupilDataAndMarks', {
         route: this.$route.params.id,
         trimestre: trimestre
       });
+      this.$store.dispatch('getAPupilDataAndMarks', {
+        route: this.$route.params.id,
+        trimestre: trimestre
+      });
+      setTimeout(function () {
+        _this2.LoadedPage = false;
+      }, 2000);
     },
     getTrimestre: function getTrimestre(trimestre) {
-      return trimestre == this.$route.params.trimestre ? 'btn-primary' : 'btn-secondary';
+      return trimestre == this.$route.params.trimestre ? 'btn-warning text-dark' : 'btn-secondary';
     }
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'targetPupilMarks', 'editedPupilSubjects', 'editedPupil', 'targetPupilLastMark', 'targetPupilLastMarkSuject', 'targetPupilBestMark', 'targetPupilBestMarkSuject', 'targetPupilWeakMark', 'targetPupilWeakMarkSuject', 'targetPupilPercentageSuccedMarks'])
@@ -9675,6 +9767,14 @@ $(function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _helpers_helpers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../helpers/helpers.js */ "./resources/js/helpers/helpers.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 //
 //
 //
@@ -9818,6 +9918,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {};
   },
+  created: function created() {},
   methods: {
     getSujectMarks: function getSujectMarks(subject, type, id) {
       var marks = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.targetPupilMarks;
@@ -9855,10 +9956,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     getEPPAverage: function getEPPAverage(subject) {
       var marks = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.targetPupilMarks;
+      var modality = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 5;
       var type = "epe";
       var all = [];
+      var selectedMarks = [];
       var som = 0;
       var avg = 0;
+
+      if (marks !== null && marks[subject.id] && marks[subject.id]['modality'] !== null) {
+        modality = marks[subject.id]['modality'];
+      }
 
       if (marks[subject.id] !== undefined) {
         for (var i = 0; i < marks[subject.id][type].length; i++) {
@@ -9866,6 +9973,8 @@ __webpack_require__.r(__webpack_exports__);
             all.push(marks[subject.id][type][i].value);
           }
         }
+
+        all = this.getBestMarks(all, modality);
 
         for (var i = 0; i < all.length; i++) {
           som += all[i];
@@ -9886,10 +9995,73 @@ __webpack_require__.r(__webpack_exports__);
     },
     getAverage: function getAverage(subject) {
       var marks = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.targetPupilMarks;
-      return Object(_helpers_helpers_js__WEBPACK_IMPORTED_MODULE_1__["default"])(subject, marks);
+      var modality = 5;
+
+      if (marks !== null && marks[subject.id] && marks[subject.id]['modality'] !== null) {
+        modality = marks[subject.id]['modality'];
+      }
+
+      return Object(_helpers_helpers_js__WEBPACK_IMPORTED_MODULE_1__["default"])(subject, marks, modality);
+    },
+    getBestMarks: function getBestMarks() {
+      var marks = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      var modality = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 5;
+      var bestMarks = [];
+
+      if (marks.length < modality) {
+        bestMarks = marks;
+      } else {
+        while (bestMarks.length < modality) {
+          for (var i = 0; i < marks.length; i++) {
+            if (marks[i] == Math.max.apply(Math, _toConsumableArray(marks))) {
+              bestMarks.push(marks[i]);
+              marks.splice(i, 1);
+            }
+          }
+        }
+      }
+
+      return bestMarks;
+    },
+    getMarkStatus: function getMarkStatus(subject, markIndex) {
+      var marksTab = this.targetPupilMarks;
+      var marks = [];
+      var modality = 5;
+      var mark = Number(this.getSujectMarks(subject, 'epe', markIndex, marksTab));
+      var text = '';
+
+      if (marksTab !== null && marksTab[subject.id] && marksTab[subject.id]['modality'] !== null) {
+        modality = marksTab[subject.id]['modality'];
+      }
+
+      if (marksTab[subject.id] !== undefined) {
+        for (var i = 0; i < marksTab[subject.id]['epe'].length; i++) {
+          marks.push(marksTab[subject.id]['epe'][i].value);
+        }
+      }
+
+      var bestMarks = this.getBestMarks(marks, modality);
+
+      if (marks !== []) {
+        if (marks.length < modality) {
+          text = 'text-success';
+        }
+      }
+
+      if (bestMarks.indexOf(mark) == -1) {
+        text = 'text-warning';
+      } else if (bestMarks.indexOf(mark) !== -1) {
+        text = 'text-success';
+      }
+
+      if (mark == '-' || isNaN(mark)) {
+        text = '';
+      }
+
+      return text;
     }
   },
-  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef', 'targetedClasseSubject'])
+  computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['targetPupilLastName', 'targetPupilFirstName', 'targetPupilClasseFMT', 'targetPupilBirthFMT', 'editedPupilSubjects', 'editedPupil', 'targetPupilMarks', 'editedPupilSubjectMarks', 'editedPupilCoefTables', 'targetedClasseSubjectsCoef', 'targetedClasseSubject', 'subjectWithModalities'])
 });
 
 /***/ }),
@@ -15689,7 +15861,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../../node_module
 
 
 // module
-exports.push([module.i, "\n.table-plan th{\n\tpadding: 0 !important;\n\tpadding-bottom: 1px !important;\n\tpadding-top: 1px !important;\n}\n.td-days td{\n\tborder-right: thin solid white;\n}\n.t-contents tbody tr td{\n\twidth: 20%;\n}\n", ""]);
+exports.push([module.i, "\n.table-plan th{\n\tpadding: 0 !important;\n\tpadding-bottom: 1px !important;\n\tpadding-top: 1px !important;\n}\n.td-days td{\n\tborder-right: thin solid white;\n}\n.t-contents tbody tr td{\n\t/*width: 20%;*/\n}\n.emploi-du-temps{\n\toverflow-x: scroll;\n}\n.emploi-du-temps .table-plan{\n\twidth: 2000px;\n}\n", ""]);
 
 // exports
 
@@ -51939,866 +52111,833 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "mx-auto w-100 mt-2" }, [
-          _c(
-            "table",
-            { staticClass: "w-100 table-table table-striped table-plan" },
-            [
-              _c(
-                "thead",
-                [
-                  _c("th", { staticClass: "border border-right" }, [
-                    _vm._v("Gpes Pque")
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                    return _c(
-                      "th",
-                      {
-                        staticClass: "h5-title border border-right",
-                        staticStyle: { width: "12.5%" }
-                      },
-                      [
-                        _c("table", { staticClass: "w-100 text-center" }, [
-                          _c("thead", { staticClass: "w-100" }, [
-                            _c(
-                              "th",
-                              {
-                                staticClass: "w-100 p-0 m-0",
-                                attrs: { colspan: "5" }
-                              },
-                              [
-                                _c("span", {}, [
-                                  _vm._v(
-                                    "\n\t\t\t\t\t\t\t\t\t\t" +
-                                      _vm._s(classe.name)
-                                  ),
-                                  _c("sup", [_vm._v(_vm._s(classe.sup))]),
-                                  _vm._v(
-                                    " " +
-                                      _vm._s(classe.idc) +
-                                      " \n\t\t\t\t\t\t\t\t\t"
-                                  )
-                                ])
-                              ]
-                            )
-                          ])
-                        ])
-                      ]
-                    )
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                { staticClass: "text-center w-100 t-contents h5-title" },
-                [
-                  _c(
-                    "tr",
-                    {},
+        _c("div", { staticClass: "mx-auto w-100 mt-2 emploi-du-temps" }, [
+          _c("table", { staticClass: "table-table table-striped table-plan" }, [
+            _c(
+              "thead",
+              [
+                _c(
+                  "th",
+                  {
+                    staticClass: "border border-right",
+                    staticStyle: { width: "100px" }
+                  },
+                  [_vm._v("Gpes Pque")]
+                ),
+                _vm._v(" "),
+                _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                  return _c(
+                    "th",
+                    { staticClass: "h5-title border border-right" },
                     [
-                      _c("td", [_vm._v("Jours")]),
+                      _c("table", { staticClass: "text-center" }, [
+                        _c("thead", { staticClass: "w-100" }, [
+                          _c(
+                            "th",
+                            {
+                              staticClass: "w-100 p-0 m-0",
+                              attrs: { colspan: "5" }
+                            },
+                            [
+                              _c("span", {}, [
+                                _vm._v(
+                                  "\n\t\t\t\t\t\t\t\t\t\t" + _vm._s(classe.name)
+                                ),
+                                _c("sup", [_vm._v(_vm._s(classe.sup))]),
+                                _vm._v(
+                                  " " +
+                                    _vm._s(classe.idc) +
+                                    " \n\t\t\t\t\t\t\t\t\t"
+                                )
+                              ])
+                            ]
+                          )
+                        ])
+                      ])
+                    ]
+                  )
+                })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              { staticClass: "text-center w-100 t-contents h5-title" },
+              [
+                _c(
+                  "tr",
+                  {},
+                  [
+                    _c("td", [_vm._v("Jours")]),
+                    _vm._v(" "),
+                    _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                      return _c("td", [_vm._m(1, true)])
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _vm._l(_vm.first_mornings, function(hour) {
+                  return _c(
+                    "tr",
+                    { staticClass: "t-contents w-100" },
+                    [
+                      _c("td", [_vm._v(_vm._s(hour))]),
                       _vm._v(" "),
                       _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                        return _c("td", [_vm._m(1, true)])
+                        return _c("td", [
+                          _c("table", { staticClass: "w-100" }, [
+                            _c("tbody", { staticClass: "w-100" }, [
+                              _c("tr", { staticClass: "w-100" }, [
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Lundi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Lundi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Lundi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Lundi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mardi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Mardi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mardi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mardi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mercredi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Mercredi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mercredi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mercredi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Jeudi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Jeudi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Jeudi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Jeudi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Vendredi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Vendredi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Vendredi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Vendredi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e()
+                              ])
+                            ])
+                          ])
+                        ])
                       })
                     ],
                     2
-                  ),
-                  _vm._v(" "),
-                  _vm._l(_vm.first_mornings, function(hour) {
-                    return _c(
-                      "tr",
-                      { staticClass: "t-contents w-100" },
-                      [
-                        _c("td", [_vm._v(_vm._s(hour))]),
-                        _vm._v(" "),
-                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                          return _c("td", [
-                            _c("table", { staticClass: "w-100" }, [
-                              _c("tbody", { staticClass: "w-100" }, [
-                                _c("tr", { staticClass: "w-100" }, [
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Lundi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Lundi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Mardi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Mardi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Mercredi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Mercredi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Jeudi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Jeudi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Vendredi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Vendredi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e()
-                                ])
+                  )
+                }),
+                _vm._v(" "),
+                _vm._m(2),
+                _vm._v(" "),
+                _vm._l(_vm.second_mornings, function(hour) {
+                  return _c(
+                    "tr",
+                    { staticClass: "t-contents w-100" },
+                    [
+                      _c("td", [_vm._v(_vm._s(hour))]),
+                      _vm._v(" "),
+                      _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                        return _c("td", [
+                          _c("table", { staticClass: "w-100" }, [
+                            _c("tbody", { staticClass: "w-100" }, [
+                              _c("tr", { staticClass: "w-100" }, [
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Lundi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Lundi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Lundi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Lundi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mardi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Mardi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mardi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mardi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mercredi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Mercredi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mercredi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mercredi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Jeudi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Jeudi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Jeudi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Jeudi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Vendredi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Vendredi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Vendredi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Vendredi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e()
                               ])
                             ])
                           ])
-                        })
-                      ],
-                      2
-                    )
-                  }),
-                  _vm._v(" "),
-                  _vm._m(2),
-                  _vm._v(" "),
-                  _vm._l(_vm.second_mornings, function(hour) {
-                    return _c(
-                      "tr",
-                      { staticClass: "t-contents w-100" },
-                      [
-                        _c("td", [_vm._v(_vm._s(hour))]),
-                        _vm._v(" "),
-                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                          return _c("td", [
-                            _c("table", { staticClass: "w-100" }, [
-                              _c("tbody", { staticClass: "w-100" }, [
-                                _c("tr", { staticClass: "w-100" }, [
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Lundi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Lundi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Mardi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Mardi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Mercredi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Mercredi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Jeudi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Jeudi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Vendredi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Vendredi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e()
-                                ])
+                        ])
+                      })
+                    ],
+                    2
+                  )
+                }),
+                _vm._v(" "),
+                _vm._m(3),
+                _vm._v(" "),
+                _vm._l(_vm.afternoon, function(hour) {
+                  return _c(
+                    "tr",
+                    { staticClass: "t-contents w-100" },
+                    [
+                      _c("td", [_vm._v(_vm._s(hour))]),
+                      _vm._v(" "),
+                      _vm._l(_vm.secondaryClassesFormatted, function(classe) {
+                        return _c("td", [
+                          _c("table", { staticClass: "w-100" }, [
+                            _c("tbody", { staticClass: "w-100" }, [
+                              _c("tr", { staticClass: "w-100" }, [
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Lundi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Lundi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Lundi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Lundi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mardi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Mardi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mardi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mardi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mercredi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Mercredi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Mercredi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Mercredi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Jeudi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Jeudi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Jeudi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Jeudi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Vendredi",
+                                  _vm.horaires
+                                ) !== "x"
+                                  ? _c(
+                                      "td",
+                                      {
+                                        style:
+                                          "color:" +
+                                          _vm.getSubject(
+                                            classe["id"],
+                                            hour,
+                                            "Vendredi",
+                                            _vm.horaires
+                                          ).color
+                                      },
+                                      [
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.getSubject(
+                                                classe["id"],
+                                                hour,
+                                                "Vendredi",
+                                                _vm.horaires
+                                              ).name
+                                            ) +
+                                            " "
+                                        )
+                                      ]
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.getSubject(
+                                  classe["id"],
+                                  hour,
+                                  "Vendredi",
+                                  _vm.horaires
+                                ) == "x"
+                                  ? _c("td", { staticClass: "text-white-50" }, [
+                                      _vm._v(" x ")
+                                    ])
+                                  : _vm._e()
                               ])
                             ])
                           ])
-                        })
-                      ],
-                      2
-                    )
-                  }),
-                  _vm._v(" "),
-                  _vm._m(3),
-                  _vm._v(" "),
-                  _vm._l(_vm.afternoon, function(hour) {
-                    return _c(
-                      "tr",
-                      { staticClass: "t-contents w-100" },
-                      [
-                        _c("td", [_vm._v(_vm._s(hour))]),
-                        _vm._v(" "),
-                        _vm._l(_vm.secondaryClassesFormatted, function(classe) {
-                          return _c("td", [
-                            _c("table", { staticClass: "w-100" }, [
-                              _c("tbody", { staticClass: "w-100" }, [
-                                _c("tr", { staticClass: "w-100" }, [
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Lundi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Lundi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Lundi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Mardi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Mardi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mardi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Mercredi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Mercredi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Mercredi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Jeudi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Jeudi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Jeudi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) !== "x"
-                                    ? _c(
-                                        "td",
-                                        {
-                                          style:
-                                            "color:" +
-                                            _vm.getSubject(
-                                              classe["id"],
-                                              hour,
-                                              "Vendredi",
-                                              _vm.horaires
-                                            ).color
-                                        },
-                                        [
-                                          _vm._v(
-                                            " " +
-                                              _vm._s(
-                                                _vm.getSubject(
-                                                  classe["id"],
-                                                  hour,
-                                                  "Vendredi",
-                                                  _vm.horaires
-                                                ).name
-                                              ) +
-                                              " "
-                                          )
-                                        ]
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _vm.getSubject(
-                                    classe["id"],
-                                    hour,
-                                    "Vendredi",
-                                    _vm.horaires
-                                  ) == "x"
-                                    ? _c(
-                                        "td",
-                                        { staticClass: "text-white-50" },
-                                        [_vm._v(" x ")]
-                                      )
-                                    : _vm._e()
-                                ])
-                              ])
-                            ])
-                          ])
-                        })
-                      ],
-                      2
-                    )
-                  })
-                ],
-                2
-              )
-            ]
-          )
+                        ])
+                      })
+                    ],
+                    2
+                  )
+                })
+              ],
+              2
+            )
+          ])
         ])
       ]
     )
@@ -54350,7 +54489,7 @@ var render = function() {
                           ? _c(
                               "div",
                               {
-                                staticClass: "mx-1",
+                                staticClass: "mx-2",
                                 on: {
                                   click: function($event) {
                                     return _vm.toggleOptions(_vm.showOptions)
@@ -54359,7 +54498,7 @@ var render = function() {
                               },
                               [
                                 _c("span", {
-                                  staticClass: "fa fa-sliders float-right"
+                                  staticClass: "fa fa-sliders fa-2x float-right"
                                 })
                               ]
                             )
@@ -54369,7 +54508,7 @@ var render = function() {
                           ? _c(
                               "div",
                               {
-                                staticClass: "mx-1",
+                                staticClass: "mx-2",
                                 on: {
                                   click: function($event) {
                                     return _vm.toggleOptions(_vm.showOptions)
@@ -54378,7 +54517,8 @@ var render = function() {
                               },
                               [
                                 _c("span", {
-                                  staticClass: "fa fa-chevron-up float-right"
+                                  staticClass:
+                                    "fa fa-2x fa-chevron-up float-right"
                                 })
                               ]
                             )
@@ -54386,7 +54526,7 @@ var render = function() {
                         _vm._v(" "),
                         _c("div", { staticClass: "mx-1" }, [
                           _c("span", {
-                            staticClass: "float-right fa fa-user-plus",
+                            staticClass: "float-right fa fa-user-plus fa-2x",
                             attrs: {
                               title: "Ajouter un nouvel apprenant...",
                               "data-toggle": "modal",
@@ -54400,10 +54540,10 @@ var render = function() {
                           })
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "mx-1 refresh" }, [
+                        _c("div", { staticClass: "mx-2 refresh" }, [
                           _c("span", {
                             staticClass:
-                              "float-right fa fa-refresh text-danger",
+                              "float-right fa-2x fa fa-refresh text-danger",
                             attrs: {
                               title: "Rafraichir cette classe...",
                               "data-toggle": "modal",
@@ -54498,10 +54638,9 @@ var render = function() {
                                           },
                                           attrs: {
                                             to: {
-                                              name: "classeSubjectMarks",
+                                              name: "classeMarks",
                                               params: {
-                                                id: _vm.$route.params.id,
-                                                s: _vm.getSubject()
+                                                id: _vm.$route.params.id
                                               }
                                             }
                                           }
@@ -54512,82 +54651,7 @@ var render = function() {
                                               "fa fa-file-text fa-sm fa-fw mr-2"
                                           }),
                                           _vm._v(
-                                            "\n\t\t\t                              Les notes\n\t\t            \t\t\t\t\t"
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "a",
-                                        {
-                                          staticClass:
-                                            "w-100 my-1 hover link-float",
-                                          staticStyle: {
-                                            "border-radius": "30px"
-                                          },
-                                          attrs: { href: "" }
-                                        },
-                                        [
-                                          _c("i", {
-                                            staticClass:
-                                              "fa fa-line-chart fa-sm fa-fw mr-2"
-                                          }),
-                                          _vm._v(
-                                            "\n\t\t\t                              1"
-                                          ),
-                                          _c("sup", [_vm._v("er")]),
-                                          _vm._v(
-                                            " Trimestre\n\t\t\t                            "
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "a",
-                                        {
-                                          staticClass:
-                                            "w-100 my-1 hover link-float",
-                                          staticStyle: {
-                                            "border-radius": "30px"
-                                          },
-                                          attrs: { href: "" }
-                                        },
-                                        [
-                                          _c("i", {
-                                            staticClass:
-                                              "fa fa-line-chart fa-sm fa-fw mr-2"
-                                          }),
-                                          _vm._v(
-                                            "\n\t\t\t                              2"
-                                          ),
-                                          _c("sup", [_vm._v("ème")]),
-                                          _vm._v(
-                                            " Trimestre\n\t\t\t                            "
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "a",
-                                        {
-                                          staticClass:
-                                            "w-100 my-1 hover link-float",
-                                          staticStyle: {
-                                            "border-radius": "30px"
-                                          },
-                                          attrs: { href: "" }
-                                        },
-                                        [
-                                          _c("i", {
-                                            staticClass:
-                                              "fa fa-line-chart fa-sm fa-fw mr-2"
-                                          }),
-                                          _vm._v(
-                                            "\n\t\t\t                              3"
-                                          ),
-                                          _c("sup", [_vm._v("ème")]),
-                                          _vm._v(
-                                            " Trimestre\n\t\t\t                            "
+                                            "\n\t\t\t                              Les Notes\n\t\t            \t\t\t\t\t"
                                           )
                                         ]
                                       ),
@@ -55603,43 +55667,80 @@ var render = function() {
                     "div",
                     { staticClass: "w-100 float-left" },
                     [
-                      !_vm.showOptions
-                        ? _c(
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "d-flex justify-content-around w-50 mx-auto"
+                        },
+                        [
+                          _c(
                             "div",
-                            {
-                              staticClass: "text-right w-100 ml-2",
-                              on: {
-                                click: function($event) {
-                                  return _vm.toggleOptions()
-                                }
-                              }
-                            },
+                            { staticClass: "text-right m-0 p-0 px-2" },
                             [
-                              _c("span", {
-                                staticClass: "fa fa-sliders float-right"
-                              })
-                            ]
-                          )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _vm.showOptions
-                        ? _c(
-                            "div",
-                            {
-                              staticClass: "text-right w-100 ml-2",
-                              on: {
-                                click: function($event) {
-                                  return _vm.toggleOptions()
-                                }
-                              }
-                            },
-                            [
-                              _c("span", {
-                                staticClass: "fa fa-chevron-up float-right"
-                              })
-                            ]
-                          )
-                        : _vm._e(),
+                              _c(
+                                "router-link",
+                                {
+                                  staticClass: "w-100 hover link-float",
+                                  staticStyle: { "border-radius": "30px" },
+                                  attrs: {
+                                    to: {
+                                      name: "classesProfil",
+                                      params: {
+                                        id: _vm.targetedClasse.classe.id
+                                      }
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("span", {
+                                    staticClass: "fa fa-home fa-2x"
+                                  })
+                                ]
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          !_vm.showOptions
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass: "text-right pl-1",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.toggleOptions()
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("span", {
+                                    staticClass: "fa fa-sliders fa-2x"
+                                  })
+                                ]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.showOptions
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass: "text-right pl-1",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.toggleOptions()
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("span", {
+                                    staticClass: "fa fa-chevron-up fa-2x"
+                                  })
+                                ]
+                              )
+                            : _vm._e()
+                        ]
+                      ),
                       _vm._v(" "),
                       _c(
                         "transition",
@@ -55653,12 +55754,12 @@ var render = function() {
                                     "login-profil  position-absolute border border-white",
                                   staticStyle: {
                                     width: "250px",
-                                    top: "165px",
+                                    top: "200px",
                                     left: "18px",
                                     "z-index": "100",
                                     "background-image":
                                       "url(/media/img/art-2578353_1920.jpg) !important",
-                                    "background-position": "-200px 300px"
+                                    "background-position": "-400px 300px"
                                   }
                                 },
                                 [
@@ -55685,69 +55786,32 @@ var render = function() {
                                       ]
                                     ),
                                     _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      { staticClass: "w-100 border" },
-                                      [
-                                        _c(
-                                          "a",
-                                          {
-                                            staticClass:
-                                              "w-100 my-1 hover link-float",
-                                            staticStyle: {
-                                              "border-radius": "30px"
-                                            },
-                                            attrs: { href: "" }
-                                          },
+                                    _vm.targetedClasse.classe
+                                      ? _c(
+                                          "div",
+                                          { staticClass: "w-100 border" },
                                           [
-                                            _c("i", {
-                                              staticClass:
-                                                "fas fa-cogs fa-sm fa-fw mr-2"
-                                            }),
-                                            _vm._v(
-                                              "\n\t\t\t\t                              Administation\n\t\t\t\t                            "
-                                            )
-                                          ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "router-link",
-                                          {
-                                            staticClass:
-                                              "w-100 my-1 hover link-float",
-                                            staticStyle: {
-                                              "border-radius": "30px"
-                                            },
-                                            attrs: {
-                                              to:
-                                                "/admin/director/classesm/" +
-                                                _vm.targetedClasse.classe.id +
-                                                "/marks/index"
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "fa fa-file-text fa-sm fa-fw mr-2"
-                                            }),
-                                            _vm._v(
-                                              "\n\t\t\t\t                              Les notes\n\t\t\t            \t\t\t\t\t"
-                                            )
-                                          ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "span",
-                                          {
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.updateTargetedTrimestre(
-                                                  1
+                                            _c(
+                                              "a",
+                                              {
+                                                staticClass:
+                                                  "w-100 my-1 hover link-float",
+                                                staticStyle: {
+                                                  "border-radius": "30px"
+                                                },
+                                                attrs: { href: "" }
+                                              },
+                                              [
+                                                _c("i", {
+                                                  staticClass:
+                                                    "fas fa-cogs fa-sm fa-fw mr-2"
+                                                }),
+                                                _vm._v(
+                                                  "\n\t\t\t\t                              Administation\n\t\t\t\t                            "
                                                 )
-                                              }
-                                            }
-                                          },
-                                          [
+                                              ]
+                                            ),
+                                            _vm._v(" "),
                                             _c(
                                               "router-link",
                                               {
@@ -55757,70 +55821,192 @@ var render = function() {
                                                   "border-radius": "30px"
                                                 },
                                                 attrs: {
-                                                  to: {
-                                                    name: "classeSubjectMarks",
-                                                    params: {
-                                                      id:
-                                                        _vm.targetedClasse
-                                                          .classe.id,
-                                                      s:
-                                                        _vm.targetedClasseSubject,
-                                                      t: 1
-                                                    }
-                                                  }
+                                                  to:
+                                                    "/admin/director/classesm/" +
+                                                    _vm.targetedClasse.classe
+                                                      .id +
+                                                    "/marks/index"
                                                 }
                                               },
                                               [
                                                 _c("i", {
                                                   staticClass:
-                                                    "fa fa-line-chart fa-sm fa-fw mr-2"
+                                                    "fa fa-file-text fa-sm fa-fw mr-2"
                                                 }),
                                                 _vm._v(
-                                                  "\n\t\t\t\t                              \t1"
-                                                ),
-                                                _c("sup", [_vm._v("er")]),
-                                                _vm._v(
-                                                  " Trimestre\n\t\t\t            \t\t\t\t\t"
+                                                  "\n\t\t\t\t                              Les notes\n\t\t\t            \t\t\t\t\t"
                                                 )
                                               ]
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "span",
-                                          {
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.updateTargetedTrimestre(
-                                                  2
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
+                                            ),
+                                            _vm._v(" "),
                                             _c(
-                                              "router-link",
+                                              "span",
+                                              {
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.updateTargetedTrimestre(
+                                                      1
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _c(
+                                                  "router-link",
+                                                  {
+                                                    staticClass:
+                                                      "w-100 my-1 hover link-float",
+                                                    staticStyle: {
+                                                      "border-radius": "30px"
+                                                    },
+                                                    attrs: {
+                                                      to: {
+                                                        name:
+                                                          "classeSubjectMarks",
+                                                        params: {
+                                                          id:
+                                                            _vm.targetedClasse
+                                                              .classe.id,
+                                                          s:
+                                                            _vm.targetedClasseSubject,
+                                                          t: 1
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("i", {
+                                                      staticClass:
+                                                        "fa fa-line-chart fa-sm fa-fw mr-2"
+                                                    }),
+                                                    _vm._v(
+                                                      "\n\t\t\t\t                              \t1"
+                                                    ),
+                                                    _c("sup", [_vm._v("er")]),
+                                                    _vm._v(
+                                                      " Trimestre\n\t\t\t            \t\t\t\t\t"
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "span",
+                                              {
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.updateTargetedTrimestre(
+                                                      2
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _c(
+                                                  "router-link",
+                                                  {
+                                                    staticClass:
+                                                      "w-100 my-1 hover link-float",
+                                                    staticStyle: {
+                                                      "border-radius": "30px"
+                                                    },
+                                                    attrs: {
+                                                      to: {
+                                                        name:
+                                                          "classeSubjectMarks",
+                                                        params: {
+                                                          id:
+                                                            _vm.targetedClasse
+                                                              .classe.id,
+                                                          s:
+                                                            _vm.targetedClasseSubject,
+                                                          t: 2
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("i", {
+                                                      staticClass:
+                                                        "fa fa-line-chart fa-sm fa-fw mr-2"
+                                                    }),
+                                                    _vm._v(
+                                                      "\n\t\t\t\t                              \t2"
+                                                    ),
+                                                    _c("sup", [_vm._v("ème")]),
+                                                    _vm._v(
+                                                      " Trimestre\n\t\t\t            \t\t\t\t\t"
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "span",
+                                              {
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.updateTargetedTrimestre(
+                                                      3
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _c(
+                                                  "router-link",
+                                                  {
+                                                    staticClass:
+                                                      "w-100 my-1 hover link-float",
+                                                    staticStyle: {
+                                                      "border-radius": "30px"
+                                                    },
+                                                    attrs: {
+                                                      to: {
+                                                        name:
+                                                          "classeSubjectMarks",
+                                                        params: {
+                                                          id:
+                                                            _vm.targetedClasse
+                                                              .classe.id,
+                                                          s:
+                                                            _vm.targetedClasseSubject,
+                                                          t: 3
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("i", {
+                                                      staticClass:
+                                                        "fa fa-line-chart fa-sm fa-fw mr-2"
+                                                    }),
+                                                    _vm._v(
+                                                      "\n\t\t\t\t                              \t3"
+                                                    ),
+                                                    _c("sup", [_vm._v("ème")]),
+                                                    _vm._v(
+                                                      " Trimestre\n\t\t\t            \t\t\t\t\t"
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "a",
                                               {
                                                 staticClass:
                                                   "w-100 my-1 hover link-float",
                                                 staticStyle: {
                                                   "border-radius": "30px"
                                                 },
-                                                attrs: {
-                                                  to: {
-                                                    name: "classeSubjectMarks",
-                                                    params: {
-                                                      id:
-                                                        _vm.targetedClasse
-                                                          .classe.id,
-                                                      s:
-                                                        _vm.targetedClasseSubject,
-                                                      t: 2
-                                                    }
-                                                  }
-                                                }
+                                                attrs: { href: "" }
                                               },
                                               [
                                                 _c("i", {
@@ -55828,134 +56014,55 @@ var render = function() {
                                                     "fa fa-line-chart fa-sm fa-fw mr-2"
                                                 }),
                                                 _vm._v(
-                                                  "\n\t\t\t\t                              \t2"
-                                                ),
-                                                _c("sup", [_vm._v("ème")]),
-                                                _vm._v(
-                                                  " Trimestre\n\t\t\t            \t\t\t\t\t"
+                                                  "\n\t\t\t\t                              Scolarité\n\t\t\t\t                            "
                                                 )
                                               ]
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "span",
-                                          {
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.updateTargetedTrimestre(
-                                                  3
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
+                                            ),
+                                            _vm._v(" "),
                                             _c(
-                                              "router-link",
+                                              "a",
                                               {
                                                 staticClass:
-                                                  "w-100 my-1 hover link-float",
-                                                staticStyle: {
-                                                  "border-radius": "30px"
-                                                },
-                                                attrs: {
-                                                  to: {
-                                                    name: "classeSubjectMarks",
-                                                    params: {
-                                                      id:
-                                                        _vm.targetedClasse
-                                                          .classe.id,
-                                                      s:
-                                                        _vm.targetedClasseSubject,
-                                                      t: 3
-                                                    }
-                                                  }
-                                                }
+                                                  "w-100 py-1 hover link-float",
+                                                attrs: { href: "#" }
                                               },
                                               [
                                                 _c("i", {
                                                   staticClass:
-                                                    "fa fa-line-chart fa-sm fa-fw mr-2"
+                                                    "fas fa-list fa-sm fa-fw mr-2"
                                                 }),
                                                 _vm._v(
-                                                  "\n\t\t\t\t                              \t3"
-                                                ),
-                                                _c("sup", [_vm._v("ème")]),
-                                                _vm._v(
-                                                  " Trimestre\n\t\t\t            \t\t\t\t\t"
+                                                  "\n\t\t\t\t                          Activity Log\n\t\t\t\t                        "
                                                 )
                                               ]
-                                            )
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "a",
+                                              {
+                                                staticClass:
+                                                  "w-100 py-1 pb-2 hover border-top link-float",
+                                                attrs: { href: "" }
+                                              },
+                                              [
+                                                _c("i", {
+                                                  staticClass:
+                                                    "fas fa-sign-out-alt fa-sm fa-fw mr-2"
+                                                }),
+                                                _vm._v(
+                                                  "\n\t\t\t\t                          Fermer cette classe\n\t\t\t\t                        "
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("form", {
+                                              staticStyle: { display: "none" },
+                                              attrs: { action: "" }
+                                            })
                                           ],
                                           1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "a",
-                                          {
-                                            staticClass:
-                                              "w-100 my-1 hover link-float",
-                                            staticStyle: {
-                                              "border-radius": "30px"
-                                            },
-                                            attrs: { href: "" }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "fa fa-line-chart fa-sm fa-fw mr-2"
-                                            }),
-                                            _vm._v(
-                                              "\n\t\t\t\t                              Scolarité\n\t\t\t\t                            "
-                                            )
-                                          ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "a",
-                                          {
-                                            staticClass:
-                                              "w-100 py-1 hover link-float",
-                                            attrs: { href: "#" }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "fas fa-list fa-sm fa-fw mr-2"
-                                            }),
-                                            _vm._v(
-                                              "\n\t\t\t\t                          Activity Log\n\t\t\t\t                        "
-                                            )
-                                          ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "a",
-                                          {
-                                            staticClass:
-                                              "w-100 py-1 pb-2 hover border-top link-float",
-                                            attrs: { href: "" }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "fas fa-sign-out-alt fa-sm fa-fw mr-2"
-                                            }),
-                                            _vm._v(
-                                              "\n\t\t\t\t                          Fermer cette classe\n\t\t\t\t                        "
-                                            )
-                                          ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c("form", {
-                                          staticStyle: { display: "none" },
-                                          attrs: { action: "" }
-                                        })
-                                      ],
-                                      1
-                                    )
+                                        )
+                                      : _vm._e()
                                   ])
                                 ]
                               )
@@ -55973,119 +56080,158 @@ var render = function() {
                   "span",
                   { staticClass: "d-flex justify-content-start w-100" },
                   [
-                    _c(
-                      "span",
-                      {
-                        staticClass:
-                          "btn btn-primary border border-white p-0 w-25 px-1 m-0",
-                        on: {
-                          click: function($event) {
-                            return _vm.updateTargetedTrimestre(1)
-                          }
-                        }
-                      },
-                      [
-                        _c(
-                          "router-link",
+                    _vm.$route.params.s
+                      ? _c(
+                          "span",
                           {
-                            staticClass: "w-100 my-1 hover link-float",
-                            staticStyle: { "border-radius": "30px" },
-                            attrs: {
-                              to: {
-                                name: "classeSubjectMarks",
-                                params: {
-                                  id: _vm.targetedClasse.classe.id,
-                                  s: _vm.targetedClasseSubject,
-                                  t: 1
-                                }
+                            staticClass:
+                              "btn btn-primary border border-white p-0 w-25 px-1 m-0",
+                            on: {
+                              click: function($event) {
+                                return _vm.updateTargetedTrimestre(1)
                               }
                             }
                           },
                           [
-                            _vm._v("\n\t                              \t1"),
-                            _c("sup", [_vm._v("er")]),
-                            _vm._v(" Trim\n\t        \t\t\t\t\t")
-                          ]
+                            _c(
+                              "router-link",
+                              {
+                                staticClass: "w-100 my-1 hover link-float",
+                                staticStyle: { "border-radius": "30px" },
+                                attrs: {
+                                  to: {
+                                    name: "classeSubjectMarks",
+                                    params: {
+                                      id: _vm.$route.params.id,
+                                      s: _vm.$route.params.s,
+                                      t: 1
+                                    }
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v("\n\t                              \t1"),
+                                _c("sup", [_vm._v("er")]),
+                                _vm._v(" Trim\n\t        \t\t\t\t\t")
+                              ]
+                            )
+                          ],
+                          1
                         )
-                      ],
-                      1
-                    ),
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c(
-                      "span",
-                      {
-                        staticClass:
-                          "btn btn-primary border border-white w-25 p-0 px-1 m-0 mx-1",
-                        on: {
-                          click: function($event) {
-                            return _vm.updateTargetedTrimestre(2)
-                          }
-                        }
-                      },
-                      [
-                        _c(
-                          "router-link",
+                    !_vm.$route.params.s
+                      ? _c(
+                          "span",
                           {
-                            staticClass: "w-100 my-1 hover link-float",
-                            staticStyle: { "border-radius": "30px" },
-                            attrs: {
-                              to: {
-                                name: "classeSubjectMarks",
-                                params: {
-                                  id: _vm.targetedClasse.classe.id,
-                                  s: _vm.targetedClasseSubject,
-                                  t: 2
-                                }
-                              }
-                            }
+                            staticClass:
+                              "btn border pt-1 border-white p-0 w-25 px-1 m-0"
                           },
-                          [
-                            _vm._v("\n\t                              \t2"),
-                            _c("sup", [_vm._v("ème")]),
-                            _vm._v(" Trim\n\t        \t\t\t\t\t")
-                          ]
+                          [_vm._m(2)]
                         )
-                      ],
-                      1
-                    ),
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c(
-                      "span",
-                      {
-                        staticClass:
-                          "btn btn-primary w-25 border border-white p-0 px-1 m-0",
-                        on: {
-                          click: function($event) {
-                            return _vm.updateTargetedTrimestre(3)
-                          }
-                        }
-                      },
-                      [
-                        _c(
-                          "router-link",
+                    _vm.$route.params.s
+                      ? _c(
+                          "span",
                           {
-                            staticClass: "w-100 my-1 hover link-float",
-                            staticStyle: { "border-radius": "30px" },
-                            attrs: {
-                              to: {
-                                name: "classeSubjectMarks",
-                                params: {
-                                  id: _vm.targetedClasse.classe.id,
-                                  s: _vm.targetedClasseSubject,
-                                  t: 3
-                                }
+                            staticClass:
+                              "btn btn-primary border border-white w-25 p-0 px-1 m-0 mx-1",
+                            on: {
+                              click: function($event) {
+                                return _vm.updateTargetedTrimestre(2)
                               }
                             }
                           },
                           [
-                            _vm._v("\n                              \t3"),
-                            _c("sup", [_vm._v("ème")]),
-                            _vm._v("Trim\n        \t\t\t\t\t")
-                          ]
+                            _c(
+                              "router-link",
+                              {
+                                staticClass: "w-100 my-1 hover link-float",
+                                staticStyle: { "border-radius": "30px" },
+                                attrs: {
+                                  to: {
+                                    name: "classeSubjectMarks",
+                                    params: {
+                                      id: _vm.$route.params.id,
+                                      s: _vm.$route.params.s,
+                                      t: 2
+                                    }
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v("\n\t                              \t2"),
+                                _c("sup", [_vm._v("ème")]),
+                                _vm._v(" Trim\n\t        \t\t\t\t\t")
+                              ]
+                            )
+                          ],
+                          1
                         )
-                      ],
-                      1
-                    )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.$route.params.s
+                      ? _c(
+                          "span",
+                          {
+                            staticClass:
+                              "btn border pt-1 border-white p-0 w-25 px-1 m-0 mx-1"
+                          },
+                          [_vm._m(3)]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.$route.params.s
+                      ? _c(
+                          "span",
+                          {
+                            staticClass:
+                              "btn btn-primary w-25 border border-white p-0 px-1 m-0",
+                            on: {
+                              click: function($event) {
+                                return _vm.updateTargetedTrimestre(3)
+                              }
+                            }
+                          },
+                          [
+                            _c(
+                              "router-link",
+                              {
+                                staticClass: "w-100 my-1 hover link-float",
+                                staticStyle: { "border-radius": "30px" },
+                                attrs: {
+                                  to: {
+                                    name: "classeSubjectMarks",
+                                    params: {
+                                      id: _vm.$route.params.id,
+                                      s: _vm.$route.params.s,
+                                      t: 3
+                                    }
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v("\n                              \t3"),
+                                _c("sup", [_vm._v("ème")]),
+                                _vm._v("Trim\n        \t\t\t\t\t")
+                              ]
+                            )
+                          ],
+                          1
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.$route.params.s
+                      ? _c(
+                          "span",
+                          {
+                            staticClass:
+                              "btn border pt-1 border-white p-0 w-25 px-1 m-0"
+                          },
+                          [_vm._m(4)]
+                        )
+                      : _vm._e()
                   ]
                 )
               ]),
@@ -56175,7 +56321,7 @@ var render = function() {
                                     params: {
                                       id: _vm.$route.params.id,
                                       s: subject.id,
-                                      t: _vm.$route.params.t
+                                      t: _vm.trimestre
                                     }
                                   }
                                 }
@@ -56217,630 +56363,671 @@ var render = function() {
       "div",
       {
         staticClass:
-          "w-100 mx-auto d-flex justify-content-center bg-linear-official-180"
+          "w-100 mx-auto d-flex justify-content-center bg-linear-official-180 border border-white"
       },
       [
-        _c(
-          "table",
-          { staticClass: "table-table table-striped w-100 classes-marks" },
-          [
-            _c("transition", { attrs: { name: "justefade", appear: "" } }, [
-              _c("thead", [
-                _c("th", { staticClass: "no-tag" }, [_vm._v("No")]),
-                _vm._v(" "),
-                _c("th", { staticClass: " pupils-tag" }, [_vm._v("Elèves")]),
-                _vm._v(" "),
-                _c(
-                  "th",
-                  { staticClass: "subjects-tag" },
-                  [
-                    _c("span", [
-                      _vm._v("Les notes\n                        \t\t"),
-                      !_vm.modality
-                        ? _c(
-                            "span",
-                            { staticClass: "d-inline-block m-0 p-0" },
-                            [
-                              _vm.subjectWithModalities[_vm.$route.params.s] !==
-                              undefined
-                                ? _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "h5-title text-white-50 m-0 p-0"
-                                    },
-                                    [
-                                      _vm._v(
-                                        "\n                        \t\t\tSeulement les " +
-                                          _vm._s(
-                                            _vm.subjectWithModalities[
-                                              _vm.$route.params.s
-                                            ]
-                                          ) +
-                                          " meilleurs notes sont prises en comptes\n                        \t\t"
-                                      )
-                                    ]
-                                  )
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _vm.subjectWithModalities[_vm.$route.params.s] ==
-                              undefined
-                                ? _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "h5-title text-white-50 m-0 p-0"
-                                    },
-                                    [
-                                      _vm._v(
-                                        "\n                        \t\t\tToutes les notes sont prises en comptes\n                        \t\t"
-                                      )
-                                    ]
-                                  )
-                                : _vm._e()
-                            ]
-                          )
-                        : _vm._e()
+        _vm.LoadedPage
+          ? _c(
+              "div",
+              {
+                staticClass:
+                  "w-100 m-0 p-0 mx-auto d-flex justify-content-center bg-linear-official-180"
+              },
+              [_vm._m(5)]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        !_vm.$route.params.s && !_vm.LoadedPage
+          ? _c(
+              "div",
+              {
+                staticClass:
+                  "w-100 p-2 mx-auto d-flex justify-content-center bg-linear-official-180"
+              },
+              [
+                _c("h6", { staticClass: "m-0 p-0 mx-auto text-muted" }, [
+                  _vm._v(
+                    "\n\t\t\t\t\tVeuillez sélectionner une matière, pour voir ou éditer les notes, moyennes et rangs\n\t\t\t\t"
+                  )
+                ])
+              ]
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.$route.params.s && !_vm.LoadedPage
+          ? _c(
+              "table",
+              { staticClass: "table-table table-striped w-100 classes-marks" },
+              [
+                _c("transition", { attrs: { name: "justefade", appear: "" } }, [
+                  _c("thead", [
+                    _c("th", { staticClass: "no-tag" }, [_vm._v("No")]),
+                    _vm._v(" "),
+                    _c("th", { staticClass: " pupils-tag" }, [
+                      _vm._v("Elèves")
                     ]),
                     _vm._v(" "),
-                    _vm.modality
-                      ? _c(
-                          "span",
-                          {
-                            staticClass:
-                              "float-right mr-1 d-flex flex-column justify-content-between"
-                          },
-                          [
-                            _c("span", {
-                              staticClass: "fa fa-check text-success mb-2",
-                              attrs: { title: "Lancer les modalités" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.updateModality()
-                                }
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("span", {
-                              staticClass: "fa fa-mail-reply text-info",
-                              attrs: { title: "Annuler la proccédure" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.changeModality("reset")
-                                }
-                              }
-                            })
-                          ]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.modality
-                      ? _c(
-                          "span",
-                          {
-                            staticClass:
-                              "float-left ml-1 d-flex flex-column justify-content-center"
-                          },
-                          [
-                            _c("span", {
-                              staticClass: "fa fa-close text-danger mb-2",
-                              attrs: { title: "Annuler toutes les modalités" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.resetAllModality()
-                                }
-                              }
-                            })
-                          ]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    !_vm.modality
-                      ? _c("span", {
-                          staticClass: "fa fa-filter float-right m-0 p-0 mr-2",
-                          attrs: {
-                            title:
-                              " Définisser la modalité de calcule des moyennes"
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.changeModality()
-                            }
-                          }
-                        })
-                      : _vm._e(),
-                    _vm._v(" "),
                     _c(
-                      "transition",
-                      { attrs: { name: "justefade", appear: "" } },
+                      "th",
+                      { staticClass: "subjects-tag" },
                       [
+                        _c("span", [
+                          _vm._v("Les notes\n                        \t\t"),
+                          !_vm.modality
+                            ? _c(
+                                "span",
+                                { staticClass: "d-inline-block m-0 p-0" },
+                                [
+                                  _vm.subjectWithModalities[
+                                    _vm.$route.params.s
+                                  ] !== undefined
+                                    ? _c(
+                                        "span",
+                                        {
+                                          staticClass:
+                                            "h5-title text-white-50 m-0 p-0"
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                        \t\t\tSeulement les " +
+                                              _vm._s(
+                                                _vm.subjectWithModalities[
+                                                  _vm.$route.params.s
+                                                ]
+                                              ) +
+                                              " meilleurs notes sont prises en comptes\n                        \t\t"
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e(),
+                                  _vm._v(" "),
+                                  _vm.subjectWithModalities[
+                                    _vm.$route.params.s
+                                  ] == undefined
+                                    ? _c(
+                                        "span",
+                                        {
+                                          staticClass:
+                                            "h5-title text-white-50 m-0 p-0"
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                        \t\t\tToutes les notes sont prises en comptes\n                        \t\t"
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e()
+                                ]
+                              )
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
                         _vm.modality
                           ? _c(
                               "span",
-                              { staticClass: "float-right m-0 p-0 mr-1" },
+                              {
+                                staticClass:
+                                  "float-right mr-1 d-flex flex-column justify-content-between"
+                              },
                               [
-                                _c(
-                                  "form",
-                                  {
-                                    staticClass: "d-inline opac-form m-0 p-0",
-                                    attrs: { id: "classe-modality" }
+                                _c("span", {
+                                  staticClass: "fa fa-check text-success mb-2",
+                                  attrs: { title: "Lancer les modalités" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.updateModality()
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("span", {
+                                  staticClass: "fa fa-mail-reply text-info",
+                                  attrs: { title: "Annuler la proccédure" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.changeModality("reset")
+                                    }
+                                  }
+                                })
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.modality
+                          ? _c(
+                              "span",
+                              {
+                                staticClass:
+                                  "float-left ml-1 d-flex flex-column justify-content-center"
+                              },
+                              [
+                                _c("span", {
+                                  staticClass: "fa fa-close text-danger mb-2",
+                                  attrs: {
+                                    title: "Annuler toutes les modalités"
                                   },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.resetAllModality()
+                                    }
+                                  }
+                                })
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        !_vm.modality
+                          ? _c("span", {
+                              staticClass:
+                                "fa fa-filter float-right m-0 p-0 mr-2",
+                              attrs: {
+                                title:
+                                  " Définisser la modalité de calcule des moyennes"
+                              },
+                              on: {
+                                click: function($event) {
+                                  return _vm.changeModality()
+                                }
+                              }
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c(
+                          "transition",
+                          { attrs: { name: "justefade", appear: "" } },
+                          [
+                            _vm.modality
+                              ? _c(
+                                  "span",
+                                  { staticClass: "float-right m-0 p-0 mr-1" },
                                   [
-                                    _c("input", {
-                                      staticClass:
-                                        "form-control m-0 p-0 text-center",
-                                      class:
-                                        _vm.alertModality.status == false
-                                          ? "is-invalid"
-                                          : "",
-                                      staticStyle: { color: "orange" },
-                                      attrs: {
-                                        max: "5",
-                                        min: "1",
-                                        type: "number",
-                                        name: "modalityLength",
-                                        title:
-                                          "Veuillez renseigner le nombre de notes à prendre en compte"
-                                      }
-                                    })
+                                    _c(
+                                      "form",
+                                      {
+                                        staticClass:
+                                          "d-inline opac-form m-0 p-0",
+                                        attrs: { id: "classe-modality" }
+                                      },
+                                      [
+                                        _c("input", {
+                                          staticClass:
+                                            "form-control m-0 p-0 text-center",
+                                          class:
+                                            _vm.alertModality.status == false
+                                              ? "is-invalid"
+                                              : "",
+                                          staticStyle: { color: "orange" },
+                                          attrs: {
+                                            max: "5",
+                                            min: "1",
+                                            type: "number",
+                                            name: "modalityLength",
+                                            title:
+                                              "Veuillez renseigner le nombre de notes à prendre en compte"
+                                          }
+                                        })
+                                      ]
+                                    )
                                   ]
+                                )
+                              : _vm._e()
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _vm.modality && _vm.alertModality.message == ""
+                          ? _c(
+                              "span",
+                              {
+                                staticClass:
+                                  "h5-title text-warning d-block p-0 m-0"
+                              },
+                              [
+                                _vm._v(
+                                  "\n\t                        \tIndiquer le nombre de notes à prendre en compte\n\t                        "
+                                )
+                              ]
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.modality && _vm.alertModality.message !== ""
+                          ? _c(
+                              "span",
+                              {
+                                staticClass: "h5-title d-block p-0 m-0",
+                                class:
+                                  _vm.alertModality.status == false
+                                    ? "text-danger"
+                                    : "text-success"
+                              },
+                              [
+                                _vm._v(
+                                  "\n\t                        \t" +
+                                    _vm._s(_vm.alertModality.message) +
+                                    "\n\t                        "
                                 )
                               ]
                             )
                           : _vm._e()
-                      ]
+                      ],
+                      1
                     ),
                     _vm._v(" "),
-                    _vm.modality && _vm.alertModality.message == ""
-                      ? _c(
-                          "span",
-                          {
-                            staticClass: "h5-title text-warning d-block p-0 m-0"
-                          },
-                          [
-                            _vm._v(
-                              "\n\t                        \tIndiquer le nombre de notes à prendre en compte\n\t                        "
-                            )
-                          ]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.modality && _vm.alertModality.message !== ""
-                      ? _c(
-                          "span",
-                          {
-                            staticClass: "h5-title d-block p-0 m-0",
-                            class:
-                              _vm.alertModality.status == false
-                                ? "text-danger"
-                                : "text-success"
-                          },
-                          [
-                            _vm._v(
-                              "\n\t                        \t" +
-                                _vm._s(_vm.alertModality.message) +
-                                "\n\t                        "
-                            )
-                          ]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c("th", { staticClass: "subjects-tag" }, [
-                  _c("span", [_vm._v("Moyennes")]),
-                  _vm._v(" "),
-                  _c("span", {
-                    staticClass: "fa fa-desktop float-right mr-2",
-                    attrs: { title: "calculer les moyennes maintenant" },
-                    on: {
-                      click: function($event) {
-                        return _vm.toggleComputing()
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("th", { staticClass: "actions-tag" }, [_vm._v("Classer")])
-              ])
-            ]),
-            _vm._v(" "),
-            _c("transition", { attrs: { name: "fadelow", appear: "" } }, [
-              _c(
-                "tbody",
-                { staticClass: "w-100 marks-td" },
-                [
-                  _c("tr", { staticClass: "border-bottom border-white" }, [
-                    _c("td", { staticClass: " bg-linear-official-180" }, [
-                      _vm._v("x")
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: " bg-linear-official-180" }, [
-                      _vm._v("x")
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center " }, [
-                      _c(
-                        "table",
-                        { staticClass: "text-center w-100 text-white-50" },
-                        [
-                          _c("tbody", { staticClass: "w-100 notes" }, [
-                            _c("tr", { staticClass: "text-center w-100" }, [
-                              _c("td", { staticClass: "text-center " }, [
-                                _vm._v("Int 1")
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "text-center " }, [
-                                _vm._v("Int 2")
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "text-center " }, [
-                                _vm._v("Int 3")
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "text-center " }, [
-                                _vm._v("Int 4")
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "text-center " }, [
-                                _vm._v("Int 5")
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "text-primary" }, [
-                                _vm._v("Moy Int")
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "text-primary" }, [
-                                _vm._v("Dev 1")
-                              ]),
-                              _vm._v(" "),
-                              _c("td", { staticClass: "text-primary" }, [
-                                _vm._v("Dev 2")
-                              ])
-                            ])
-                          ])
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center" }, [
-                      _c(
-                        "table",
-                        { staticClass: "text-center w-100 text-white-50" },
-                        [
-                          _c("tbody", { staticClass: "w-100 moyennes" }, [
-                            _c("tr", { staticClass: "text-center w-100" }, [
-                              _c(
-                                "td",
-                                { staticClass: "text-center text-success" },
-                                [_vm._v("Moy")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "td",
-                                { staticClass: "text-center text-warning" },
-                                [_vm._v("Moy Coef")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "td",
-                                { staticClass: "text-center text-info" },
-                                [_vm._v("Rang")]
-                              )
-                            ])
-                          ])
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
+                    _c("th", { staticClass: "subjects-tag" }, [
+                      _c("span", [_vm._v("Moyennes")]),
+                      _vm._v(" "),
                       _c("span", {
-                        staticClass: "fa fa-recycle",
+                        staticClass: "fa fa-desktop float-right mr-2",
+                        attrs: { title: "calculer les moyennes maintenant" },
                         on: {
                           click: function($event) {
-                            return _vm.oderer(
-                              _vm.$route.params.id,
-                              _vm.targetedClasseSubject,
-                              _vm.trimestre
-                            )
+                            return _vm.toggleComputing()
                           }
                         }
                       })
+                    ]),
+                    _vm._v(" "),
+                    _c("th", { staticClass: "actions-tag" }, [
+                      _vm._v("Classer")
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.targetedClasse.pupils, function(pupil, k) {
-                    return _c(
-                      "tr",
-                      { staticClass: "border-bottom border-white-50" },
-                      [
-                        _c("td", [_vm._v(_vm._s(k + 1))]),
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("transition", { attrs: { name: "justefade", appear: "" } }, [
+                  _c(
+                    "tbody",
+                    { staticClass: "w-100 marks-td" },
+                    [
+                      _c("tr", { staticClass: "border-bottom border-white" }, [
+                        _c("td", { staticClass: " bg-linear-official-180" }, [
+                          _vm._v("x")
+                        ]),
                         _vm._v(" "),
-                        _c(
-                          "td",
-                          { staticClass: "text-left p-2" },
+                        _c("td", { staticClass: " bg-linear-official-180" }, [
+                          _vm._v("x")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center " }, [
+                          _c(
+                            "table",
+                            { staticClass: "text-center w-100 text-white-50" },
+                            [
+                              _c("tbody", { staticClass: "w-100 notes" }, [
+                                _c("tr", { staticClass: "text-center w-100" }, [
+                                  _c("td", { staticClass: "text-center " }, [
+                                    _vm._v("Int 1")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "text-center " }, [
+                                    _vm._v("Int 2")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "text-center " }, [
+                                    _vm._v("Int 3")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "text-center " }, [
+                                    _vm._v("Int 4")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "text-center " }, [
+                                    _vm._v("Int 5")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "text-primary" }, [
+                                    _vm._v("Moy Int")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "text-primary" }, [
+                                    _vm._v("Dev 1")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("td", { staticClass: "text-primary" }, [
+                                    _vm._v("Dev 2")
+                                  ])
+                                ])
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "text-center" }, [
+                          _c(
+                            "table",
+                            { staticClass: "text-center w-100 text-white-50" },
+                            [
+                              _c("tbody", { staticClass: "w-100 moyennes" }, [
+                                _c("tr", { staticClass: "text-center w-100" }, [
+                                  _c(
+                                    "td",
+                                    { staticClass: "text-center text-success" },
+                                    [_vm._v("Moy")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    { staticClass: "text-center text-warning" },
+                                    [_vm._v("Moy Coef")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "td",
+                                    { staticClass: "text-center text-info" },
+                                    [_vm._v("Rang")]
+                                  )
+                                ])
+                              ])
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _c("span", {
+                            staticClass: "fa fa-recycle",
+                            on: {
+                              click: function($event) {
+                                return _vm.oderer(
+                                  _vm.$route.params.id,
+                                  _vm.targetedClasseSubject
+                                )
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.targetedClasse.pupils, function(pupil, k) {
+                        return _c(
+                          "tr",
+                          { staticClass: "border-bottom border-white-50" },
                           [
+                            _c("td", [_vm._v(_vm._s(k + 1))]),
+                            _vm._v(" "),
                             _c(
-                              "router-link",
-                              {
-                                staticClass: "card-link d-inline-block",
-                                attrs: {
-                                  to: {
-                                    name: "pupilsProfil",
-                                    params: { id: pupil.id }
-                                  }
-                                }
-                              },
+                              "td",
+                              { staticClass: "text-left p-2" },
                               [
                                 _c(
-                                  "span",
+                                  "router-link",
                                   {
-                                    staticClass:
-                                      "w-100 d-inline-block link-profiler",
-                                    on: {
-                                      click: function($event) {
-                                        return _vm.setEdited(pupil)
+                                    staticClass: "card-link d-inline-block",
+                                    attrs: {
+                                      to: {
+                                        name: "pupilsProfil",
+                                        params: { id: pupil.id }
                                       }
                                     }
                                   },
                                   [
-                                    _vm._v(
-                                      "\n\t                                        " +
-                                        _vm._s(pupil.name) +
-                                        "\n                                    \t"
+                                    _c(
+                                      "span",
+                                      {
+                                        staticClass:
+                                          "w-100 d-inline-block link-profiler",
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.setEdited(pupil)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n\t                                        " +
+                                            _vm._s(pupil.name) +
+                                            "\n                                    \t"
+                                        )
+                                      ]
                                     )
                                   ]
-                                )
-                              ]
+                                ),
+                                _vm._v(" "),
+                                _c("a", {
+                                  staticClass:
+                                    "fa fa-edit text-white-50 float-right",
+                                  staticStyle: {
+                                    "font-size": "10px!important",
+                                    "font-weight": "200!important"
+                                  },
+                                  attrs: {
+                                    href: "#",
+                                    title:
+                                      "card-link Editer les informations de",
+                                    "data-toggle": "modal",
+                                    "data-target": "#editPupilMarks"
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.editedPupilClasseAndSubjectMarks(
+                                        pupil,
+                                        _vm.$route.params.s
+                                      )
+                                    }
+                                  }
+                                })
+                              ],
+                              1
                             ),
                             _vm._v(" "),
-                            _c("a", {
-                              staticClass:
-                                "fa fa-edit text-white-50 float-right",
-                              staticStyle: {
-                                "font-size": "10px!important",
-                                "font-weight": "200!important"
-                              },
-                              attrs: {
-                                href: "#",
-                                title: "card-link Editer les informations de",
-                                "data-toggle": "modal",
-                                "data-target": "#editPupilMarks"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.editedPupilClasseAndSubjectMarks(
-                                    pupil,
-                                    _vm.$route.params.s
-                                  )
-                                }
-                              }
-                            })
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("table", { staticClass: "w-100" }, [
-                            _c("tbody", { staticClass: "w-100 notes" }, [
-                              _c("tr", { staticClass: "w-100" }, [
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getMarks(
-                                        pupil.id,
-                                        "epe",
-                                        0,
-                                        _vm.targetedClasseMarks
+                            _c("td", [
+                              _c("table", { staticClass: "w-100" }, [
+                                _c("tbody", { staticClass: "w-100 notes" }, [
+                                  _c("tr", { staticClass: "w-100" }, [
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getMarks(
+                                            pupil.id,
+                                            "epe",
+                                            0,
+                                            _vm.targetedClasseMarks
+                                          )
+                                        )
                                       )
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getMarks(
-                                        pupil.id,
-                                        "epe",
-                                        1,
-                                        _vm.targetedClasseMarks
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getMarks(
+                                            pupil.id,
+                                            "epe",
+                                            1,
+                                            _vm.targetedClasseMarks
+                                          )
+                                        )
                                       )
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getMarks(
-                                        pupil.id,
-                                        "epe",
-                                        2,
-                                        _vm.targetedClasseMarks
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getMarks(
+                                            pupil.id,
+                                            "epe",
+                                            2,
+                                            _vm.targetedClasseMarks
+                                          )
+                                        )
                                       )
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getMarks(
-                                        pupil.id,
-                                        "epe",
-                                        3,
-                                        _vm.targetedClasseMarks
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getMarks(
+                                            pupil.id,
+                                            "epe",
+                                            3,
+                                            _vm.targetedClasseMarks
+                                          )
+                                        )
                                       )
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getMarks(
-                                        pupil.id,
-                                        "epe",
-                                        4,
-                                        _vm.targetedClasseMarks
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getMarks(
+                                            pupil.id,
+                                            "epe",
+                                            4,
+                                            _vm.targetedClasseMarks
+                                          )
+                                        )
                                       )
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "text-primary" }, [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getAverage(
-                                        pupil.id,
-                                        _vm.targetedClasseMarks
-                                      ).avgEPE
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "text-primary" }, [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getMarks(
-                                        pupil.id,
-                                        "devoir",
-                                        0,
-                                        _vm.targetedClasseMarks
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", { staticClass: "text-primary" }, [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getAverage(
+                                            pupil.id,
+                                            _vm.targetedClasseMarks
+                                          ).avgEPE
+                                        )
                                       )
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "text-primary" }, [
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.getMarks(
-                                        pupil.id,
-                                        "devoir",
-                                        1,
-                                        _vm.targetedClasseMarks
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", { staticClass: "text-primary" }, [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getMarks(
+                                            pupil.id,
+                                            "devoir",
+                                            0,
+                                            _vm.targetedClasseMarks
+                                          )
+                                        )
                                       )
-                                    )
-                                  )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", { staticClass: "text-primary" }, [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getMarks(
+                                            pupil.id,
+                                            "devoir",
+                                            1,
+                                            _vm.targetedClasseMarks
+                                          )
+                                        )
+                                      )
+                                    ])
+                                  ])
                                 ])
                               ])
-                            ])
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("table", { staticClass: "w-100" }, [
-                            _c("tbody", { staticClass: "w-100" }, [
-                              _c("tr", { staticClass: "w-100" }, [
-                                _c("td", { staticClass: "text-success" }, [
-                                  _vm._v(
-                                    _vm._s(
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("table", { staticClass: "w-100" }, [
+                                _c("tbody", { staticClass: "w-100" }, [
+                                  _c("tr", { staticClass: "w-100" }, [
+                                    _c("td", { staticClass: "text-success" }, [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getAverage(
+                                            pupil.id,
+                                            _vm.targetedClasseMarks,
+                                            _vm.targetedClasseSubjectsCoef,
+                                            _vm.targetedClasseSubject
+                                          ).avg
+                                        )
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("td", { staticClass: "text-warning" }, [
+                                      _vm._v(
+                                        _vm._s(
+                                          _vm.getAverage(
+                                            pupil.id,
+                                            _vm.targetedClasseMarks,
+                                            _vm.targetedClasseSubjectsCoef,
+                                            _vm.targetedClasseSubject
+                                          ).avgCoef
+                                        )
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _vm.getRange(
+                                      k + 1,
                                       _vm.getAverage(
                                         pupil.id,
                                         _vm.targetedClasseMarks,
                                         _vm.targetedClasseSubjectsCoef,
                                         _vm.targetedClasseSubject
                                       ).avg
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("td", { staticClass: "text-warning" }, [
-                                  _vm._v(
-                                    _vm._s(
+                                    ) !== "-"
+                                      ? _c("td", { staticClass: "text-info" }, [
+                                          _vm._v(
+                                            "\n\t\t                    \t\t\t\t\t" +
+                                              _vm._s(
+                                                _vm.getRange(
+                                                  k + 1,
+                                                  _vm.getAverage(
+                                                    pupil.id,
+                                                    _vm.targetedClasseMarks,
+                                                    _vm.targetedClasseSubjectsCoef,
+                                                    _vm.targetedClasseSubject
+                                                  ).avg
+                                                ).num
+                                              ) +
+                                              "\n\t\t                    \t\t\t\t\t"
+                                          ),
+                                          _c("sup", [
+                                            _vm._v(
+                                              "\n\t\t                    \t\t\t\t\t\t" +
+                                                _vm._s(
+                                                  _vm.getRange(
+                                                    k + 1,
+                                                    _vm.getAverage(
+                                                      pupil.id,
+                                                      _vm.targetedClasseMarks,
+                                                      _vm.targetedClasseSubjectsCoef,
+                                                      _vm.targetedClasseSubject
+                                                    ).avg
+                                                  ).sup
+                                                ) +
+                                                "\n\t\t                    \t\t\t\t\t"
+                                            )
+                                          ])
+                                        ])
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _vm.getRange(
+                                      k + 1,
                                       _vm.getAverage(
                                         pupil.id,
                                         _vm.targetedClasseMarks,
                                         _vm.targetedClasseSubjectsCoef,
                                         _vm.targetedClasseSubject
-                                      ).avgCoef
-                                    )
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _vm.getRange(
-                                  k + 1,
-                                  _vm.getAverage(
-                                    pupil.id,
-                                    _vm.targetedClasseMarks,
-                                    _vm.targetedClasseSubjectsCoef,
-                                    _vm.targetedClasseSubject
-                                  ).avg
-                                ) !== "-"
-                                  ? _c("td", { staticClass: "text-info" }, [
-                                      _vm._v(
-                                        "\n\t\t                    \t\t\t\t\t" +
-                                          _vm._s(
-                                            _vm.getRange(
-                                              k + 1,
-                                              _vm.getAverage(
-                                                pupil.id,
-                                                _vm.targetedClasseMarks,
-                                                _vm.targetedClasseSubjectsCoef,
-                                                _vm.targetedClasseSubject
-                                              ).avg
-                                            ).num
-                                          ) +
-                                          "\n\t\t                    \t\t\t\t\t"
-                                      ),
-                                      _c("sup", [
-                                        _vm._v(
-                                          "\n\t\t                    \t\t\t\t\t\t" +
-                                            _vm._s(
-                                              _vm.getRange(
-                                                k + 1,
-                                                _vm.getAverage(
-                                                  pupil.id,
-                                                  _vm.targetedClasseMarks,
-                                                  _vm.targetedClasseSubjectsCoef,
-                                                  _vm.targetedClasseSubject
-                                                ).avg
-                                              ).sup
-                                            ) +
-                                            "\n\t\t                    \t\t\t\t\t"
-                                        )
-                                      ])
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _vm.getRange(
-                                  k + 1,
-                                  _vm.getAverage(
-                                    pupil.id,
-                                    _vm.targetedClasseMarks,
-                                    _vm.targetedClasseSubjectsCoef,
-                                    _vm.targetedClasseSubject
-                                  ).avg
-                                ) == "-"
-                                  ? _c("td", { staticClass: "text-info" }, [
-                                      _vm._v(
-                                        "\n\t\t                    \t\t\t\t\t-\n\t\t                    \t\t\t\t"
-                                      )
-                                    ])
-                                  : _vm._e()
+                                      ).avg
+                                    ) == "-"
+                                      ? _c("td", { staticClass: "text-info" }, [
+                                          _vm._v(
+                                            "\n\t\t                    \t\t\t\t\t-\n\t\t                    \t\t\t\t"
+                                          )
+                                        ])
+                                      : _vm._e()
+                                  ])
+                                ])
                               ])
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("span", {
+                                staticClass: "fa fa-recycle text-muted"
+                              })
                             ])
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("span", {
-                            staticClass: "fa fa-recycle text-muted"
-                          })
-                        ])
-                      ]
-                    )
-                  })
-                ],
-                2
-              )
-            ])
-          ],
-          1
-        )
+                          ]
+                        )
+                      })
+                    ],
+                    2
+                  )
+                ])
+              ],
+              1
+            )
+          : _vm._e()
       ]
     ),
     _vm._v(" "),
@@ -56864,6 +57051,97 @@ var staticRenderFns = [
       _c("span", { staticClass: "text-white-50" }, [_vm._v("Année Scolaire:")]),
       _vm._v(" 2020 - 2021\n\t\t\t\t                ")
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "span",
+      {
+        staticClass: "w-100 hover text-white-50 link-float",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _vm._v("\n\t                              \t1"),
+        _c("sup", [_vm._v("er")]),
+        _vm._v(" Trim\n\t        \t\t\t\t\t")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "span",
+      {
+        staticClass: "w-100 hover text-white-50 link-float",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _vm._v("\n\t                              \t2"),
+        _c("sup", [_vm._v("ème")]),
+        _vm._v(" Trim\n\t        \t\t\t\t\t")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "span",
+      {
+        staticClass: "w-100 hover text-white-50 link-float",
+        staticStyle: { "border-radius": "30px" }
+      },
+      [
+        _vm._v("\n\t                              \t3"),
+        _c("sup", [_vm._v("ème")]),
+        _vm._v(" Trim\n\t        \t\t\t\t\t")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "m-0 p-0 mx-auto w-100 bg-transparent border border-white",
+        staticStyle: { height: "400px" }
+      },
+      [
+        _c("img", {
+          staticClass: "w-100 d-inline-block",
+          staticStyle: {
+            position: "relative",
+            height: "400px",
+            "z-index": "0"
+          },
+          attrs: { src: "/media/loader/load2.gif" }
+        }),
+        _vm._v(" "),
+        _c(
+          "h4",
+          {
+            staticClass: "text-center mx-auto",
+            staticStyle: {
+              position: "relative",
+              top: "-350px",
+              "z-index": "3000"
+            }
+          },
+          [
+            _vm._v(
+              "\n\t\t\t\t\t\tChargement en cours... Veuillez patienter quelques secondes... \n\t\t\t\t\t"
+            )
+          ]
+        )
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -57033,6 +57311,7 @@ var render = function() {
                             staticClass: "m-0 p-0 form-control p-1",
                             class: _vm.emailIsValid(),
                             attrs: {
+                              autocomplete: "",
                               type: "text",
                               name: "add",
                               id: "log_add",
@@ -57091,6 +57370,7 @@ var render = function() {
                             staticClass: "m-0 p-0 form-control p-1",
                             class: _vm.getInvalids(_vm.invalidInputs),
                             attrs: {
+                              autocomplete: "",
                               type: "password",
                               name: "pwd",
                               id: "log_pwd",
@@ -71028,18 +71308,7 @@ var render = function() {
                       )
                     ],
                     1
-                  ),
-                  _vm._v(" "),
-                  _vm.editedPupil.level == "primary"
-                    ? _c("div", { staticClass: "ml-2" }, [
-                        _c("span", [
-                          _c("span", { staticClass: "text-white-50" }, [
-                            _vm._v("Maître: ")
-                          ]),
-                          _vm._v(_vm._s("Mr TOGAN Martin"))
-                        ])
-                      ])
-                    : _vm._e()
+                  )
                 ]),
                 _vm._v(" "),
                 _vm._m(1)
@@ -71049,230 +71318,251 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "d-flex w-100 my-1 py-1 justify-content-between" },
-        [
-          _c("div", { staticClass: "mx-1 my-0 trimestrielle" }, [
-            _c(
-              "span",
-              {
-                class: "btn btn-secondary text-white-50 py-1 light-parent",
-                on: {
-                  click: function($event) {
-                    return _vm.setTrimestre(1)
-                  }
-                }
-              },
-              [
-                _c("hr", { class: "light m-0 p-0" }),
-                _vm._v(" "),
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "text-white",
-                    attrs: {
-                      to:
-                        "/admin/director/pupilsm/" +
-                        this.$route.params.id +
-                        "/marks/index/trimestre/1"
-                    }
-                  },
-                  [_vm._v("Trimestre 1\n\t            \t")]
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                class: "btn btn-secondary text-white-50 py-1",
-                on: {
-                  click: function($event) {
-                    return _vm.setTrimestre(2)
-                  }
-                }
-              },
-              [
-                _c("hr", { class: "light m-0 p-0" }),
-                _vm._v(" "),
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "text-white",
-                    attrs: {
-                      to:
-                        "/admin/director/pupilsm/" +
-                        this.$route.params.id +
-                        "/marks/index/trimestre/2"
-                    }
-                  },
-                  [_vm._v("Trimestre 2\n\t            \t")]
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "span",
-              {
-                staticClass: "btn btn-secondary text-white-50 py-1",
-                on: {
-                  click: function($event) {
-                    return _vm.setTrimestre(3)
-                  }
-                }
-              },
-              [
-                _c("hr", { class: "light m-0 p-0" }),
-                _vm._v(" "),
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "text-white",
-                    attrs: {
-                      to:
-                        "/admin/director/pupilsm/" +
-                        this.$route.params.id +
-                        "/marks/index/trimestre/3"
-                    }
-                  },
-                  [_vm._v("Trimestre 3\n\t            \t")]
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _vm.targetPupilClasseFMT.name == "3" ||
-            _vm.targetPupilClasseFMT.name == "T" ||
-            _vm.targetPupilClasseFMT.name == "CM2"
-              ? _c("span", { staticClass: "btn btn-warning text-dark py-1" }, [
-                  _vm._v("Les notes d'examens")
-                ])
-              : _vm._e()
-          ]),
-          _vm._v(" "),
-          _c(
+      _vm.LoadedPage
+        ? _c(
             "div",
             {
               staticClass:
-                "mx-1 d-flex justify-content-between flex-column font-italic"
+                "w-100 m-0 p-0 mx-auto d-flex justify-content-center bg-linear-official-180"
             },
+            [_vm._m(2)]
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      !_vm.LoadedPage
+        ? _c(
+            "div",
+            { staticClass: "d-flex w-100 my-1 py-1 justify-content-between" },
             [
-              _c(
-                "div",
-                {
-                  staticClass: "mx-1 d-flex justify-content-between font-italic"
-                },
-                [
-                  _c("div", { staticClass: "mx-2" }, [
-                    _c("h5", { staticClass: "text-white-50 h5-title" }, [
-                      _vm._v("\n\t            \t\t\tPlus Faible note: "),
-                      _vm.targetPupilWeakMark !== undefined &&
-                      _vm.targetPupilWeakMark !== 0
-                        ? _c("span", { staticClass: "text-danger" }, [
-                            _vm._v(
-                              _vm._s(
-                                _vm.targetPupilWeakMark == undefined
-                                  ? "..."
-                                  : _vm.targetPupilWeakMark
-                              ) +
-                                " (" +
-                                _vm._s(
-                                  _vm.targetPupilWeakMarkSuject == undefined
-                                    ? "..."
-                                    : _vm.targetPupilWeakMarkSuject
-                                ) +
-                                ")"
-                            )
-                          ])
-                        : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", [
-                    _c("h5", { staticClass: "text-white-50 h5-title" }, [
-                      _vm._v("\n\t            \t\t\tPlus Forte note: "),
-                      _vm.targetPupilBestMark !== undefined &&
-                      _vm.targetPupilBestMark !== 0
-                        ? _c("span", { staticClass: "text-success" }, [
-                            _vm._v(
-                              "\n\t            \t\t\t" +
-                                _vm._s(
-                                  _vm.targetPupilBestMark == undefined
-                                    ? "..."
-                                    : _vm.targetPupilBestMark
-                                ) +
-                                " (" +
-                                _vm._s(
-                                  _vm.targetPupilBestMarkSuject == undefined
-                                    ? "..."
-                                    : _vm.targetPupilBestMarkSuject
-                                ) +
-                                ")\n\t            \t\t"
-                            )
-                          ])
-                        : _vm._e()
-                    ])
-                  ])
-                ]
-              ),
+              _c("div", { staticClass: "mx-1 my-0 trimestrielle" }, [
+                _c(
+                  "span",
+                  {
+                    class:
+                      "btn btn-secondary text-white-50 p-0 m-0 light-parent",
+                    on: {
+                      click: function($event) {
+                        return _vm.setTrimestre(1)
+                      }
+                    }
+                  },
+                  [
+                    _c(
+                      "router-link",
+                      {
+                        staticClass:
+                          "text-white m-0 py-2 px-3 w-100 d-inline-block",
+                        class: _vm.getTrimestre(1),
+                        attrs: {
+                          to:
+                            "/admin/director/pupilsm/" +
+                            this.$route.params.id +
+                            "/marks/index/trimestre/1"
+                        }
+                      },
+                      [_vm._v("Trimestre 1\n\t            \t")]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    class:
+                      "btn btn-secondary text-white-50 p-0 m-0 light-parent",
+                    on: {
+                      click: function($event) {
+                        return _vm.setTrimestre(2)
+                      }
+                    }
+                  },
+                  [
+                    _c(
+                      "router-link",
+                      {
+                        staticClass:
+                          "text-white m-0 py-2 px-3 w-100 d-inline-block",
+                        class: _vm.getTrimestre(2),
+                        attrs: {
+                          to:
+                            "/admin/director/pupilsm/" +
+                            this.$route.params.id +
+                            "/marks/index/trimestre/2"
+                        }
+                      },
+                      [_vm._v("Trimestre 2\n\t            \t")]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    class:
+                      "btn btn-secondary text-white-50 p-0 m-0 light-parent",
+                    on: {
+                      click: function($event) {
+                        return _vm.setTrimestre(3)
+                      }
+                    }
+                  },
+                  [
+                    _c(
+                      "router-link",
+                      {
+                        staticClass:
+                          "text-white m-0 py-2 px-3 w-100 d-inline-block",
+                        class: _vm.getTrimestre(3),
+                        attrs: {
+                          to:
+                            "/admin/director/pupilsm/" +
+                            this.$route.params.id +
+                            "/marks/index/trimestre/3"
+                        }
+                      },
+                      [_vm._v("Trimestre 3\n\t            \t")]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _vm.targetPupilClasseFMT.name == "3" ||
+                _vm.targetPupilClasseFMT.name == "T" ||
+                _vm.targetPupilClasseFMT.name == "CM2"
+                  ? _c(
+                      "span",
+                      { staticClass: "btn btn-warning text-dark py-1" },
+                      [_vm._v("Les notes d'examens")]
+                    )
+                  : _vm._e()
+              ]),
               _vm._v(" "),
               _c(
                 "div",
                 {
-                  staticClass: "mx-1 d-flex justify-content-between font-italic"
+                  staticClass:
+                    "mx-1 d-flex justify-content-between flex-column font-italic"
                 },
                 [
-                  _c("div", { staticClass: "mx-2" }, [
-                    _c("h5", { staticClass: "text-white-50 h5-title" }, [
-                      _vm._v("Dernière Evaluation: "),
-                      _vm.targetPupilLastMark !== undefined &&
-                      _vm.targetPupilLastMark !== 0
-                        ? _c("span", { staticClass: "text-warning" }, [
-                            _vm._v(
-                              " " +
-                                _vm._s(
-                                  _vm.targetPupilLastMark == undefined
-                                    ? "..."
-                                    : _vm.targetPupilLastMark
-                                ) +
-                                " (" +
-                                _vm._s(
-                                  _vm.targetPupilLastMarkSuject == undefined
-                                    ? "..."
-                                    : _vm.targetPupilLastMarkSuject
-                                ) +
-                                ") "
-                            )
-                          ])
-                        : _vm._e()
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", [
-                    _c("h5", { staticClass: "text-white-50 h5-title" }, [
-                      _vm._v("Réussite des Evaluations: "),
-                      _c("span", { staticClass: "text-success" }, [
-                        _c("span", [
-                          _vm._v(
-                            _vm._s(
-                              _vm.targetPupilPercentageSuccedMarks == undefined
-                                ? "..."
-                                : _vm.targetPupilPercentageSuccedMarks + "%"
-                            )
-                          )
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "mx-1 d-flex justify-content-between font-italic"
+                    },
+                    [
+                      _c("div", { staticClass: "mx-2" }, [
+                        _c("h5", { staticClass: "text-white-50 h5-title" }, [
+                          _vm._v("\n\t            \t\t\tPlus Faible note: "),
+                          _vm.targetPupilWeakMark !== undefined &&
+                          _vm.targetPupilWeakMark !== 0
+                            ? _c("span", { staticClass: "text-danger" }, [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.targetPupilWeakMark == undefined
+                                      ? "..."
+                                      : _vm.targetPupilWeakMark
+                                  ) +
+                                    " (" +
+                                    _vm._s(
+                                      _vm.targetPupilWeakMarkSuject == undefined
+                                        ? "..."
+                                        : _vm.targetPupilWeakMarkSuject
+                                    ) +
+                                    ")"
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", [
+                        _c("h5", { staticClass: "text-white-50 h5-title" }, [
+                          _vm._v("\n\t            \t\t\tPlus Forte note: "),
+                          _vm.targetPupilBestMark !== undefined &&
+                          _vm.targetPupilBestMark !== 0
+                            ? _c("span", { staticClass: "text-success" }, [
+                                _vm._v(
+                                  "\n\t            \t\t\t" +
+                                    _vm._s(
+                                      _vm.targetPupilBestMark == undefined
+                                        ? "..."
+                                        : _vm.targetPupilBestMark
+                                    ) +
+                                    " (" +
+                                    _vm._s(
+                                      _vm.targetPupilBestMarkSuject == undefined
+                                        ? "..."
+                                        : _vm.targetPupilBestMarkSuject
+                                    ) +
+                                    ")\n\t            \t\t"
+                                )
+                              ])
+                            : _vm._e()
                         ])
                       ])
-                    ])
-                  ])
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "mx-1 d-flex justify-content-between font-italic"
+                    },
+                    [
+                      _c("div", { staticClass: "mx-2" }, [
+                        _c("h5", { staticClass: "text-white-50 h5-title" }, [
+                          _vm._v("Dernière Evaluation: "),
+                          _vm.targetPupilLastMark !== undefined &&
+                          _vm.targetPupilLastMark !== 0
+                            ? _c("span", { staticClass: "text-warning" }, [
+                                _vm._v(
+                                  " " +
+                                    _vm._s(
+                                      _vm.targetPupilLastMark == undefined
+                                        ? "..."
+                                        : _vm.targetPupilLastMark
+                                    ) +
+                                    " (" +
+                                    _vm._s(
+                                      _vm.targetPupilLastMarkSuject == undefined
+                                        ? "..."
+                                        : _vm.targetPupilLastMarkSuject
+                                    ) +
+                                    ") "
+                                )
+                              ])
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", [
+                        _c("h5", { staticClass: "text-white-50 h5-title" }, [
+                          _vm._v("Réussite des Evaluations: "),
+                          _c("span", { staticClass: "text-success" }, [
+                            _c("span", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.targetPupilPercentageSuccedMarks ==
+                                    undefined
+                                    ? "..."
+                                    : _vm.targetPupilPercentageSuccedMarks + "%"
+                                )
+                              )
+                            ])
+                          ])
+                        ])
+                      ])
+                    ]
+                  )
                 ]
               )
             ]
           )
-        ]
-      ),
+        : _vm._e(),
       _vm._v(" "),
       _c("div", { staticClass: "mt-1", attrs: { id: "pupil-profil" } }, [
         _c(
@@ -71309,6 +71599,46 @@ var staticRenderFns = [
       _c("span", { staticClass: "text-white-50" }, [_vm._v("Année Scolaire:")]),
       _vm._v(" 2020 - 2021\n\t                ")
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "m-0 p-0 mx-auto w-100 bg-transparent border border-white",
+        staticStyle: { height: "400px" }
+      },
+      [
+        _c("img", {
+          staticClass: "w-100 d-inline-block",
+          staticStyle: {
+            position: "relative",
+            height: "400px",
+            "z-index": "0"
+          },
+          attrs: { src: "/media/loader/load2.gif" }
+        }),
+        _vm._v(" "),
+        _c(
+          "h4",
+          {
+            staticClass: "text-center mx-auto",
+            staticStyle: {
+              position: "relative",
+              top: "-350px",
+              "z-index": "3000"
+            }
+          },
+          [
+            _vm._v(
+              "\n\t\t\t\t\t\tChargement en cours... Veuillez patienter quelques secondes... \n\t\t\t\t\t"
+            )
+          ]
+        )
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -71442,7 +71772,19 @@ var render = function() {
                 _vm._l(_vm.editedPupilSubjects, function(subject) {
                   return _c(
                     "tr",
-                    { staticClass: "td border-bottom border-white" },
+                    {
+                      staticClass: "td border-bottom border-white",
+                      attrs: {
+                        title:
+                          _vm.targetPupilMarks !== null &&
+                          _vm.targetPupilMarks[subject.id] &&
+                          _vm.targetPupilMarks[subject.id]["modality"] !== null
+                            ? " Le prof a choisir les " +
+                              _vm.targetPupilMarks[subject.id]["modality"] +
+                              " meilleures notes "
+                            : "Le prof envisage prendre toutes les notes certainement"
+                      }
+                    },
                     [
                       _c(
                         "td",
@@ -71500,65 +71842,105 @@ var render = function() {
                                     "tr",
                                     { staticClass: "text-center w-100 td" },
                                     [
-                                      _c("td", { staticClass: "text-center" }, [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.getSujectMarks(
-                                              subject,
-                                              "epe",
-                                              0
+                                      _c(
+                                        "td",
+                                        {
+                                          class:
+                                            "text-center " +
+                                            _vm.getMarkStatus(subject, 0)
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.getSujectMarks(
+                                                subject,
+                                                "epe",
+                                                0
+                                              )
                                             )
                                           )
-                                        )
-                                      ]),
+                                        ]
+                                      ),
                                       _vm._v(" "),
-                                      _c("td", { staticClass: "text-center" }, [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.getSujectMarks(
-                                              subject,
-                                              "epe",
-                                              1
+                                      _c(
+                                        "td",
+                                        {
+                                          class:
+                                            "text-center " +
+                                            _vm.getMarkStatus(subject, 1)
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.getSujectMarks(
+                                                subject,
+                                                "epe",
+                                                1
+                                              )
                                             )
                                           )
-                                        )
-                                      ]),
+                                        ]
+                                      ),
                                       _vm._v(" "),
-                                      _c("td", { staticClass: "text-center" }, [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.getSujectMarks(
-                                              subject,
-                                              "epe",
-                                              2
+                                      _c(
+                                        "td",
+                                        {
+                                          class:
+                                            "text-center " +
+                                            _vm.getMarkStatus(subject, 2)
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.getSujectMarks(
+                                                subject,
+                                                "epe",
+                                                2
+                                              )
                                             )
                                           )
-                                        )
-                                      ]),
+                                        ]
+                                      ),
                                       _vm._v(" "),
-                                      _c("td", { staticClass: "text-center" }, [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.getSujectMarks(
-                                              subject,
-                                              "epe",
-                                              3
+                                      _c(
+                                        "td",
+                                        {
+                                          class:
+                                            "text-center " +
+                                            _vm.getMarkStatus(subject, 3)
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.getSujectMarks(
+                                                subject,
+                                                "epe",
+                                                3
+                                              )
                                             )
                                           )
-                                        )
-                                      ]),
+                                        ]
+                                      ),
                                       _vm._v(" "),
-                                      _c("td", { staticClass: "text-center" }, [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.getSujectMarks(
-                                              subject,
-                                              "epe",
-                                              4
+                                      _c(
+                                        "td",
+                                        {
+                                          class:
+                                            "text-center " +
+                                            _vm.getMarkStatus(subject, 4)
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.getSujectMarks(
+                                                subject,
+                                                "epe",
+                                                4
+                                              )
                                             )
                                           )
-                                        )
-                                      ]),
+                                        ]
+                                      ),
                                       _vm._v(" "),
                                       _c(
                                         "td",
@@ -95761,10 +96143,12 @@ var helpers = {
 
 var averageComputor = function averageComputor(subject) {
   var marks = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var modality = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 5;
 
   if (marks[subject.id] !== undefined) {
     var typeEpe = "epe";
-    var all = [];
+    var allEPETab = [];
+    var selectedEPETab = [];
     var som = 0;
     var APEAgvValidate = 0;
     var devoirs = [];
@@ -95773,16 +96157,29 @@ var averageComputor = function averageComputor(subject) {
 
     for (var i = 0; i < marks[subject.id][typeEpe].length; i++) {
       if (marks[subject.id][typeEpe][i] !== undefined && marks[subject.id][typeEpe][i] !== 0 && marks[subject.id][typeEpe][i] !== '0' && marks[subject.id][typeEpe][i] !== null) {
-        all.push(marks[subject.id][typeEpe][i].value);
+        allEPETab.push(marks[subject.id][typeEpe][i].value);
       }
     }
 
-    for (var i = 0; i < all.length; i++) {
-      som += all[i];
+    if (allEPETab.length < modality) {
+      selectedEPETab = allEPETab;
+    } else {
+      while (selectedEPETab.length < modality) {
+        for (var i = 0; i < allEPETab.length; i++) {
+          if (allEPETab[i] == Math.max.apply(Math, allEPETab)) {
+            selectedEPETab.push(allEPETab[i]);
+            allEPETab.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    for (var i = 0; i < selectedEPETab.length; i++) {
+      som += selectedEPETab[i];
     }
 
     if (som !== 0) {
-      APEAgvValidate = som / all.length;
+      APEAgvValidate = som / selectedEPETab.length;
     } else {
       APEAgvValidate = 0;
     }
@@ -97412,7 +97809,7 @@ var classes_states = {
     subjects: []
   },
   targetedClasseModality: [],
-  targetedClasseSubject: 10,
+  targetedClasseSubject: undefined,
   targetClasseFMT: [],
   targetedClasseMarks: [],
   targetedClasseSubjectsCoef: [],
